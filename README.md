@@ -1,6 +1,6 @@
 # shy
 Version Control System made as UT OOP course project.
 
-Contributors:
+#### Contributors
 * Tiit Oja
-
+* Simmo Saan
