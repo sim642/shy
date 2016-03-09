@@ -1,6 +1,5 @@
 package shy.storage;
 
-import javax.xml.bind.DatatypeConverter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -18,7 +17,7 @@ public abstract class DataStorage {
 
             Util.copyStream(dis, baos);
 
-            String hash = DatatypeConverter.printHexBinary(md.digest()).toLowerCase();
+            String hash = Util.toString(md);
             add(hash, new ByteArrayInputStream(baos.toByteArray()));
             return hash;
         }
@@ -26,6 +25,7 @@ public abstract class DataStorage {
             throw new RuntimeException(e);
         }
     }
+
     protected abstract void add(String hash, InputStream source) throws IOException;
     public abstract InputStream get(String hash) throws IOException;
 }
