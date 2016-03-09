@@ -1,14 +1,14 @@
 ## .shy/
-* `.shy/`    
-    * `storage/`
-    * `branches/`
-    * `tags/`
-    * `commit/`
-    * `author`
-    * `current`
+* `.shy/`
+    * [`storage/`](#storage)
+    * [`branches/`](#branches)
+    * [`tags/`](#tags)
+    * [`commit/`](#commit)
+    * [`author`](#author)
+    * [`current`](#current)
         
-### storage/    
-
+### storage/
+*TODO*
 
 ### branches/
 * `brances/`
