@@ -2,9 +2,21 @@ package shy.storage;
 
 import java.io.File;
 
+/**
+ * File locator for having hashes in git-like directory structure in the root directory:
+ * first {@link #DIRECTORY_LENGTH} characters of hash represent a subdirectory,
+ * remaining hash characters the filename.
+ */
 public class GitFileLocator extends FileLocator {
+    /**
+     * Number of hash characters to use for subdirectory name.
+     */
     protected static final int DIRECTORY_LENGTH = 2;
 
+    /**
+     * Constructs a new git file locator with given root.
+     * @param root root directory to use
+     */
     public GitFileLocator(File root) {
         super(root);
     }

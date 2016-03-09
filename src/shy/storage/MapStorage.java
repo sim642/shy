@@ -6,9 +6,18 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * In-memory data storage class using a {@link HashMap}.
+ */
 public class MapStorage extends DataStorage {
+    /**
+     * Hashmap to use for storing all data by hash.
+     */
     private final Map<String, byte[]> storage;
 
+    /**
+     * Constructs an empty map storage class.
+     */
     public MapStorage() {
         storage = new HashMap<>();
     }

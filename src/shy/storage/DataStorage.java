@@ -8,7 +8,21 @@ import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+/**
+ * Map-like abstract storage class for binary data.
+ * Access data by hash.
+ *
+ * @see Hash
+ * @see MapStorage
+ * @see FileStorage
+ */
 public abstract class DataStorage {
+    /**
+     * Adds binary data from input stream to storage.
+     * @param source input stream to get data from
+     * @return hash of stored data
+     * @throws IOException
+     */
     public final Hash add(InputStream source) throws IOException {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-1");
@@ -26,6 +40,19 @@ public abstract class DataStorage {
         }
     }
 
+    /**
+     * Adds binary data from input stream with precomputed hash.
+     * @param hash hash of data from input stream
+     * @param source input stream to get data from
+     * @throws IOException
+     */
     protected abstract void add(Hash hash, InputStream source) throws IOException;
+
+    /**
+     * Gets binary data as input stream by hash.
+     * @param hash hash of data to get
+     * @return input stream of data
+     * @throws IOException
+     */
     public abstract InputStream get(Hash hash) throws IOException;
 }
