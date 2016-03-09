@@ -13,7 +13,7 @@ public class MapStorage extends DataStorage {
     /**
      * Hashmap to use for storing all data by hash.
      */
-    private final Map<String, byte[]> storage;
+    private final Map<Hash, byte[]> storage;
 
     /**
      * Constructs an empty map storage class.
@@ -24,12 +24,12 @@ public class MapStorage extends DataStorage {
 
     @Override
     protected void add(Hash hash, InputStream source) throws IOException {
-        storage.put(hash.toString(), Util.toByteArray(source));
+        storage.put(hash, Util.toByteArray(source));
     }
 
     @Override
     public InputStream getUnchecked(Hash hash) {
-        byte[] buffer = storage.get(hash.toString());
+        byte[] buffer = storage.get(hash);
         if (buffer != null)
             return new ByteArrayInputStream(buffer);
         else

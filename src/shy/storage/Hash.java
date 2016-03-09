@@ -31,11 +31,6 @@ public class Hash {
         bytes = DatatypeConverter.parseHexBinary(str);
     }
 
-    /**
-     * Checks equality by comparing hash results.
-     * @param other object to compare with
-     * @return whether hashes are equal
-     */
     @Override
     public boolean equals(Object other) {
         if (this == other) // reflexive
@@ -44,6 +39,11 @@ public class Hash {
             return false;
         else
             return Arrays.equals(bytes, ((Hash)other).bytes);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(bytes);
     }
 
     /**
