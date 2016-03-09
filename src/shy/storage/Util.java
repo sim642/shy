@@ -28,8 +28,4 @@ public class Util {
         copyStream(source, baos);
         return baos.toByteArray();
     }
-
-    public static String toString(MessageDigest md) {
-        return DatatypeConverter.printHexBinary(md.digest()).toLowerCase();
-    }
 }

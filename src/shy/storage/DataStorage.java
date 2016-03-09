@@ -9,7 +9,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public abstract class DataStorage {
-    public final String add(InputStream source) throws IOException {
+    public final Hash add(InputStream source) throws IOException {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-1");
             DigestInputStream dis = new DigestInputStream(source, md);
@@ -17,7 +17,7 @@ public abstract class DataStorage {
 
             Util.copyStream(dis, baos);
 
-            String hash = Util.toString(md);
+            Hash hash = new Hash(md);
             add(hash, new ByteArrayInputStream(baos.toByteArray()));
             return hash;
         }
@@ -26,6 +26,6 @@ public abstract class DataStorage {
         }
     }
 
-    protected abstract void add(String hash, InputStream source) throws IOException;
-    public abstract InputStream get(String hash) throws IOException;
+    protected abstract void add(Hash hash, InputStream source) throws IOException;
+    public abstract InputStream get(Hash hash) throws IOException;
 }

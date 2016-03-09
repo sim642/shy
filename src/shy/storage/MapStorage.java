@@ -14,13 +14,13 @@ public class MapStorage extends DataStorage {
     }
 
     @Override
-    protected void add(String hash, InputStream source) throws IOException {
-        storage.put(hash, Util.toByteArray(source));
+    protected void add(Hash hash, InputStream source) throws IOException {
+        storage.put(hash.toString(), Util.toByteArray(source));
     }
 
     @Override
-    public InputStream get(String hash) {
-        byte[] buffer = storage.get(hash);
+    public InputStream get(Hash hash) {
+        byte[] buffer = storage.get(hash.toString());
         if (buffer != null)
             return new ByteArrayInputStream(buffer);
         else
