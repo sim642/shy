@@ -27,4 +27,16 @@ public class Util {
     public static File addExtension(File file, String extension) {
         return new File(file.getAbsolutePath() + extension);
     }
+
+    public static boolean ensurePath(File file) {
+        if (file.isDirectory())
+            return true;
+        else {
+            File parent = file.getParentFile();
+            if (parent.exists())
+                return parent.isDirectory();
+            else
+                return parent.mkdirs();
+        }
+    }
 }

@@ -14,11 +14,11 @@ public class FileStorage extends DataStorage {
 
     @Override
     protected void add(Hash hash, InputStream source) throws IOException {
-        accessor.add(locator.get(hash), source);
+        accessor.add(locator.locateAdd(hash), source);
     }
 
     @Override
     public InputStream get(Hash hash) throws IOException {
-        return accessor.get(locator.get(hash));
+        return accessor.get(locator.locateGet(hash));
     }
 }

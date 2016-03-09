@@ -8,7 +8,7 @@ public class FlatFileLocator extends FileLocator {
     }
 
     @Override
-    public File get(Hash hash) {
+    public File locate(Hash hash) {
         return new File(root, hash.toString());
     }
 }

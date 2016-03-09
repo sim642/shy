@@ -8,7 +8,7 @@ import java.util.Arrays;
 
 public class StorageTest {
     public static void main(String[] args) throws IOException {
-        DataStorage storage = new FileStorage(new FlatFileLocator(new File("teststore")), new AggregateFileAccessor(Arrays.asList(new GzipFileAccessor(), new PlainFileAccessor())));
+        DataStorage storage = new FileStorage(new GitFileLocator(new File("teststore")), new AggregateFileAccessor(Arrays.asList(new GzipFileAccessor(), new PlainFileAccessor())));
 
         Hash h1 = storage.add(new ByteArrayInputStream("foo".getBytes(StandardCharsets.UTF_8)));
         Hash h2 = storage.add(new ByteArrayInputStream("bar".getBytes(StandardCharsets.UTF_8)));

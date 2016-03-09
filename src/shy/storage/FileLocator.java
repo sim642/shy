@@ -14,5 +14,15 @@ public abstract class FileLocator {
         this.root = root;
     }
 
-    public abstract File get(Hash hash);
+    public File locate(Hash hash) {
+        return null;
+    }
+
+    public File locateAdd(Hash hash) {
+        return locate(hash);
+    }
+
+    public File locateGet(Hash hash) {
+        return locate(hash);
+    }
 }
