@@ -10,7 +10,7 @@ import java.nio.charset.StandardCharsets;
 
 public class StorageTest {
     public static void main(String[] args) throws IOException {
-        DataStorage storage = new FileStorage(new FlatFileLocator(new File("teststore")), new PlainFileAccessor());
+        DataStorage storage = new FileStorage(new FlatFileLocator(new File("teststore")), new GzipFileAccessor());
 
         Hash h1 = storage.add(new ByteArrayInputStream("foo".getBytes(StandardCharsets.UTF_8)));
         Hash h2 = storage.add(new ByteArrayInputStream("bar".getBytes(StandardCharsets.UTF_8)));

@@ -6,5 +6,5 @@ import java.io.InputStream;
 
 public interface FileAccessor {
     void add(File file, InputStream source) throws IOException;
-    InputStream get(File file);
+    InputStream get(File file) throws IOException;
 }
