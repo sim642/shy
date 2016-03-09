@@ -28,7 +28,7 @@ public class MapStorage extends DataStorage {
     }
 
     @Override
-    public InputStream get(Hash hash) {
+    public InputStream getUnchecked(Hash hash) {
         byte[] buffer = storage.get(hash.toString());
         if (buffer != null)
             return new ByteArrayInputStream(buffer);

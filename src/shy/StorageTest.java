@@ -3,7 +3,6 @@ package shy;
 import shy.storage.*;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 public class StorageTest {
@@ -16,8 +15,8 @@ public class StorageTest {
                 new GzipFileAccessor(),
                 new PlainFileAccessor())));
 
-        /*Hash h1 = storage.add(new ByteArrayInputStream("foo".getBytes(StandardCharsets.UTF_8)));
-        Hash h2 = storage.add(new ByteArrayInputStream("bar".getBytes(StandardCharsets.UTF_8)));
+        /*Hash h1 = storage.add(new ByteArrayInputStream("foo".getBytes("UTF-8")));
+        Hash h2 = storage.add(new ByteArrayInputStream("bar".getBytes("UTF-8")));
         Hash h3 = storage.add(new FileInputStream("README.md"));
 
         System.out.println(h1);

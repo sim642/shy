@@ -2,6 +2,7 @@ package shy.storage;
 
 import javax.xml.bind.DatatypeConverter;
 import java.security.MessageDigest;
+import java.util.Arrays;
 
 /**
  * Class to efficiently store the result of a hash function.
@@ -28,6 +29,21 @@ public class Hash {
      */
     public Hash(String str) {
         bytes = DatatypeConverter.parseHexBinary(str);
+    }
+
+    /**
+     * Checks equality by comparing hash results.
+     * @param other object to compare with
+     * @return whether hashes are equal
+     */
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) // reflexive
+            return true;
+        else if (!(other instanceof Hash)) // incompatible
+            return false;
+        else
+            return Arrays.equals(bytes, ((Hash)other).bytes);
     }
 
     /**

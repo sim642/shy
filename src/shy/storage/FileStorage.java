@@ -34,7 +34,7 @@ public class FileStorage extends DataStorage {
     }
 
     @Override
-    public InputStream get(Hash hash) throws IOException {
+    public InputStream getUnchecked(Hash hash) throws IOException {
         for (FileLocator locator : locators) {
             InputStream source = accessor.get(locator.locateGet(hash));
             if (source != null)
