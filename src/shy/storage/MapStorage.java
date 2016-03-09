@@ -22,10 +22,7 @@ public class MapStorage implements DataStorage {
             DigestInputStream dis = new DigestInputStream(source, md);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-            byte[] buffer = new byte[1024];
-            int len;
-            while ((len = dis.read(buffer, 0, buffer.length)) > 0)
-                baos.write(buffer, 0, len);
+            Util.copyStream(dis, baos);
 
             String hash = DatatypeConverter.printHexBinary(md.digest()).toLowerCase();
             storage.put(hash, baos.toByteArray());
