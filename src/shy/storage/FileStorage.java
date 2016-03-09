@@ -2,23 +2,29 @@ package shy.storage;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 public class FileStorage extends DataStorage {
-    private final FileLocator locator;
+    private final List<FileLocator> locators;
     private final FileAccessor accessor;
 
-    public FileStorage(FileLocator locator, FileAccessor accessor) {
-        this.locator = locator;
+    public FileStorage(List<FileLocator> locators, FileAccessor accessor) {
+        this.locators = locators;
         this.accessor = accessor;
     }
 
     @Override
     protected void add(Hash hash, InputStream source) throws IOException {
-        accessor.add(locator.locateAdd(hash), source);
+        accessor.add(locators.get(0).locateAdd(hash), source); // always use first locator for add
     }
 
     @Override
     public InputStream get(Hash hash) throws IOException {
-        return accessor.get(locator.locateGet(hash));
+        for (FileLocator locator : locators) {
+            InputStream source = accessor.get(locator.locateGet(hash));
+            if (source != null)
+                return source;
+        }
+        return null;
     }
 }
