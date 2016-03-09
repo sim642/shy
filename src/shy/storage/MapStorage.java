@@ -1,14 +1,12 @@
 package shy.storage;
 
-import javax.xml.bind.DatatypeConverter;
-import java.io.*;
-import java.security.DigestInputStream;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MapStorage implements DataStorage {
+public class MapStorage extends DataStorage {
     private final Map<String, byte[]> storage;
 
     public MapStorage() {
@@ -16,21 +14,8 @@ public class MapStorage implements DataStorage {
     }
 
     @Override
-    public String add(InputStream source) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("SHA-1");
-            DigestInputStream dis = new DigestInputStream(source, md);
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
-            Util.copyStream(dis, baos);
-
-            String hash = DatatypeConverter.printHexBinary(md.digest()).toLowerCase();
-            storage.put(hash, baos.toByteArray());
-            return hash;
-        }
-        catch (NoSuchAlgorithmException | IOException e) {
-            throw new RuntimeException(e);
-        }
+    protected void add(String hash, InputStream source) throws IOException {
+        storage.put(hash, Util.toByteArray(source));
     }
 
     @Override
