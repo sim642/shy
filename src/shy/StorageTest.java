@@ -1,18 +1,16 @@
 package shy;
 
-import shy.storage.DataStorage;
-import shy.storage.Hash;
-import shy.storage.MapStorage;
-import shy.storage.Util;
+import shy.storage.*;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 public class StorageTest {
     public static void main(String[] args) throws IOException {
-        DataStorage storage = new MapStorage();
+        DataStorage storage = new FileStorage(new FlatFileLocator(new File("teststore")), new PlainFileAccessor());
 
         Hash h1 = storage.add(new ByteArrayInputStream("foo".getBytes(StandardCharsets.UTF_8)));
         Hash h2 = storage.add(new ByteArrayInputStream("bar".getBytes(StandardCharsets.UTF_8)));
