@@ -1,9 +1,6 @@
 package shy.storage;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 
 public class Util {
     private Util() {
@@ -25,5 +22,9 @@ public class Util {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         copyStream(source, baos);
         return baos.toByteArray();
+    }
+
+    public static File addExtension(File file, String extension) {
+        return new File(file.getAbsolutePath() + extension);
     }
 }
