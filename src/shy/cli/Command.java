@@ -1,8 +1,13 @@
 package shy.cli;
 
 /**
- * Created by tiit on 12.03.16.
+ * An interface for new commands
  */
 public interface Command {
-    public void execute(String args[]);
+
+    /**
+     * Each command has an execute method which controls program's functionality.
+     * @param args parameters for command
+     */
+    void execute(String args[]);
 }

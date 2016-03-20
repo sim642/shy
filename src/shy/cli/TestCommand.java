@@ -1,8 +1,5 @@
 package shy.cli;
 
-/**
- * Created by tiit on 15.03.16.
- */
 public class TestCommand implements Command {
 
     private final String name;
@@ -14,6 +11,8 @@ public class TestCommand implements Command {
     @Override
     public void execute(String[] args) {
         System.out.println(name);
-
+        for (String arg : args) {
+            System.out.println(arg);
+        }
     }
 }

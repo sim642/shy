@@ -1,8 +1,5 @@
 package shy.cli;
 
-/**
- * Created by tiit on 15.03.16.
- */
 public class RootCommand extends SuperCommand {
 
     public static void main(String[] args) {
