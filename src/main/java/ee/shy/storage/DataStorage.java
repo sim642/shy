@@ -1,9 +1,8 @@
 package ee.shy.storage;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import org.apache.commons.io.IOUtils;
+
+import java.io.*;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -29,7 +28,7 @@ public abstract class DataStorage {
             DigestInputStream dis = new DigestInputStream(source, md);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-            Util.copyStream(dis, baos);
+            IOUtils.copy(dis, baos);
 
             Hash hash = new Hash(md);
             add(hash, new ByteArrayInputStream(baos.toByteArray()));
@@ -61,7 +60,7 @@ public abstract class DataStorage {
             DigestInputStream dis = new DigestInputStream(getUnchecked(hash), md);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-            Util.copyStream(dis, baos);
+            IOUtils.copy(dis, baos);
 
             Hash hashComputed = new Hash(md);
             if (!hash.equals(hashComputed))

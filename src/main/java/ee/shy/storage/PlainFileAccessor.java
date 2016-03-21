@@ -1,5 +1,7 @@
 package ee.shy.storage;
 
+import org.apache.commons.io.IOUtils;
+
 import java.io.*;
 
 /**
@@ -10,7 +12,7 @@ public class PlainFileAccessor implements FileAccessor {
     @Override
     public void add(File file, InputStream source) throws IOException {
         try (FileOutputStream target = new FileOutputStream(file)) {
-            Util.copyStream(source, target);
+            IOUtils.copy(source, target);
         }
 
     }

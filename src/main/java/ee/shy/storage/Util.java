@@ -1,5 +1,7 @@
 package ee.shy.storage;
 
+import org.apache.commons.io.IOUtils;
+
 import java.io.*;
 
 /**
@@ -11,30 +13,6 @@ public class Util {
     }
 
     /**
-     * Copies one stream to another.
-     * @param source source stream
-     * @param target target stream
-     * @throws IOException
-     */
-    public static void copyStream(InputStream source, OutputStream target) throws IOException {
-        copyStream(source, target, 1024);
-    }
-
-    /**
-     * Copies one stream to another using given size buffer.
-     * @param source source stream
-     * @param target target stream
-     * @param bufferSize buffer size to use
-     * @throws IOException
-     */
-    public static void copyStream(InputStream source, OutputStream target, int bufferSize) throws IOException {
-        byte[] buffer = new byte[bufferSize];
-        int len;
-        while ((len = source.read(buffer, 0, buffer.length)) > 0)
-            target.write(buffer, 0, len);
-    }
-
-    /**
      * Converts stream data into a byte array.
      * @param source source stream
      * @return byte array of stream data
@@ -42,7 +20,7 @@ public class Util {
      */
     public static byte[] toByteArray(InputStream source) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        copyStream(source, baos);
+        IOUtils.copy(source, baos);
         return baos.toByteArray();
     }
 

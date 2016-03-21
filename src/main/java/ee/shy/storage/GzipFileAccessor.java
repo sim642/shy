@@ -1,5 +1,7 @@
 package ee.shy.storage;
 
+import org.apache.commons.io.IOUtils;
+
 import java.io.*;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -17,7 +19,7 @@ public class GzipFileAccessor implements FileAccessor {
     @Override
     public void add(File file, InputStream source) throws IOException {
         try (GZIPOutputStream target = new GZIPOutputStream(new FileOutputStream(Util.addExtension(file, EXTENSION)))) {
-            Util.copyStream(source, target);
+            IOUtils.copy(source, target);
         }
     }
 
