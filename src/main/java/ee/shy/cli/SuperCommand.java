@@ -12,7 +12,7 @@ public abstract class SuperCommand implements Command {
     /**
      * Map to store subcommands with respective names.
      */
-    private Map<String, Command> subCommands = new HashMap<>();
+    private final Map<String, Command> subCommands = new HashMap<>();
 
     @Override
     public final void execute(String[] args) {

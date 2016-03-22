@@ -11,7 +11,7 @@ public class GitFileLocator extends FileLocator {
     /**
      * Number of hash characters to use for subdirectory name.
      */
-    protected static final int DIRECTORY_LENGTH = 2;
+    private static final int DIRECTORY_LENGTH = 2;
 
     /**
      * Constructs a new git file locator with given root.

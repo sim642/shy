@@ -14,7 +14,7 @@ public class GzipFileAccessor implements FileAccessor {
     /**
      * Extension used on base paths.
      */
-    protected static final String EXTENSION = ".gz"; // TODO: 9.03.16 create superclass for extension handling
+    private static final String EXTENSION = ".gz"; // TODO: 9.03.16 create superclass for extension handling
 
     @Override
     public void add(File file, InputStream source) throws IOException {

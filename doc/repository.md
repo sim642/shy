@@ -11,7 +11,7 @@
 See [storage.md](storage.md).
 
 ### branches/
-* `brances/`
+* `branches/`
     * `master`
     * `develop`
     * ...
