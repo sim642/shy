@@ -15,5 +15,13 @@ public interface Command {
      * @param args arguments for command
      * @return help text of the command
      */
-    String getHelp(String args[]);
+    default String getHelp(String args[]) {
+        return getHelp();
+    }
+
+    /**
+     * Gets help text for the command
+     * @return help text of the command
+     */
+    String getHelp();
 }

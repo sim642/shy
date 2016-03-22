@@ -30,15 +30,9 @@ public abstract class SuperCommand implements Command {
         if (args.length > 0 && subCommands.keySet().contains(args[0])) {
             return subCommands.get(args[0]).getHelp(argsSlice(args));
         } else {
-            return superCommandHelp();
+            return getHelp();
         }
     }
-
-    /**
-     * Gets help text for the supercommand itself.
-     * @return help text of the supercommand
-     */
-    protected abstract String superCommandHelp();
 
     /**
      * Adds a new subcommand with its name to supercommand

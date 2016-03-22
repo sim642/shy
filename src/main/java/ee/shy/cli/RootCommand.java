@@ -15,7 +15,7 @@ public class RootCommand extends SuperCommand {
     }
 
     @Override
-    protected String superCommandHelp() {
+    public String getHelp() {
         String helpText = "Here be RootCommand's('shy') help text";
         return helpText;
     }

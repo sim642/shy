@@ -23,7 +23,7 @@ public class HelpCommand implements Command {
     }
 
     @Override
-    public String getHelp(String[] args) {
+    public String getHelp() {
         return "Help's help";
     }
 }

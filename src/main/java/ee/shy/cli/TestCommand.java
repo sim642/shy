@@ -20,7 +20,7 @@ public class TestCommand implements Command {
     }
 
     @Override
-    public String getHelp(String[] args) {
+    public String getHelp() {
         return "Here be TestCommand's help text.";
     }
 }
