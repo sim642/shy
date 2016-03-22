@@ -8,7 +8,7 @@
     * [`current`](#current)
         
 ### storage/
-*TODO*
+See [storage.md](storage.md).
 
 ### branches/
 * `brances/`
@@ -31,10 +31,10 @@ Copy of current commit directory.
 
 ### author
 JSON:
-```
+```json
 {
-    "name": "...",
-    "email": "..."
+    "name": "aaa",
+    "email": "aaa"
 }
 ```
 
