@@ -17,7 +17,11 @@ public abstract class SuperCommand implements Command {
 
     @Override
     public final void execute(String[] args) {
-        subCommands.get(args[0]).execute(argsSlice(args));
+        if (subCommands.keySet().contains(args[0])) {
+            subCommands.get(args[0]).execute(argsSlice(args));
+        } else {
+            System.err.format("%s is not a shy command!%n", args[0]);
+        }
     }
 
     /**
