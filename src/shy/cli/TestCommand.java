@@ -15,4 +15,9 @@ public class TestCommand implements Command {
             System.out.println(arg);
         }
     }
+
+    @Override
+    public String getHelp(String[] args) {
+        return "Here be TestCommand's help text.";
+    }
 }

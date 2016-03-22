@@ -24,6 +24,23 @@ public abstract class SuperCommand implements Command {
         }
     }
 
+    // TODO: 21.03.16 Simplify this method.
+    @Override
+    public String getHelp(String[] args) {
+        if (argsSlice(args).length != 0 && subCommands.keySet().contains(argsSlice(args)[0])) {
+            return subCommands.get(argsSlice(args)[0]).getHelp(argsSlice(args));
+        } else {
+            return superCommandHelp();
+        }
+    }
+
+    /**
+     * This method returns a SuperCommand object's help containing the proper usage
+     * of the SuperCommand.
+     * @return a string containing help
+     */
+    protected abstract String superCommandHelp();
+
     /**
      * Adds a new command and its string name value to {@link #subCommands}
      * @param commandName command's string value to add
