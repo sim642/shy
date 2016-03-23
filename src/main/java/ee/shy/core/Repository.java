@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * 
+ * Class for creating and interacting with a repository.
  */
 public class Repository {
     /**
@@ -13,39 +13,40 @@ public class Repository {
     private final File rootDirectory;
 
     /**
-     * Repository's root directory.  
+     * Repository's root directory.
      */
     private final File repositoryDirectory;
 
     /**
      * Constructs an empty repository class.
-     * @param rootDirectory root directory to use
-     * @param repositoryDirectory repository's root directory
      */
-    public Repository(File rootDirectory, File repositoryDirectory) {
-        this.rootDirectory = rootDirectory;
-        this.repositoryDirectory = repositoryDirectory;
+    public Repository() {
+        String root = System.getProperty("user.dir");
+        this.rootDirectory = new File(root);
+        this.repositoryDirectory = new File(root, ".shy");
     }
 
     /**
      * Create a {@link #repositoryDirectory} directory inside {@link #rootDirectory} if doesn't exist yet.
      * Create directories and files to {@link #repositoryDirectory} described in repository.md
      */
-    public void initialize() {
-        if (repositoryDirectory.exists()) return;
-        if (repositoryDirectory.mkdir()) {
+    public void initialize() throws IOException {
+        if (repositoryDirectory.exists() || repositoryDirectory.mkdir()) {
             String[] subDirectories = {"commit", "branches", "tags", "storage"};
             for (String subDirectory : subDirectories) {
-                new File(repositoryDirectory.getAbsolutePath() + "/" + subDirectory).mkdir();
+                File f = new File(repositoryDirectory, subDirectory);
+                if (!f.exists())
+                    f.mkdir();
             }
-            File author = new File(repositoryDirectory + "/author");
-            File current = new File(repositoryDirectory + "/current");
-            try {
-                author.createNewFile();
-                current.createNewFile();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+
+            String[] repositoryFiles = {"author", "current"};
+            for (String repositoryFile : repositoryFiles) {
+                File f = new File(repositoryDirectory, repositoryFile);
+                if (!f.exists())
+                    f.createNewFile();
             }
+
+            System.out.println("Initialized a shy repository in " + rootDirectory.getAbsolutePath());
 
             // TODO: 23.03.16 Figure out how to write/parse JSON. Add necessary details to author and current.
             //System.out.println(System.getProperty("user.name"));

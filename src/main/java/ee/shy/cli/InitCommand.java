@@ -2,14 +2,12 @@ package ee.shy.cli;
 
 import ee.shy.core.Repository;
 
-import java.io.File;
+import java.io.IOException;
 
 public class InitCommand implements Command {
     @Override
-    public void execute(String[] args) {
-        String root = System.getProperty("user.dir");
-        File repositoryDirectory = new File(root + "/.shy/");
-        Repository repository = new Repository(new File(root), repositoryDirectory);
+    public void execute(String[] args) throws IOException {
+        Repository repository = new Repository();
         repository.initialize();
     }
 

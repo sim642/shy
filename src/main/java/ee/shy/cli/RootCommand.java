@@ -1,10 +1,12 @@
 package ee.shy.cli;
 
+import java.io.IOException;
+
 /**
  * A command representing the root of all commands usable from command line.
  */
 public class RootCommand extends SuperCommand {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         new RootCommand().execute(args);
     }
 
