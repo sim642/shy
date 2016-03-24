@@ -1,7 +1,9 @@
 package ee.shy.core;
 
-import java.io.File;
-import java.io.IOException;
+import ee.shy.storage.Hash;
+import org.apache.commons.io.output.TeeOutputStream;
+
+import java.io.*;
 
 /**
  * Class for creating and interacting with a repository.
@@ -64,11 +66,20 @@ public class Repository {
                     f.createNewFile();
             }
 
+            // The following will be refactored later in the project development(Phase 2)
+            File master = new File(new File(repositoryDirectory, "branches"), "master");
+            File current = new File(repositoryDirectory, "current");
+            master.createNewFile();
+
+            TeeOutputStream teeOutputStream = new TeeOutputStream(new FileOutputStream(master), new FileOutputStream(current));
+            teeOutputStream.write(Hash.ZERO.toString().getBytes());
+            teeOutputStream.close();
+
             System.out.println("Initialized a shy repository in " + currentDirectory.getAbsolutePath());
 
             return new Repository(currentDirectory);
 
-            // TODO: 23.03.16 Figure out how to write/parse JSON. Add necessary details to author and current.
+            // TODO: 23.03.16 Figure out how to write/parse JSON. Add necessary details to author
             //System.out.println(System.getProperty("user.name"));
         } else {
             throw new IOException("Repository initialization failed!");

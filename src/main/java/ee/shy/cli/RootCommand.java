@@ -12,7 +12,7 @@ public class RootCommand extends SuperCommand {
         try {
             new RootCommand().execute(args);
         } catch (RepositoryNotFoundException e) {
-            System.err.println(e.getMessage());
+            System.err.println(e);
         }
     }
 
