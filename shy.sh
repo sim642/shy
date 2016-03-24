@@ -1,11 +1,4 @@
-#!/bin/bash
-# find script directory over symlinks - http://stackoverflow.com/a/246128/854540
-SOURCE="${BASH_SOURCE[0]}"
-while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
-  DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
-  SOURCE="$(readlink "$SOURCE")"
-  [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
-done
-DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
-
+#!/bin/sh
+# find script directory over symlinks - http://stackoverflow.com/a/1482133/854540
+DIR="$(dirname "$(readlink -f "$0")")"
 java -jar "$DIR/target/shy-1.0-SNAPSHOT.jar" "$@"
