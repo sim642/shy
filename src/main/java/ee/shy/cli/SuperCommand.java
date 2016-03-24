@@ -1,5 +1,6 @@
 package ee.shy.cli;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,7 +16,7 @@ public abstract class SuperCommand implements Command {
     private final Map<String, Command> subCommands = new HashMap<>();
 
     @Override
-    public final void execute(String[] args) {
+    public final void execute(String[] args) throws IOException {
         if (args.length > 0 && subCommands.keySet().contains(args[0])) {
             subCommands.get(args[0]).execute(argsSlice(args));
         } else if (args.length != 0){

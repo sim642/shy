@@ -1,5 +1,7 @@
 package ee.shy.cli;
 
+import java.io.IOException;
+
 /**
  * An interface for command line commands.
  */
@@ -8,7 +10,7 @@ public interface Command {
      * Executes the command with given arguments
      * @param args arguments for command
      */
-    void execute(String args[]);
+    void execute(String args[]) throws IOException;
 
     /**
      * Gets help text for the command

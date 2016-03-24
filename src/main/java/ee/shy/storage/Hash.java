@@ -1,5 +1,7 @@
 package ee.shy.storage;
 
+import org.apache.commons.lang3.StringUtils;
+
 import javax.xml.bind.DatatypeConverter;
 import java.security.MessageDigest;
 import java.util.Arrays;
@@ -10,6 +12,11 @@ import java.util.Arrays;
  * @see DataStorage
  */
 public class Hash {
+    /**
+     * Hash with zero value to mark non-existence.
+     */
+    public static final Hash ZERO = new Hash(StringUtils.repeat("00", 20));
+
     /**
      * Array of bytes representing the result of a hash function.
      */
