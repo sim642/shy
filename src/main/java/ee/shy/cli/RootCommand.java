@@ -1,5 +1,7 @@
 package ee.shy.cli;
 
+import ee.shy.core.RepositoryNotFoundException;
+
 import java.io.IOException;
 
 /**
@@ -7,7 +9,11 @@ import java.io.IOException;
  */
 public class RootCommand extends SuperCommand {
     public static void main(String[] args) throws IOException {
-        new RootCommand().execute(args);
+        try {
+            new RootCommand().execute(args);
+        } catch (RepositoryNotFoundException e) {
+            System.err.println(e.getMessage());
+        }
     }
 
     public RootCommand() {

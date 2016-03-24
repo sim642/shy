@@ -29,7 +29,7 @@ public class Repository {
      * Tries to find an existing repository in the directory shy was executed or its parent directories.
      * @return repository object if existing repository was found, null otherwise.
      */
-    public static Repository newExisting() {
+    public static Repository newExisting() throws RepositoryNotFoundException {
         File currentDirectory = new File(System.getProperty("user.dir"));
         while (currentDirectory != null) {
             File repositoryDirectory = new File(currentDirectory, ".shy");
@@ -38,12 +38,12 @@ public class Repository {
             }
             currentDirectory = currentDirectory.getParentFile();
         }
-        return null;
+        throw new RepositoryNotFoundException();
     }
 
     /**
      * Creates a new repository in the directory where shy was executed.
-     * @return a Repository object if repository creation was successful, null otherwise
+     * @return a Repository object if repository creation was successful. IOException will be thrown otherwise.
      * @throws IOException
      */
     public static Repository newEmpty() throws IOException {
@@ -71,8 +71,7 @@ public class Repository {
             // TODO: 23.03.16 Figure out how to write/parse JSON. Add necessary details to author and current.
             //System.out.println(System.getProperty("user.name"));
         } else {
-            System.err.println("Repository initialization failed!");
+            throw new IOException("Repository initialization failed!");
         }
-        return null;
     }
 }
