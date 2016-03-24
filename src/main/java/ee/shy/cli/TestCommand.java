@@ -1,5 +1,7 @@
 package ee.shy.cli;
 
+import ee.shy.core.Repository;
+
 /**
  * A simple command for testing.
  */
@@ -14,8 +16,11 @@ public class TestCommand implements Command {
     @Override
     public void execute(String[] args) {
         System.out.println(name);
-        for (String arg : args) {
-            System.out.println(arg);
+        Repository repository = Repository.newExisting();
+        if (repository != null) {
+            System.out.println("Found repository!");
+        } else {
+            System.out.println("Repository not found!");
         }
     }
 

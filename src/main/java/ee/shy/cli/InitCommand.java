@@ -7,8 +7,7 @@ import java.io.IOException;
 public class InitCommand implements Command {
     @Override
     public void execute(String[] args) throws IOException {
-        Repository repository = new Repository();
-        repository.initialize();
+        Repository.newEmpty();
     }
 
     @Override

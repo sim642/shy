@@ -8,29 +8,47 @@ import java.io.IOException;
  */
 public class Repository {
     /**
-     * Dir where shy command was executed.
-     */
-    private final File rootDirectory;
-
-    /**
      * Repository's root directory.
      */
     private final File repositoryDirectory;
 
     /**
-     * Constructs an empty repository class.
+     * {@link #repositoryDirectory}'s parent directory.
      */
-    public Repository() {
-        String root = System.getProperty("user.dir");
-        this.rootDirectory = new File(root);
-        this.repositoryDirectory = new File(root, ".shy");
+    private final File rootDirectory;
+
+    /**
+     * Constructs a new repository class.
+     */
+    private Repository(File rootDirectory) {
+        this.rootDirectory = rootDirectory;
+        this.repositoryDirectory = new File(rootDirectory, ".shy");
     }
 
     /**
-     * Create a {@link #repositoryDirectory} directory inside {@link #rootDirectory} if doesn't exist yet.
-     * Create directories and files to {@link #repositoryDirectory} described in repository.md
+     * Tries to find an existing repository in the directory shy was executed or its parent directories.
+     * @return repository object if existing repository was found, null otherwise.
      */
-    public void initialize() throws IOException {
+    public static Repository newExisting() {
+        File currentDirectory = new File(System.getProperty("user.dir"));
+        while (currentDirectory != null) {
+            File repositoryDirectory = new File(currentDirectory, ".shy");
+            if (repositoryDirectory.exists() && repositoryDirectory.isDirectory()) {
+                return new Repository(currentDirectory);
+            }
+            currentDirectory = currentDirectory.getParentFile();
+        }
+        return null;
+    }
+
+    /**
+     * Creates a new repository in the directory where shy was executed.
+     * @return a Repository object if repository creation was successful, null otherwise
+     * @throws IOException
+     */
+    public static Repository newEmpty() throws IOException {
+        File currentDirectory = new File(System.getProperty("user.dir"));
+        File repositoryDirectory = new File(currentDirectory, ".shy");
         if (repositoryDirectory.exists() || repositoryDirectory.mkdir()) {
             String[] subDirectories = {"commit", "branches", "tags", "storage"};
             for (String subDirectory : subDirectories) {
@@ -46,12 +64,15 @@ public class Repository {
                     f.createNewFile();
             }
 
-            System.out.println("Initialized a shy repository in " + rootDirectory.getAbsolutePath());
+            System.out.println("Initialized a shy repository in " + currentDirectory.getAbsolutePath());
+
+            return new Repository(currentDirectory);
 
             // TODO: 23.03.16 Figure out how to write/parse JSON. Add necessary details to author and current.
             //System.out.println(System.getProperty("user.name"));
         } else {
-            System.err.println("Directory creation failed!");
+            System.err.println("Repository initialization failed!");
         }
+        return null;
     }
 }
