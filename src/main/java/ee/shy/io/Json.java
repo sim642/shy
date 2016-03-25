@@ -1,6 +1,7 @@
 package ee.shy.io;
 
 import com.google.gson.*;
+import com.google.gson.stream.JsonWriter;
 import ee.shy.storage.Hash;
 
 import java.io.*;
@@ -30,7 +31,9 @@ public class Json {
      */
     public static <T> void write(OutputStream os, T object) throws IOException {
         try (Writer writer = new OutputStreamWriter(os, "UTF-8")) {
-            gson.toJson(object, writer);
+            JsonWriter jsonWriter = gson.newJsonWriter(writer);
+            jsonWriter.setIndent("    ");
+            gson.toJson(object, object.getClass(), jsonWriter);
         }
     }
 
