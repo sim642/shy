@@ -7,7 +7,6 @@ import java.io.*;
 import java.lang.reflect.Type;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Map;
 
 public class Json {
     public static Gson gson;
@@ -73,12 +72,4 @@ public class Json {
             return FORMATTER.parse(jsonElement.getAsString(), OffsetDateTime::from);
         }
     }
-
-    private class MapSerializer implements JsonSerializer<Map<String, TreeItems>> {
-        @Override
-        public JsonElement serialize(Map<String, TreeItems> stringTreeItemsMap, Type type, JsonSerializationContext jsonSerializationContext) {
-            return new JsonPrimitive(stringTreeItemsMap.toString());
-        }
-    }
-
 }
