@@ -26,42 +26,14 @@ public class Json {
         return gson;
     }
 
-    /*
-    public void readJson(InputStream is) throws IOException {
-        try (Reader reader = new InputStreamReader(is, "UTF-8")) {
-            commit = gson.fromJson(reader, Commit.class);
+    public <T> void write(OutputStream os, T object) throws IOException {
+        try (Writer writer = new OutputStreamWriter(os, "UTF-8");) {
+            gson.toJson(object, writer);
         }
     }
-    */
-
-    /*
-        public void writeJson(OutputStream os) throws IOException {
-            try (Writer writer = new OutputStreamWriter(os, "UTF-8")) {
-                gson.toJson(commit, writer);
-            }
-        }
-    */
-
-    public void write(FileOutputStream os, Object src) throws IOException {
-        Writer writer = new OutputStreamWriter(os);
-        gson.toJson(src, src.getClass(), writer);
-    }
-    public <T> T read(FileInputStream is, Class<T> classofT) throws UnsupportedEncodingException {
-        JsonReader jsonReader = new JsonReader(new InputStreamReader(is, "UTF-8"));
-        Object object = gson.fromJson(jsonReader, classofT);
-        return Primitives.wrap(classofT).cast(object);
-    }
-
-    public void readTreeJson(String file) throws IOException {
-        try (Reader reader = new InputStreamReader(new FileInputStream(new File(file)), "UTF-8")) {
-            tree = gson.fromJson(reader, Tree.class);
-            reader.close();
-        }
-    }
-    public void writeTreeJson(String file) throws IOException {
-        try (Writer writer = new OutputStreamWriter(new FileOutputStream(new File(file)), "UTF-8")) {
-            gson.toJson(tree, writer);
-            writer.close();
+    public <T> T read(InputStream is, Class<T> classofT) throws IOException {
+        try (Reader reader = new InputStreamReader(is, "UTF-8");) {
+            return gson.fromJson(reader, classofT);
         }
     }
 
