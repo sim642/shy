@@ -17,11 +17,6 @@ public class TestCommand implements Command {
     public void execute(String[] args) {
         System.out.println(name);
         Repository repository = Repository.newExisting();
-        if (repository != null) {
-            System.out.println("Found repository!");
-        } else {
-            System.out.println("Repository not found!");
-        }
     }
 
     @Override
