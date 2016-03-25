@@ -6,3 +6,9 @@ Version Control System made as UT OOP course project.
 * Simmo Saan
 * Gromet Spaal
 
+## Usage
+### Setup
+1. `mvn package`  
+   Builds and packages shy into a single `.jar` file with all of its dependencies.
+2. `sudo ./shy-setup.sh`  
+   Creates a symlink into `/usr/local/bin` to make `shy` command globally accessible.
