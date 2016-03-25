@@ -1,5 +1,7 @@
 package ee.shy.storage;
 
+import org.apache.commons.io.IOUtils;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,7 +26,7 @@ public class MapStorage extends DataStorage {
 
     @Override
     protected void add(Hash hash, InputStream source) throws IOException {
-        storage.put(hash, Util.toByteArray(source));
+        storage.put(hash, IOUtils.toByteArray(source));
     }
 
     @Override

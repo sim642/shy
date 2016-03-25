@@ -13,18 +13,6 @@ public class Util {
     }
 
     /**
-     * Converts stream data into a byte array.
-     * @param source source stream
-     * @return byte array of stream data
-     * @throws IOException
-     */
-    public static byte[] toByteArray(InputStream source) throws IOException {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        IOUtils.copy(source, baos);
-        return baos.toByteArray();
-    }
-
-    /**
      * Adds given extension to file path.
      * @param file file path to extend
      * @param extension extension to add
