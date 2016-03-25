@@ -7,12 +7,11 @@ import java.io.*;
 import java.lang.reflect.Type;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Json {
     public static Gson gson;
     private Commit commit;
+    private Tree tree;
 
     Json() {
         GsonBuilder gsonBuilder = new GsonBuilder().setPrettyPrinting();
@@ -25,17 +24,15 @@ public class Json {
         return gson;
     }
 
-    public void readCommitJson() throws IOException{
-        try (Reader reader = new InputStreamReader(new FileInputStream("commitTest.json"), "UTF-8")) {
+    public void readCommitJson(InputStream is) throws IOException {
+        try (Reader reader = new InputStreamReader(is, "UTF-8")) {
             commit = gson.fromJson(reader, Commit.class);
-            reader.close();
         }
     }
 
-    public void writeCommitJson() throws IOException {
-        try (Writer writer = new OutputStreamWriter(new FileOutputStream("oJsonTest.json"), "UTF-8")) {
+    public void writeCommitJson(OutputStream os) throws IOException {
+        try (Writer writer = new OutputStreamWriter(os, "UTF-8")) {
             gson.toJson(commit, writer);
-            writer.close();
         }
     }
 
