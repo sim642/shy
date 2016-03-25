@@ -1,5 +1,7 @@
 package ee.shy.core;
 
+import java.util.List;
+
 public class Tree {
-    private TreeItems items;
+    private List<TreeItems> items;
 }
