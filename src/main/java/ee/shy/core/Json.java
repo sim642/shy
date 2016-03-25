@@ -1,8 +1,6 @@
 package ee.shy.core;
 
 import com.google.gson.*;
-import com.google.gson.internal.Primitives;
-import com.google.gson.stream.JsonReader;
 import ee.shy.storage.Hash;
 
 import java.io.*;
