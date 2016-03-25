@@ -1,4 +1,4 @@
-package ee.shy.core;
+package ee.shy.io;
 
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonSerializer;

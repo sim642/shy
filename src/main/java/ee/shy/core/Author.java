@@ -1,6 +1,13 @@
 package ee.shy.core;
 
-public class Author {
-    private String name;
-    private String email;
+import ee.shy.io.Jsonable;
+
+public class Author extends Jsonable {
+    private final String name;
+    private final String email;
+
+    public Author(String name, String email) {
+        this.name = name;
+        this.email = email;
+    }
 }
