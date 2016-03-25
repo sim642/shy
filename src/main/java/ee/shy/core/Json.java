@@ -15,8 +15,8 @@ public class Json {
 
     Json() {
         GsonBuilder gsonBuilder = new GsonBuilder().setPrettyPrinting();
-        gsonBuilder.registerTypeAdapter(Hash.class, new HashSerializer());
-        gsonBuilder.registerTypeAdapter(OffsetDateTime.class, new OffsetDateTimeSerializer());
+        gsonBuilder.registerTypeAdapter(Hash.class, new HashBiserializer());
+        gsonBuilder.registerTypeAdapter(OffsetDateTime.class, new OffsetDateTimeBiserializer());
         gson = gsonBuilder.create();
     }
 
@@ -35,19 +35,20 @@ public class Json {
         }
     }
 
-    private class HashSerializer implements JsonSerializer<Hash>, JsonDeserializer<Hash> {
+    private class HashBiserializer implements JsonBiserializer<Hash> {
         @Override
         public JsonElement serialize(Hash hash, Type type, JsonSerializationContext jsonSerializationContext) {
             return new JsonPrimitive(hash.toString());
         }
         @Override
         public Hash deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
-            return new Hash(jsonElement.getAsJsonPrimitive().getAsString());
+            return new Hash(jsonElement.getAsString());
         }
     }
 
-    private class OffsetDateTimeSerializer implements JsonSerializer<OffsetDateTime> , JsonDeserializer<OffsetDateTime> {
+    private class OffsetDateTimeBiserializer implements JsonBiserializer<OffsetDateTime> {
         private final DateTimeFormatter FORMATTER = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
+
         @Override
         public JsonElement serialize(OffsetDateTime offsetDateTime, Type type, JsonSerializationContext jsonSerializationContext) {
             return new JsonPrimitive(offsetDateTime.toString());
