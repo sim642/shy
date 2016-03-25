@@ -1,6 +1,8 @@
 package ee.shy.core;
 
 import com.google.gson.*;
+import com.google.gson.internal.Primitives;
+import com.google.gson.stream.JsonReader;
 import ee.shy.storage.Hash;
 
 import java.io.*;
@@ -24,16 +26,30 @@ public class Json {
         return gson;
     }
 
-    public void readCommitJson(InputStream is) throws IOException {
+    /*
+    public void readJson(InputStream is) throws IOException {
         try (Reader reader = new InputStreamReader(is, "UTF-8")) {
             commit = gson.fromJson(reader, Commit.class);
         }
     }
+    */
 
-    public void writeCommitJson(OutputStream os) throws IOException {
-        try (Writer writer = new OutputStreamWriter(os, "UTF-8")) {
-            gson.toJson(commit, writer);
+    /*
+        public void writeJson(OutputStream os) throws IOException {
+            try (Writer writer = new OutputStreamWriter(os, "UTF-8")) {
+                gson.toJson(commit, writer);
+            }
         }
+    */
+
+    public void write(FileOutputStream os, Object src) throws IOException {
+        Writer writer = new OutputStreamWriter(os);
+        gson.toJson(src, src.getClass(), writer);
+    }
+    public <T> T read(FileInputStream is, Class<T> classofT) throws UnsupportedEncodingException {
+        JsonReader jsonReader = new JsonReader(new InputStreamReader(is, "UTF-8"));
+        Object object = gson.fromJson(jsonReader, classofT);
+        return Primitives.wrap(classofT).cast(object);
     }
 
     public void readTreeJson(String file) throws IOException {

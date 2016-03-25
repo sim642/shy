@@ -1,6 +1,5 @@
 package ee.shy.core;
 
-
 import ee.shy.storage.Hash;
 import java.time.OffsetDateTime;
 
