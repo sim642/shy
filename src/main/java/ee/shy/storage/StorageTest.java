@@ -1,6 +1,4 @@
-package ee.shy;
-
-import ee.shy.storage.*;
+package ee.shy.storage;
 
 import java.io.*;
 import java.util.Arrays;
