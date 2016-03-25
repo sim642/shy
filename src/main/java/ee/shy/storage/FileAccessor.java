@@ -13,7 +13,7 @@ public interface FileAccessor {
      * Adds file content to given base path of file
      * @param file base path of file to add
      * @param source input stream to get data from
-     * @throws IOException
+     * @throws IOException if there was a problem reading the input stream or writing to the file
      */
     void add(File file, InputStream source) throws IOException;
 
@@ -21,7 +21,7 @@ public interface FileAccessor {
      * Gets file content from given base path of file
      * @param file base path of file to get
      * @return input stream to get data from
-     * @throws IOException
+     * @throws IOException if there was a problem reading from some input
      */
     InputStream get(File file) throws IOException;
 }

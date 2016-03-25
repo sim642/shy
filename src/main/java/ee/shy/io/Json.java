@@ -27,7 +27,7 @@ public class Json {
      * @param os output stream to write to
      * @param object object to write
      * @param <T> type of writable object
-     * @throws IOException
+     * @throws IOException if there was a problem writing to the output stream
      */
     public static <T> void write(OutputStream os, T object) throws IOException {
         try (Writer writer = new OutputStreamWriter(os, "UTF-8")) {
@@ -43,7 +43,7 @@ public class Json {
      * @param classofT class of object to read
      * @param <T> type of readable object
      * @return object read
-     * @throws IOException
+     * @throws IOException if there was a problem reading from the input stream
      */
     public static <T> T read(InputStream is, Class<T> classofT) throws IOException {
         try (Reader reader = new InputStreamReader(is, "UTF-8")) {

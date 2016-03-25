@@ -20,7 +20,7 @@ public abstract class DataStorage {
      * Adds binary data from input stream to storage.
      * @param source input stream to get data from
      * @return hash of stored data
-     * @throws IOException
+     * @throws IOException if there was a problem reading the input stream or writing to some output
      */
     public final Hash add(InputStream source) throws IOException {
         try {
@@ -43,7 +43,7 @@ public abstract class DataStorage {
      * Adds binary data from input stream with precomputed hash.
      * @param hash hash of data from input stream
      * @param source input stream to get data from
-     * @throws IOException
+     * @throws IOException if there was a problem reading the input stream or writing to some output
      */
     protected abstract void add(Hash hash, InputStream source) throws IOException;
 
@@ -52,7 +52,7 @@ public abstract class DataStorage {
      * Input data is checked against given hash to ensure correctness.
      * @param hash hash of data to get
      * @return input stream of data
-     * @throws IOException
+     * @throws IOException if there was a problem reading from some input
      */
     public final InputStream get(Hash hash) throws IOException {
         try {
@@ -78,7 +78,7 @@ public abstract class DataStorage {
      * Input data is <b>not</b> checked against given hash to ensure correctness.
      * @param hash hash of data to get
      * @return input stream of data
-     * @throws IOException
+     * @throws IOException if there was a problem reading from some input
      */
     public abstract InputStream getUnchecked(Hash hash) throws IOException;
 }

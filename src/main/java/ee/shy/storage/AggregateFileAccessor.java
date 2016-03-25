@@ -27,7 +27,7 @@ public class AggregateFileAccessor implements FileAccessor {
      * Adds file content via first file accessor.
      * @param file base path of file to add
      * @param source input stream to get data from
-     * @throws IOException
+     * @throws IOException if there was a problem reading the input stream or writing to the file
      */
     @Override
     public void add(File file, InputStream source) throws IOException {
@@ -38,7 +38,7 @@ public class AggregateFileAccessor implements FileAccessor {
      * Gets file content via first successful file accessor.
      * @param file base path of file to get
      * @return input stream to get data from
-     * @throws IOException
+     * @throws IOException if there was a problem reading from the file
      */
     @Override
     public InputStream get(File file) throws IOException {

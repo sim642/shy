@@ -21,6 +21,7 @@ public class Repository {
 
     /**
      * Constructs a new repository class.
+     * @param rootDirectory root directory for repository
      */
     private Repository(File rootDirectory) {
         this.rootDirectory = rootDirectory;
@@ -46,7 +47,7 @@ public class Repository {
     /**
      * Creates a new repository in the directory where shy was executed.
      * @return a Repository object if repository creation was successful. IOException will be thrown otherwise.
-     * @throws IOException
+     * @throws IOException if repository hierarchy generation fails
      */
     public static Repository newEmpty() throws IOException {
         File currentDirectory = new File(System.getProperty("user.dir"));

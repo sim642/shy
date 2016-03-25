@@ -9,6 +9,7 @@ public interface Command {
     /**
      * Executes the command with given arguments
      * @param args arguments for command
+     * @throws IOException if I/O problem occurred during execution of the command
      */
     void execute(String args[]) throws IOException;
 
