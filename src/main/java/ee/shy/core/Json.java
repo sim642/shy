@@ -7,6 +7,7 @@ import java.io.*;
 import java.lang.reflect.Type;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Map;
 
 public class Json {
     public static Gson gson;
@@ -36,6 +37,19 @@ public class Json {
         }
     }
 
+    public void readTreeJson(String file) throws IOException {
+        try (Reader reader = new InputStreamReader(new FileInputStream(new File(file)), "UTF-8")) {
+            tree = gson.fromJson(reader, Tree.class);
+            reader.close();
+        }
+    }
+    public void writeTreeJson(String file) throws IOException {
+        try (Writer writer = new OutputStreamWriter(new FileOutputStream(new File(file)), "UTF-8")) {
+            gson.toJson(tree, writer);
+            writer.close();
+        }
+    }
+
     private class HashSerializer implements JsonSerializer<Hash>, JsonDeserializer<Hash> {
         @Override
         public JsonElement serialize(Hash hash, Type type, JsonSerializationContext jsonSerializationContext) {
@@ -57,6 +71,13 @@ public class Json {
         @Override
         public OffsetDateTime deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
             return FORMATTER.parse(jsonElement.getAsString(), OffsetDateTime::from);
+        }
+    }
+
+    private class MapSerializer implements JsonSerializer<Map<String, TreeItems>> {
+        @Override
+        public JsonElement serialize(Map<String, TreeItems> stringTreeItemsMap, Type type, JsonSerializationContext jsonSerializationContext) {
+            return new JsonPrimitive(stringTreeItemsMap.toString());
         }
     }
 
