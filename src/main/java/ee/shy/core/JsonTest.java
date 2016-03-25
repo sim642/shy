@@ -7,6 +7,5 @@ public class JsonTest {
         Json json = new Json();
         json.readCommitJson();
         json.writeCommitJson();
-        //Json.gson.toJson(json.)
     }
 }
