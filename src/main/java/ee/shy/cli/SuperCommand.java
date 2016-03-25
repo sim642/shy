@@ -19,7 +19,7 @@ public abstract class SuperCommand implements Command {
     public final void execute(String[] args) throws IOException {
         if (args.length > 0 && subCommands.keySet().contains(args[0])) {
             subCommands.get(args[0]).execute(argsSlice(args));
-        } else if (args.length != 0){
+        } else if (args.length > 0){
             System.err.format("%s is not a shy command!%n", args[0]);
         } else {
             System.err.format("Not enough arguments.%n");

@@ -1,7 +1,9 @@
 package ee.shy.core;
 
-public class RepositoryNotFoundException extends RuntimeException {
+import ee.shy.UserPresentableException;
+
+public class RepositoryNotFoundException extends UserPresentableException {
     public RepositoryNotFoundException() {
-        super("Repository not found!");
+        super("repository", "not found");
     }
 }
