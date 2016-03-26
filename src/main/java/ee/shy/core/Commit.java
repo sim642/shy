@@ -3,6 +3,7 @@ package ee.shy.core;
 import ee.shy.io.Jsonable;
 import ee.shy.storage.Hash;
 import java.time.OffsetDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -119,7 +120,7 @@ public class Commit extends Jsonable {
          * @return builder itself
          */
         public Builder setTime(OffsetDateTime time) {
-            this.time = time;
+            this.time = time.truncatedTo(ChronoUnit.SECONDS);
             return this;
         }
 
@@ -128,7 +129,7 @@ public class Commit extends Jsonable {
          * @return builder itself
          */
         public Builder setTimeCurrent() {
-            return setTime(OffsetDateTime.now()); // TODO: 26.03.16 remove ms from output
+            return setTime(OffsetDateTime.now());
         }
 
         /**
