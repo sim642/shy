@@ -5,6 +5,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.TeeOutputStream;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -91,23 +92,13 @@ public class Repository {
     }
 
     public void add(File file) throws IOException {
-        File repositoryDirectory = new File(this.rootDirectory.getPath(), ".shy/commit/");
-
-        File relativeFilePath = relativeFilePath(file);
-        File fullDir = fullRelativeFilePath(repositoryDirectory, relativeFilePath);
-        fullDir.mkdirs();
-
-        File filePath = new File(relativeFilePath, file.getName());
+        File fullFilePath = fullFilePath(file);
+        fullFilePath.getParentFile().mkdirs();
         try (InputStream input = new FileInputStream(file)) {
-            try (OutputStream output = new FileOutputStream(new File(repositoryDirectory.getPath(), filePath.getPath()))) {
+            try (OutputStream output = new FileOutputStream(fullFilePath)) {
                 IOUtils.copy(input, output);
             }
         }
-    }
-
-    public void remove(File file) throws IOException {
-        File repositoryDirectory = new File(this.repositoryDirectory.getPath(), "/commit/");
-
     }
 
     private File relativeFilePath(File file) {
@@ -116,10 +107,11 @@ public class Repository {
         Path path = Paths.get(fileDir.getPath());
         path = this.rootDirectory.toPath().relativize(path);
 
-        return path.toFile();
+        return new File(path.toFile().getPath(), file.getName());
     }
 
-    private File fullRelativeFilePath(File repositoryDirectory, File relativePath) {
-        return new File(repositoryDirectory.getPath(), relativePath.getPath());
+    private File fullFilePath(File file) {
+        File repositoryDirectory = new File(this.rootDirectory.getPath(), ".shy/commit/");
+        return new File(repositoryDirectory, relativeFilePath(file).getPath());
     }
 }
