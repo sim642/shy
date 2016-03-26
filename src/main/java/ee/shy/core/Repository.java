@@ -1,9 +1,14 @@
 package ee.shy.core;
 
 import ee.shy.storage.Hash;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.TeeOutputStream;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 
 /**
  * Class for creating and interacting with a repository.
@@ -85,5 +90,53 @@ public class Repository {
         } else {
             throw new IOException("Repository initialization failed!");
         }
+    }
+
+    /**
+     * Copys given file to its respective directory in ".shy/commit/" directory.
+     * @param file file that user wants to add to repository.
+     */
+    public void add(File file) throws IOException {
+        File fullFilePath = fullFilePath(file);
+        fullFilePath.getParentFile().mkdirs();
+        try (InputStream input = new FileInputStream(file)) {
+            try (OutputStream output = new FileOutputStream(fullFilePath)) {
+                IOUtils.copy(input, output);
+            }
+        }
+    }
+
+    /**
+     * Removes given file from its directory in ".shy/commit".
+     * @param file file that user wants to remove from repository.
+     * @throws IOException
+     */
+
+    public void remove(File file) throws IOException {
+        Files.deleteIfExists(fullFilePath(file).toPath());
+    }
+
+    /**
+     * Creates given file's path relative to repository's directory.
+     * @param file file that's relative path is wanted to be create.
+     * @return file's path relative to repository's directory.
+     */
+    private File relativeFilePath(File file) {
+        File fileDir = new File(System.getProperty("user.dir"), file.getPath()).getParentFile();
+
+        Path path = Paths.get(fileDir.getPath());
+        path = this.rootDirectory.toPath().relativize(path);
+
+        return new File(path.toFile().getPath(), file.getName());
+    }
+
+    /**
+     * Creates full path from system's root to given file in ".shy/commit/" directory.
+     * @param file file that's path is wanted to be create.
+     * @return file path from system's root to given file'is directory in ".shy/commit/"
+     */
+    private File fullFilePath(File file) {
+        File repositoryDirectory = new File(this.rootDirectory.getPath(), ".shy/commit/");
+        return new File(repositoryDirectory, relativeFilePath(file).getPath());
     }
 }
