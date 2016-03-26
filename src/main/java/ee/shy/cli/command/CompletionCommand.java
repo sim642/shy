@@ -4,9 +4,6 @@ import ee.shy.cli.Command;
 import ee.shy.cli.SuperCommand;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 
 public class CompletionCommand implements Command {
@@ -18,15 +15,13 @@ public class CompletionCommand implements Command {
 
     @Override
     public void execute(String[] args) throws IOException {
-        List<String> argsList = new ArrayList<>(Arrays.asList(args));
-        argsList.add(null);
-
         Command command = rootCommand;
-        for (String arg : argsList) {
+        for (int i = 0; i <= args.length; i++) { // loop for one extra time for supercommands without arguments
             if (command instanceof SuperCommand) {
                 Map<String, Command> subCommands = ((SuperCommand) command).getSubCommands();
-                Command subCommand = subCommands.get(arg);
-                if (subCommand != null) {
+                Command subCommand;
+                if ((i < args.length - 1) // complete subcommand even if fully typed (don't nest yet)
+                        && ((subCommand = subCommands.get(args[i])) != null)) {
                     command = subCommand;
                 }
                 else {
@@ -35,7 +30,8 @@ public class CompletionCommand implements Command {
                 }
             }
             else if (command instanceof HelpCommand) {
-                command = ((HelpCommand) command).getRootCommand();
+                command = ((HelpCommand) command).getRootCommand(); // changed command point without parsing extra argument
+                i--; // step back for that extra argument
             }
         }
     }
