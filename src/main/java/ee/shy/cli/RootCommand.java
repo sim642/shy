@@ -23,6 +23,7 @@ public class RootCommand extends SuperCommand {
         add("test1", new TestCommand("Test1"));
         add("test2", new TestCommand("Test2"));
         add("help", new HelpCommand(this));
+        add("completion", new CompletionCommand(this));
         add("add", new AddCommand());
         add("remove", new RemoveCommand());
         add("commit", new CommitCommand());

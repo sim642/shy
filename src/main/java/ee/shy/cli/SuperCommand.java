@@ -2,6 +2,7 @@ package ee.shy.cli;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,6 +43,10 @@ public abstract class SuperCommand implements Command {
      */
     protected void add(String commandName, Command command) {
         subCommands.put(commandName, command);
+    }
+
+    public Map<String, Command> getSubCommands() {
+        return Collections.unmodifiableMap(subCommands);
     }
 
     /**

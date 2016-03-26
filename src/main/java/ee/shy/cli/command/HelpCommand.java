@@ -28,4 +28,8 @@ public class HelpCommand implements Command {
     public String getHelp() {
         return "Help's help";
     }
+
+    public Command getRootCommand() {
+        return rootCommand;
+    }
 }
