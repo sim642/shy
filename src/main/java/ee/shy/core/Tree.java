@@ -8,6 +8,7 @@ import ee.shy.storage.Hash;
 import java.io.*;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Class representing a directory tree.
@@ -19,18 +20,11 @@ public class Tree extends Jsonable {
     private final Map<String, TreeItem> items;
 
     /**
-     * Constructs an empty tree.
-     */
-    public Tree() {
-        this.items = new LinkedTreeMap<>();
-    }
-
-    /**
      * Constructs a tree from its builder.
      * @param builder tree builder
      */
     public Tree(Builder builder) {
-        this.items = builder.items;
+        this.items = new TreeMap<>(builder.items);
     }
 
     /**
@@ -43,7 +37,7 @@ public class Tree extends Jsonable {
         private final DataStorage storage;
 
         /**
-         * Mapping of names to {@link TreeItem}s.
+         * @see Tree#items
          */
         private final Map<String, TreeItem> items;
 
@@ -53,7 +47,7 @@ public class Tree extends Jsonable {
          */
         public Builder(DataStorage storage) {
             this.storage = storage;
-            this.items = new LinkedTreeMap<>();
+            this.items = new TreeMap<>();
         }
 
         /**

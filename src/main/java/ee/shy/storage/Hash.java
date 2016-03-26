@@ -13,9 +13,14 @@ import java.util.Arrays;
  */
 public class Hash {
     /**
+     * Hash size in bytes.
+     */
+    private static final int size = 20; // SHA-1
+
+    /**
      * Hash with zero value to mark non-existence.
      */
-    public static final Hash ZERO = new Hash(StringUtils.repeat("00", 20));
+    public static final Hash ZERO = new Hash(StringUtils.repeat("00", size));
 
     /**
      * Array of bytes representing the result of a hash function.
@@ -25,17 +30,21 @@ public class Hash {
     /**
      * Constructs a hash object from digested message.
      * @param md message digester
+     * @throws IllegalArgumentException if size is invalid
      */
-    public Hash(MessageDigest md) {
+    public Hash(MessageDigest md) throws IllegalArgumentException {
         bytes = md.digest();
+        checkSize();
     }
 
     /**
      * Constructs a hash object from hex-string.
      * @param str hex-string
+     * @throws IllegalArgumentException if size is invalid
      */
-    public Hash(String str) {
+    public Hash(String str) throws IllegalArgumentException {
         bytes = DatatypeConverter.parseHexBinary(str);
+        checkSize();
     }
 
     @Override
@@ -60,5 +69,14 @@ public class Hash {
     @Override
     public String toString() {
         return DatatypeConverter.printHexBinary(bytes).toLowerCase();
+    }
+
+    /**
+     * Checks if the hash object has correct size in bytes.
+     * @throws IllegalArgumentException if size is invalid
+     */
+    private void checkSize() throws IllegalArgumentException {
+        if (bytes.length != size)
+            throw new IllegalArgumentException("Invalid hash size (" + bytes.length + ")");
     }
 }

@@ -42,10 +42,15 @@ public class Commit extends Jsonable {
      */
     public Commit(Builder builder) {
         this.tree = builder.tree;
-        this.parents = builder.parents;
+        this.parents = new ArrayList<>(builder.parents); // defensive copy
         this.author = builder.author;
         this.time = builder.time;
         this.message = builder.message;
+
+        if (this.tree == null)
+            throw new IllegalStateException("Commit has no tree");
+        else if (this.parents.isEmpty())
+            throw new IllegalStateException("Commit has no parents");
     }
 
     /**
@@ -55,8 +60,8 @@ public class Commit extends Jsonable {
         /**
          * @see Commit#tree
          */
-
         private Hash tree;
+
         /**
          * @see Commit#parents
          */
