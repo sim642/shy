@@ -101,6 +101,11 @@ public class Repository {
         }
     }
 
+
+    public void remove(File file) throws IOException {
+        Files.deleteIfExists(fullFilePath(file).toPath());
+    }
+
     private File relativeFilePath(File file) {
         File fileDir = new File(System.getProperty("user.dir"), file.getPath()).getParentFile();
 

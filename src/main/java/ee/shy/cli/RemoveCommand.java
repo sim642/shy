@@ -5,16 +5,18 @@ import ee.shy.core.Repository;
 import java.io.File;
 import java.io.IOException;
 
-public class AddCommand implements Command{
-
+/**
+ * Created by grom on 26.03.16.
+ */
+public class RemoveCommand implements Command {
     @Override
-    public void execute(String[] args) throws IOException {
+    public  void execute(String[] args) throws IOException {
         Repository repository = Repository.newExisting();
-        repository.add(new File(args[0]));
+        repository.remove(new File(args[0]));
     }
 
     @Override
     public String getHelp() {
-        return "Add command help.";
+        return "Remove help message";
     }
 }

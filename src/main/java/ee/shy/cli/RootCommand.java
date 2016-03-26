@@ -23,6 +23,7 @@ public class RootCommand extends SuperCommand {
         add("test2", new TestCommand("Test2"));
         add("help", new HelpCommand(this));
         add("add", new AddCommand());
+        add("remove", new RemoveCommand());
     }
 
     @Override
