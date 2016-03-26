@@ -4,6 +4,8 @@ import ee.shy.storage.Hash;
 import org.apache.commons.io.output.TeeOutputStream;
 
 import java.io.*;
+import java.nio.file.Files;
+
 
 /**
  * Class for creating and interacting with a repository.
@@ -83,6 +85,41 @@ public class Repository {
             //System.out.println(System.getProperty("user.name"));
         } else {
             throw new IOException("Repository initialization failed!");
+        }
+    }
+
+    public void add(File file) throws IOException {
+        File currentDirectory = new File(System.getProperty("user.dir"));
+        //System.out.println(currentDirectory.toString());
+        File repositoryDirectory = new File(currentDirectory.getPath(), ".shy/commit/");
+        //System.out.println(repositoryDirectory.toString());
+        String[] sFilePath = file.toString().split("/");
+        File fileDir = new File(sFilePath[0]);
+        String sFileName = sFilePath[sFilePath.length - 1];
+
+        if(file.toString().lastIndexOf("/") > 0) {
+            for(int i = 1; i < sFilePath.length - 1; i++){
+                fileDir = new File(fileDir.toString(), sFilePath[i]);
+            }
+            //System.out.println(fileDir.toString());
+        }
+        if(! new File(repositoryDirectory.getPath(), fileDir.getPath()).exists()) {
+            new File(repositoryDirectory.getPath(), fileDir.getPath()).getParentFile().mkdirs();
+        }
+
+        InputStream input = null;
+        OutputStream output = null;
+        try {
+            input = new FileInputStream(file);
+            output = new FileOutputStream(new File(repositoryDirectory.getPath(), file.getPath()));
+            byte[] buf = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = input.read(buf)) > 0) {
+                output.write(buf, 0, bytesRead);
+            }
+        } finally {
+            input.close();
+            output.close();
         }
     }
 }
