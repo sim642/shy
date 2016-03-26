@@ -81,12 +81,14 @@ public class Repository {
             teeOutputStream.write(Hash.ZERO.toString().getBytes());
             teeOutputStream.close();
 
+            // Initialize new repository with empty name and email fields in file 'author'
+            // TODO: 26.03.16 Create a config file to home directory upon installation to get author's details from.
+            Author author = new Author("", "");
+            author.write(new FileOutputStream(new File(repositoryDirectory, "author")));
+
             System.out.println("Initialized a shy repository in " + currentDirectory.getAbsolutePath());
 
             return new Repository(currentDirectory);
-
-            // TODO: 23.03.16 Figure out how to write/parse JSON. Add necessary details to author
-            //System.out.println(System.getProperty("user.name"));
         }
         else {
             throw new IOException("Repository initialization failed!");
@@ -139,5 +141,13 @@ public class Repository {
     private File fullFilePath(File file) {
         File repositoryDirectory = new File(this.rootDirectory.getPath(), ".shy/commit/");
         return new File(repositoryDirectory, relativeFilePath(file).getPath());
+    }
+
+    /**
+     * Method to get the 'author' file of this repository.
+     * @return 'author' file object
+     */
+    public File getAuthor() {
+        return new File(repositoryDirectory, "author");
     }
 }

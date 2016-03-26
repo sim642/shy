@@ -1,6 +1,7 @@
 package ee.shy.cli;
 
 import ee.shy.UserPresentableException;
+import ee.shy.cli.author.AuthorCommand;
 
 import java.io.IOException;
 
@@ -24,6 +25,7 @@ public class RootCommand extends SuperCommand {
         add("help", new HelpCommand(this));
         add("add", new AddCommand());
         add("remove", new RemoveCommand());
+        add("author", new AuthorCommand());
     }
 
     @Override
