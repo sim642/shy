@@ -37,7 +37,7 @@ public abstract class SuperCommand implements Command {
     }
 
     /**
-     * Adds a new subcommand with its name to supercommand
+     * Adds a new subcommand with its name to supercommand.
      * @param commandName command's string value to add
      * @param command a Command object to add
      */
@@ -45,6 +45,10 @@ public abstract class SuperCommand implements Command {
         subCommands.put(commandName, command);
     }
 
+    /**
+     * Gets an unmodifiable map of all added subcommands with respective names.
+     * @return unmodifiable map of subcommands with respective names
+     */
     public Map<String, Command> getSubCommands() {
         return Collections.unmodifiableMap(subCommands);
     }

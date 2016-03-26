@@ -29,6 +29,10 @@ public class HelpCommand implements Command {
         return "Help's help";
     }
 
+    /**
+     * Get starting point command.
+     * @return starting point command
+     */
     public Command getRootCommand() {
         return rootCommand;
     }
