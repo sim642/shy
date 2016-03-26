@@ -1,10 +1,12 @@
 package ee.shy.core;
 
 import ee.shy.storage.Hash;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.TeeOutputStream;
 
 import java.io.*;
-import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 
 /**
@@ -89,37 +91,30 @@ public class Repository {
     }
 
     public void add(File file) throws IOException {
-        File currentDirectory = new File(System.getProperty("user.dir"));
-        //System.out.println(currentDirectory.toString());
-        File repositoryDirectory = new File(currentDirectory.getPath(), ".shy/commit/");
-        //System.out.println(repositoryDirectory.toString());
-        String[] sFilePath = file.toString().split("/");
-        File fileDir = new File(sFilePath[0]);
-        String sFileName = sFilePath[sFilePath.length - 1];
+        File repositoryDirectory = new File(Repository.newExisting().rootDirectory.getPath(), ".shy/commit/");
+        File fileDir = new File(System.getProperty("user.dir"), file.getPath()).getParentFile();
 
-        if(file.toString().lastIndexOf("/") > 0) {
-            for(int i = 1; i < sFilePath.length - 1; i++){
-                fileDir = new File(fileDir.toString(), sFilePath[i]);
-            }
-            //System.out.println(fileDir.toString());
-        }
-        if(! new File(repositoryDirectory.getPath(), fileDir.getPath()).exists()) {
-            new File(repositoryDirectory.getPath(), fileDir.getPath()).getParentFile().mkdirs();
-        }
+        File fileRelativePath;
 
-        InputStream input = null;
-        OutputStream output = null;
-        try {
-            input = new FileInputStream(file);
-            output = new FileOutputStream(new File(repositoryDirectory.getPath(), file.getPath()));
-            byte[] buf = new byte[1024];
-            int bytesRead;
-            while ((bytesRead = input.read(buf)) > 0) {
-                output.write(buf, 0, bytesRead);
-            }
-        } finally {
-            input.close();
-            output.close();
-        }
+        Path path = Paths.get(fileDir.getPath());
+        path = this.rootDirectory.toPath().relativize(path);
+        fileRelativePath = path.toFile();
+
+        File fullDir = new File(repositoryDirectory, fileRelativePath.getPath());
+        fullDir.mkdirs();
+
+        System.out.println(repositoryDirectory.toString());
+        System.out.println(fileRelativePath.toString());
+        System.out.println(fullDir.toString());
+
+        File filePath = new File(fileRelativePath, file.getName());
+        System.out.println(filePath);
+        InputStream input = new FileInputStream(file);
+        OutputStream output = new FileOutputStream(new File(repositoryDirectory.getPath(), filePath.getPath()));
+
+        IOUtils.copy(input, output);
+
+        input.close();
+        output.close();
     }
 }
