@@ -125,9 +125,37 @@ public class Repository {
         Files.deleteIfExists(fullFilePath(file).toPath());
     }
 
-    public Hash createCommitTree() throws IOException {
+    /**
+     * Creates and stores the complete ".shy/commit/" directory tree.
+     * @return hash of stored tree
+     * @throws IOException if there was a problem storing the tree
+     */
+    private Hash createCommitTree() throws IOException {
         Tree tree = new Tree.Builder(storage).fromDirectory(new File(repositoryDirectory, "commit")).create();
         return storage.add(tree.inputify());
+    }
+
+    /**
+     * Commits current commit with given message.
+     * @param message commit message
+     * @throws IOException if there was a problem storing the tree/commit or modifying ".shy/current"
+     */
+    public void commit(String message) throws IOException {
+        Hash tree = createCommitTree();
+        File currentFile = new File(repositoryDirectory, "current");
+        Hash parent = new Hash(IOUtils.toString(new FileInputStream(currentFile), "UTF-8"));
+
+        Commit commit = new Commit.Builder()
+                .setTree(tree)
+                .addParent(parent)
+                .setAuthor(new Author(null, null)) // TODO: 26.03.16 use actual author information
+                .setTimeCurrent()
+                .setMessage(message)
+                .create();
+        Hash hash = storage.add(commit.inputify());
+
+        File branchFile = new File(new File(repositoryDirectory, "branches"), "master"); // TODO: 26.03.16 update correct branch
+        IOUtils.write(hash.toString(), new TeeOutputStream(new FileOutputStream(currentFile), new FileOutputStream(branchFile)), "UTF-8");
     }
 
     /**

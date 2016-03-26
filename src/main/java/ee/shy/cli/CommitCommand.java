@@ -11,7 +11,10 @@ public class CommitCommand implements Command {
     @Override
     public void execute(String[] args) throws IOException {
         Repository repository = Repository.newExisting();
-        System.out.println(repository.createCommitTree());
+        if (args.length > 0)
+            repository.commit(args[0]);
+        else
+            System.err.println("No commit message specified");
     }
 
     @Override

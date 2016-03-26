@@ -48,7 +48,7 @@ public class Tree extends Jsonable {
         private final Map<String, TreeItem> items;
 
         /**
-         * Constructs a new tree builder with gien data storage.
+         * Constructs a new tree builder with given data storage.
          * @param storage data storage to use
          */
         public Builder(DataStorage storage) {
