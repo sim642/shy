@@ -35,7 +35,7 @@ public class Repository {
 
     /**
      * Tries to find an existing repository in the directory shy was executed or its parent directories.
-     * @return repository object if existing repository was found, null otherwise.
+     * @return repository object if existing repository was found, null otherwise
      */
     public static Repository newExisting() throws RepositoryNotFoundException {
         File currentDirectory = new File(System.getProperty("user.dir"));
@@ -51,7 +51,7 @@ public class Repository {
 
     /**
      * Creates a new repository in the directory where shy was executed.
-     * @return a Repository object if repository creation was successful. IOException will be thrown otherwise.
+     * @return a Repository object if repository creation was successful
      * @throws IOException if repository hierarchy generation fails
      */
     public static Repository newEmpty() throws IOException {
@@ -87,14 +87,16 @@ public class Repository {
 
             // TODO: 23.03.16 Figure out how to write/parse JSON. Add necessary details to author
             //System.out.println(System.getProperty("user.name"));
-        } else {
+        }
+        else {
             throw new IOException("Repository initialization failed!");
         }
     }
 
     /**
-     * Copys given file to its respective directory in ".shy/commit/" directory.
-     * @param file file that user wants to add to repository.
+     * Copies given file to its respective directory in ".shy/commit/" directory.
+     * @param file file that user wants to add to repository
+     * @throws IOException if file can't be found or copying fails
      */
     public void add(File file) throws IOException {
         File fullFilePath = fullFilePath(file);
@@ -108,18 +110,17 @@ public class Repository {
 
     /**
      * Removes given file from its directory in ".shy/commit".
-     * @param file file that user wants to remove from repository.
-     * @throws IOException
+     * @param file file that user wants to remove from repository
+     * @throws IOException if file could not be deleted
      */
-
     public void remove(File file) throws IOException {
         Files.deleteIfExists(fullFilePath(file).toPath());
     }
 
     /**
      * Creates given file's path relative to repository's directory.
-     * @param file file that's relative path is wanted to be create.
-     * @return file's path relative to repository's directory.
+     * @param file file that's relative path is wanted to be create
+     * @return file's path relative to repository's directory
      */
     private File relativeFilePath(File file) {
         File fileDir = new File(System.getProperty("user.dir"), file.getPath()).getParentFile();
@@ -132,7 +133,7 @@ public class Repository {
 
     /**
      * Creates full path from system's root to given file in ".shy/commit/" directory.
-     * @param file file that's path is wanted to be create.
+     * @param file file that's path is wanted to be create
      * @return file path from system's root to given file'is directory in ".shy/commit/"
      */
     private File fullFilePath(File file) {

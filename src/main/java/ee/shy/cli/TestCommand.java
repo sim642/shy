@@ -6,7 +6,6 @@ import ee.shy.core.Repository;
  * A simple command for testing.
  */
 public class TestCommand implements Command {
-
     private final String name;
 
     public TestCommand(String name) {

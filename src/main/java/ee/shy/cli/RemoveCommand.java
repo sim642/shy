@@ -10,7 +10,7 @@ import java.io.IOException;
  */
 public class RemoveCommand implements Command {
     @Override
-    public  void execute(String[] args) throws IOException {
+    public void execute(String[] args) throws IOException {
         Repository repository = Repository.newExisting();
         repository.remove(new File(args[0]));
     }
