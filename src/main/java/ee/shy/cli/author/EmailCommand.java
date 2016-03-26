@@ -3,35 +3,27 @@ package ee.shy.cli.author;
 import ee.shy.cli.Command;
 import ee.shy.core.Author;
 import ee.shy.core.Repository;
-import ee.shy.io.Json;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 
 /**
- * Command to get or set the reposirory's author's email.
+ * Command to get or set the repository's author's email.
  */
 public class EmailCommand implements Command {
-
     @Override
     public void execute(String[] args) throws IOException {
         Repository repository = Repository.newExisting();
+        Author author = repository.getAuthor();
 
         if (args.length == 0) {
-            FileInputStream fis = new FileInputStream(repository.getAuthor());
-            Author author = Json.read(fis, Author.class);
-            if (!author.getEmail().equals("")) {
+            if (author.getEmail() != null) {
                 System.out.println(author.getEmail());
             } else {
-                System.out.println("Email not set. See 'shy author help'");
+                System.out.println("Repository's author's email is not set. See 'shy help author'.");
             }
         } else {
-            FileInputStream fis = new FileInputStream(repository.getAuthor());
-            Author author = Json.read(fis, Author.class);
-            author.setEmail(args[0]);
-            author.write(new FileOutputStream(repository.getAuthor()));
-            System.out.println("Set repository email to: " + args[0]);
+            Author authorNew = new Author(author.getName(), args[0]);
+            repository.setAuthor(authorNew);
         }
     }
 

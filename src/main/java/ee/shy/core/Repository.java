@@ -1,5 +1,6 @@
 package ee.shy.core;
 
+import ee.shy.io.Json;
 import ee.shy.storage.Hash;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.TeeOutputStream;
@@ -81,9 +82,8 @@ public class Repository {
             teeOutputStream.write(Hash.ZERO.toString().getBytes());
             teeOutputStream.close();
 
-            // Initialize new repository with empty name and email fields in file 'author'
             // TODO: 26.03.16 Create a config file to home directory upon installation to get author's details from.
-            Author author = new Author("", "");
+            Author author = new Author(null, null);
             author.write(new FileOutputStream(new File(repositoryDirectory, "author")));
 
             System.out.println("Initialized a shy repository in " + currentDirectory.getAbsolutePath());
@@ -144,10 +144,21 @@ public class Repository {
     }
 
     /**
-     * Method to get the 'author' file of this repository.
-     * @return 'author' file object
+     * Get the Author object of this repository.
+     * @return Author object of '.shy/author' file
+     * @throws IOException if file '.shy/author' does not exist or reading fails
      */
-    public File getAuthor() {
-        return new File(repositoryDirectory, "author");
+    public Author getAuthor() throws IOException {
+        FileInputStream fis = new FileInputStream(new File(repositoryDirectory, "author"));
+        return Json.read(fis, Author.class);
+    }
+
+    /**
+     * Set the '.shy/author' file contents to given Author file contents.
+     * @param author Author object that is assigned to this repository
+     * @throws IOException if write fails
+     */
+    public void setAuthor(Author author) throws IOException {
+        author.write(new FileOutputStream(new File(repositoryDirectory, "author")));
     }
 }
