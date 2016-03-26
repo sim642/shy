@@ -5,6 +5,9 @@ import ee.shy.core.Repository;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * A command to add given file to its respective directory in the repository.
+ */
 public class AddCommand implements Command{
 
     @Override

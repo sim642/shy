@@ -91,6 +91,10 @@ public class Repository {
         }
     }
 
+    /**
+     * Copys given file to its respective directory in ".shy/commit/" directory.
+     * @param file file that user wants to add to repository.
+     */
     public void add(File file) throws IOException {
         File fullFilePath = fullFilePath(file);
         fullFilePath.getParentFile().mkdirs();
@@ -101,11 +105,21 @@ public class Repository {
         }
     }
 
+    /**
+     * Removes given file from its directory in ".shy/commit".
+     * @param file file that user wants to remove from repository.
+     * @throws IOException
+     */
 
     public void remove(File file) throws IOException {
         Files.deleteIfExists(fullFilePath(file).toPath());
     }
 
+    /**
+     * Creates given file's path relative to repository's directory.
+     * @param file file that's relative path is wanted to be create.
+     * @return file's path relative to repository's directory.
+     */
     private File relativeFilePath(File file) {
         File fileDir = new File(System.getProperty("user.dir"), file.getPath()).getParentFile();
 
@@ -115,6 +129,11 @@ public class Repository {
         return new File(path.toFile().getPath(), file.getName());
     }
 
+    /**
+     * Creates full path from system's root to given file in ".shy/commit/" directory.
+     * @param file file that's path is wanted to be create.
+     * @return file path from system's root to given file'is directory in ".shy/commit/"
+     */
     private File fullFilePath(File file) {
         File repositoryDirectory = new File(this.rootDirectory.getPath(), ".shy/commit/");
         return new File(repositoryDirectory, relativeFilePath(file).getPath());

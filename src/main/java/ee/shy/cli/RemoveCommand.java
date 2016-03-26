@@ -6,7 +6,7 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * Created by grom on 26.03.16.
+ * A command to remove given file from its respective directory in the repository.
  */
 public class RemoveCommand implements Command {
     @Override
