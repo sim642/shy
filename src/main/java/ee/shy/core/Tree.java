@@ -87,11 +87,7 @@ public class Tree extends Jsonable {
                 }
                 else if (file.isDirectory()) {
                     Tree tree = new Builder(storage).fromDirectory(file).create();
-                    PipedOutputStream os = new PipedOutputStream();
-                    PipedInputStream is = new PipedInputStream(os);
-                    tree.write(os);
-
-                    Hash hash = storage.add(is);
+                    Hash hash = storage.add(tree.inputify());
                     addItem(file.getName(), new TreeItem(TreeItem.Type.TREE, hash));
                 }
             }

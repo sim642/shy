@@ -127,11 +127,7 @@ public class Repository {
 
     public Hash createCommitTree() throws IOException {
         Tree tree = new Tree.Builder(storage).fromDirectory(new File(repositoryDirectory, "commit")).create();
-        PipedOutputStream os = new PipedOutputStream();
-        PipedInputStream is = new PipedInputStream(os);
-        tree.write(os);
-
-        return storage.add(is);
+        return storage.add(tree.inputify());
     }
 
     /**
