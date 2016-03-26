@@ -16,6 +16,11 @@ public class AuthorCommand extends SuperCommand {
 
     @Override
     public String getHelp() {
-        return "'author' help command.";
+        return "shy author help\n" +
+                "\tUsage: shy author <email | name> [new_value]\n\n" +
+                "Description:\n" +
+                "\t If command is executed without [new_value], current value is shown.\n" +
+                "\t If command is executed with [new_value], set current repository's author's details to [new_value]\n" +
+                "\t See 'shy help author email' or 'shy help author name'\n";
     }
 }

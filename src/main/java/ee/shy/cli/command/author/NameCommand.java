@@ -29,6 +29,10 @@ public class NameCommand implements Command {
 
     @Override
     public String getHelp() {
-        return "NameCommand help!";
+        return "shy author name help\n" +
+                "\tUsage: shy author name [new_value]\n\n" +
+                "Description:\n" +
+                "\tChange the repository's author's name to [new_value].\n" +
+                "\tIf no [new_value] is given: return current author's name value.";
     }
 }

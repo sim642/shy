@@ -18,6 +18,10 @@ public class AddCommand implements Command {
 
     @Override
     public String getHelp() {
-        return "Add command help.";
+        return "shy add help\n" +
+                "\tUsage: shy add <filename>\n\n" +
+                "Description:\n" +
+                "\tThis command updates the index using the <filename> from the working tree.\n" +
+                "\tThe 'index' holds a snapshot of the content of the working tree.\n";
     }
 }

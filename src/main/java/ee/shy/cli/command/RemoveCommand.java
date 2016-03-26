@@ -18,6 +18,9 @@ public class RemoveCommand implements Command {
 
     @Override
     public String getHelp() {
-        return "Remove help message";
+        return "shy remove help\n" +
+                "\tUsage: shy remove <filename>\n\n" +
+                "Description:\n" +
+                "\tRemove given <filename> from the index.\n";
     }
 }

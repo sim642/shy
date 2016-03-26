@@ -21,7 +21,6 @@ public class RootCommand extends SuperCommand {
     public RootCommand() {
         add("init", new InitCommand());
         add("test1", new TestCommand("Test1"));
-        add("test2", new TestCommand("Test2"));
         add("help", new HelpCommand(this));
         add("add", new AddCommand());
         add("remove", new RemoveCommand());
@@ -31,6 +30,14 @@ public class RootCommand extends SuperCommand {
 
     @Override
     public String getHelp() {
-        return "Here be RootCommand's('shy') help text";
+        return "shy help\n" +
+                "\tUsage: shy help [COMMAND]\n\n" +
+                "Possible shy commands:\n" +
+                "\tadd      \t Add file contents to the index\n" +
+                "\tauthor   \t Alter or view repository's author\n" +
+                "\tcommit   \t Record changes to the repository\n" +
+                "\thelp     \t Show help command's help\n" +
+                "\tinit     \t Initialize a empty repository\n" +
+                "\tremove   \t Remove files from the working tree and index\n";
     }
 }

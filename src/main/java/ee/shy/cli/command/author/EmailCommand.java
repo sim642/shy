@@ -29,6 +29,10 @@ public class EmailCommand implements Command {
 
     @Override
     public String getHelp() {
-        return "EmailCommand help!";
+        return "shy author email help\n" +
+                "\tUsage: shy author email [new_value]\n\n" +
+                "Description:\n" +
+                "\tChange the repository's author's email to [new_value].\n" +
+                "\tIf no [new_value] is given: return current author's email value.";
     }
 }

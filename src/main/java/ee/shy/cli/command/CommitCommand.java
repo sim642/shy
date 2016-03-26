@@ -20,6 +20,9 @@ public class CommitCommand implements Command {
 
     @Override
     public String getHelp() {
-        return "commit current commit";
+        return "shy commit help\n" +
+                "\tUsage: shy commit [message]\n\n" +
+                "Description:\n" +
+                "\tStores the current contents of the index in a new commit with an optional commit [message] given by user.";
     }
 }
