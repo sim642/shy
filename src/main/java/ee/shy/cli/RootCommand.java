@@ -24,6 +24,7 @@ public class RootCommand extends SuperCommand {
         add("help", new HelpCommand(this));
         add("add", new AddCommand());
         add("remove", new RemoveCommand());
+        add("commit", new CommitCommand());
     }
 
     @Override

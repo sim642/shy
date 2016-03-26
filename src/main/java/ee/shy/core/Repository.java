@@ -1,6 +1,6 @@
 package ee.shy.core;
 
-import ee.shy.storage.Hash;
+import ee.shy.storage.*;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.TeeOutputStream;
 
@@ -8,6 +8,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 
 
 /**
@@ -24,6 +25,8 @@ public class Repository {
      */
     private final File rootDirectory;
 
+    private final DataStorage storage;
+
     /**
      * Constructs a new repository class.
      * @param rootDirectory root directory for repository
@@ -31,6 +34,11 @@ public class Repository {
     private Repository(File rootDirectory) {
         this.rootDirectory = rootDirectory;
         this.repositoryDirectory = new File(rootDirectory, ".shy");
+        this.storage = new FileStorage(
+                Arrays.asList(
+                        new FlatFileLocator(new File(repositoryDirectory, "storage"))
+                ),
+                new PlainFileAccessor());
     }
 
     /**
@@ -115,6 +123,15 @@ public class Repository {
      */
     public void remove(File file) throws IOException {
         Files.deleteIfExists(fullFilePath(file).toPath());
+    }
+
+    public Hash createCommitTree() throws IOException {
+        Tree tree = new Tree.Builder(storage).fromDirectory(new File(repositoryDirectory, "commit")).create();
+        PipedOutputStream os = new PipedOutputStream();
+        PipedInputStream is = new PipedInputStream(os);
+        tree.write(os);
+
+        return storage.add(is);
     }
 
     /**
