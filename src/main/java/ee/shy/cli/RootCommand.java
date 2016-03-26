@@ -1,7 +1,7 @@
 package ee.shy.cli;
 
 import ee.shy.UserPresentableException;
-import ee.shy.cli.author.AuthorCommand;
+import ee.shy.cli.command.*;
 
 import java.io.IOException;
 

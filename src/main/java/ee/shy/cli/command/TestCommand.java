@@ -1,5 +1,6 @@
-package ee.shy.cli;
+package ee.shy.cli.command;
 
+import ee.shy.cli.Command;
 import ee.shy.core.Repository;
 
 /**

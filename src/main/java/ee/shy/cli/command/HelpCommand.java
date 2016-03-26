@@ -1,4 +1,6 @@
-package ee.shy.cli;
+package ee.shy.cli.command;
+
+import ee.shy.cli.Command;
 
 /**
  * A command providing help about other commands by retrieving their help text.

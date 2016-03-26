@@ -1,6 +1,8 @@
-package ee.shy.cli.author;
+package ee.shy.cli.command;
 
 import ee.shy.cli.SuperCommand;
+import ee.shy.cli.command.author.EmailCommand;
+import ee.shy.cli.command.author.NameCommand;
 
 /**
  * SuperCommand containing commands to alter 'author' file's content.
