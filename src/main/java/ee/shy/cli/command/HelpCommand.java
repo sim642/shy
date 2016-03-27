@@ -2,6 +2,8 @@ package ee.shy.cli.command;
 
 import ee.shy.cli.Command;
 
+import java.io.IOException;
+
 /**
  * A command providing help about other commands by retrieving their help text.
  */
@@ -30,7 +32,7 @@ public class HelpCommand implements Command {
     }
 
     @Override
-    public String[] getCompletion(String[] args) {
+    public String[] getCompletion(String[] args) throws IOException {
         return rootCommand.getCompletion(args);
     }
 

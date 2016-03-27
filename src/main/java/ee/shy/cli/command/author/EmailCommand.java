@@ -31,4 +31,11 @@ public class EmailCommand implements Command {
     public String getHelp() {
         return "EmailCommand help!";
     }
+
+    @Override
+    public String[] getCompletion(String[] args) throws IOException {
+        Repository repository = Repository.newExisting();
+        Author author = repository.getAuthor();
+        return new String[]{author.getEmail()};
+    }
 }

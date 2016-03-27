@@ -37,7 +37,7 @@ public abstract class SuperCommand implements Command {
     }
 
     @Override
-    public String[] getCompletion(String[] args) {
+    public String[] getCompletion(String[] args) throws IOException {
         Command subCommand;
         if ((args.length > 1) // complete subcommand even if fully typed (don't nest yet)
                 && ((subCommand = subCommands.get(args[0])) != null)) {

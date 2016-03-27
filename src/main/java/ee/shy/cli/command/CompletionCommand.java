@@ -24,7 +24,13 @@ public class CompletionCommand implements Command {
 
     @Override
     public void execute(String[] args) throws IOException {
-        System.out.println(String.join(" ", rootCommand.getCompletion(args)));
+        String[] completions = rootCommand.getCompletion(args);
+        for (String completion : completions) {
+            if (completion.contains(" "))
+                System.out.println('"' + completion + '"');
+            else
+                System.out.println(completion);
+        }
     }
 
     @Override

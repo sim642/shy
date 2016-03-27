@@ -33,7 +33,7 @@ public interface Command {
      * @param args arguments for command
      * @return array of completions
      */
-    default String[] getCompletion(String args[]) {
+    default String[] getCompletion(String args[]) throws IOException {
         return new String[]{};
     }
 }

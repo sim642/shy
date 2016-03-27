@@ -4,7 +4,9 @@ _shy ()
     local cur
     cur=${COMP_WORDS[COMP_CWORD]}
 
-    COMPREPLY=($(compgen -W '$(shy completion "${COMP_WORDS[@]:1}")' -- $cur))
+    IFS=$'\n'
+    words=($(shy completion "${COMP_WORDS[@]:1}"))
+    COMPREPLY=($(compgen -W '"${words[@]}"' -- $cur))
 
     return 0
 }
