@@ -65,7 +65,7 @@ public class Commit extends Jsonable {
         /**
          * @see Commit#parents
          */
-        private List<Hash> parents;
+        private final List<Hash> parents;
 
         /**
          * @see Commit#author

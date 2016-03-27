@@ -36,11 +36,4 @@ public class HelpCommand implements Command {
         return rootCommand.getCompletion(args);
     }
 
-    /**
-     * Get starting point command.
-     * @return starting point command
-     */
-    public Command getRootCommand() {
-        return rootCommand;
-    }
 }

@@ -38,11 +38,4 @@ public class CompletionCommand implements Command {
         return null;
     }
 
-    /**
-     * Get starting point command.
-     * @return starting point command
-     */
-    public Command getRootCommand() {
-        return rootCommand;
-    }
 }

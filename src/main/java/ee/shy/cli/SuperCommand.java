@@ -58,14 +58,6 @@ public abstract class SuperCommand implements Command {
     }
 
     /**
-     * Gets an unmodifiable map of all added subcommands with respective names.
-     * @return unmodifiable map of subcommands with respective names
-     */
-    public Map<String, Command> getSubCommands() {
-        return Collections.unmodifiableMap(subCommands);
-    }
-
-    /**
      * Gets tail of arguments.
      * @param args arguments array
      * @return tail of arguments array, or empty array if no tail exists

@@ -1,7 +1,5 @@
 package ee.shy.storage;
 
-import org.apache.commons.io.IOUtils;
-
 import java.io.*;
 
 /**

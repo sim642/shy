@@ -6,7 +6,7 @@ _shy ()
 
     IFS=$'\n'
     words=($(shy completion "${COMP_WORDS[@]:1}"))
-    COMPREPLY=($(compgen -W '"${words[@]}"' -- $cur))
+    COMPREPLY=($(compgen -W '"${words[@]}"' -- ${cur}))
 
     return 0
 }

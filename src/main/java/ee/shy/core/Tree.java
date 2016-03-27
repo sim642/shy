@@ -1,6 +1,5 @@
 package ee.shy.core;
 
-import com.google.gson.internal.LinkedTreeMap;
 import ee.shy.io.Jsonable;
 import ee.shy.storage.DataStorage;
 import ee.shy.storage.Hash;
