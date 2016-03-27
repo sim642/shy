@@ -20,14 +20,11 @@ public class CommitCommand implements Command {
 
     @Override
     public String getHelp() {
-        return "shy commit help\n" +
-                "\tUsage with arguments:\n" +
+        return "Usage with arguments:\n" +
                 "\t<message>\n" +
                 "\t\t - Commit changes with given message\n\n" +
-                "\tUsage without arguments:\n" +
-                "\t\t - Commit changes without message\n\n" +
                 "Description:\n" +
-                "\tStores the current contents of the index in a new commit with an optional commit message given by user.";
+                "\tCreate and store a snapshot of current commit with <message>.\n";
     }
 
     @Override

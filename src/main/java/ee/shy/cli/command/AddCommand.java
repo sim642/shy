@@ -18,17 +18,15 @@ public class AddCommand implements Command {
 
     @Override
     public String getHelp() {
-        return "shy add help\n" +
-                "\tUsage with arguments:\n" +
+        return "Usage with arguments:\n" +
                 "\t<filename>\n" +
-                "\t\t - Add given filename to the index\n\n" +
+                "\t\t - Add given filename to current commit\n\n" +
                 "Description:\n" +
-                "\tThis command updates the index using the <filename> from the working tree.\n" +
-                "\tThe 'index' holds a snapshot of the content of the working tree.\n";
+                "\tThis command adds <filename> to current commit.\n";
     }
 
     @Override
     public String getHelpBrief() {
-        return "Add file contents to the index";
+        return "Add file to current commit";
     }
 }

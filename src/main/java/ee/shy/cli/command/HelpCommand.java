@@ -26,7 +26,11 @@ public class HelpCommand implements Command {
 
     @Override
     public String getHelp() {
-        return rootCommand.getHelp();
+        return "Usage with arguments:\n" +
+                "\t<command>\n" +
+                "\t\t - Show <command> help.\n\n" +
+                "Description:\n" +
+                "\tShows help about commands.\n";
     }
 
     @Override

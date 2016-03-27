@@ -18,17 +18,15 @@ public class RemoveCommand implements Command {
 
     @Override
     public String getHelp() {
-        return "shy remove help\n" +
-                "\tUsage with arguments:\n" +
+        return "Usage with arguments:\n" +
                 "\t<filename>\n" +
-                "\t\t - Remove given filename from the index\n\n" +
+                "\t\t - Remove given filename from current commit\n\n" +
                 "Description:\n" +
-                "\tThis command updates the index using the <filename> from the working tree.\n" +
-                "\tThe 'index' holds a snapshot of the content of the working tree.\n";
+                "\tThis command removes <filename> from current commit if present.\n";
     }
 
     @Override
     public String getHelpBrief() {
-        return "Remove files from the working tree and index";
+        return "Remove file from the current commit";
     }
 }

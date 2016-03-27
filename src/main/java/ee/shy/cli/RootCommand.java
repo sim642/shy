@@ -4,7 +4,6 @@ import ee.shy.UserPresentableException;
 import ee.shy.cli.command.*;
 
 import java.io.IOException;
-import java.util.Map;
 
 /**
  * A command representing the root of all commands usable from command line.
@@ -31,18 +30,7 @@ public class RootCommand extends SuperCommand {
 
     @Override
     public String getHelp() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("shy help\n")
-                .append("\tUsage: shy help [COMMAND]\n\n")
-                .append("Possible shy commands:\n");
-        for (Map.Entry<String, Command> stringCommandEntry : subCommands.entrySet()) {
-            sb.append("\t")
-                    .append(stringCommandEntry.getKey())
-                    .append("\t")
-                    .append(stringCommandEntry.getValue().getHelpBrief())
-                    .append("\n");
-        }
-        return sb.toString();
+        return "shy version control system";
     }
 
     @Override

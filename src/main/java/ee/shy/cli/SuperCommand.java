@@ -13,7 +13,7 @@ public abstract class SuperCommand implements Command {
     /**
      * Map to store subcommands with respective names.
      */
-    protected final Map<String, Command> subCommands = new HashMap<>();
+    private final Map<String, Command> subCommands = new HashMap<>();
 
     @Override
     public final void execute(String[] args) throws IOException {
@@ -31,7 +31,18 @@ public abstract class SuperCommand implements Command {
         if (args.length > 0 && subCommands.keySet().contains(args[0])) {
             return subCommands.get(args[0]).getHelp(argsSlice(args));
         } else {
-            return getHelp();
+            StringBuilder sb = new StringBuilder();
+            sb.append(getHelp())
+                    .append("\n\n")
+                    .append("Possible commands:\n");
+            for (Map.Entry<String, Command> stringCommandEntry : subCommands.entrySet()) {
+                sb.append("\t")
+                        .append(stringCommandEntry.getKey())
+                        .append("\t")
+                        .append(stringCommandEntry.getValue().getHelpBrief())
+                        .append("\n");
+            }
+            return sb.toString();
         }
     }
 

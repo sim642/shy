@@ -13,13 +13,11 @@ public class InitCommand implements Command {
 
     @Override
     public String getHelp() {
-        return "shy init help\n" +
-                "\tUsage: shy init\n\n" +
+        return "Usage without arguments:\n" +
+                "\t\t - Initialize a new repostiory\n\n" +
                 "Description:\n" +
                 "\tInitialize a new empty repository or reinitialize an existing one.\n" +
-                "\t'.shy/' directory will be created with its subdirectories.\n" +
-                "\tRunning 'shy init' on an existing repository is safe:\n" +
-                "\tIt will NOT overwrite existing files, but create those what are missing.\n";
+                "\t'.shy/' directory will be created with its subdirectories.\n";
     }
 
     @Override
