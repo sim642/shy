@@ -29,6 +29,11 @@ public class HelpCommand implements Command {
         return "Help's help";
     }
 
+    @Override
+    public String[] getCompletion(String[] args) {
+        return rootCommand.getCompletion(args);
+    }
+
     /**
      * Get starting point command.
      * @return starting point command

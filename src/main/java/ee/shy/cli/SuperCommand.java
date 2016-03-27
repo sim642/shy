@@ -36,6 +36,18 @@ public abstract class SuperCommand implements Command {
         }
     }
 
+    @Override
+    public String[] getCompletion(String[] args) {
+        Command subCommand;
+        if ((args.length > 1) // complete subcommand even if fully typed (don't nest yet)
+                && ((subCommand = subCommands.get(args[0])) != null)) {
+            return subCommand.getCompletion(argsSlice(args));
+        }
+        else {
+            return subCommands.keySet().toArray(new String[0]);
+        }
+    }
+
     /**
      * Adds a new subcommand with its name to supercommand.
      * @param commandName command's string value to add

@@ -27,4 +27,13 @@ public interface Command {
      * @return help text of the command
      */
     String getHelp();
+
+    /**
+     * Gets possible completions with given arguments
+     * @param args arguments for command
+     * @return array of completions
+     */
+    default String[] getCompletion(String args[]) {
+        return new String[]{};
+    }
 }
