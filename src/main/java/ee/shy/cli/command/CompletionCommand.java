@@ -38,4 +38,8 @@ public class CompletionCommand implements Command {
         return null;
     }
 
+    @Override
+    public String getHelpBrief() {
+        return null;
+    }
 }

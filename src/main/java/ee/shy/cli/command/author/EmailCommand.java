@@ -29,7 +29,16 @@ public class EmailCommand implements Command {
 
     @Override
     public String getHelp() {
-        return "EmailCommand help!";
+        return "Usage with arguments:\n" +
+                "\t<email>\n" +
+                "\t\t - set author's email\n\n" +
+                "Usage without arguments:\n" +
+                "\t\t - get author's email\n";
+    }
+
+    @Override
+    public String getHelpBrief() {
+        return "View current or alter 'author' file's email field.";
     }
 
     @Override

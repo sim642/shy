@@ -21,7 +21,6 @@ public class RootCommand extends SuperCommand {
     public RootCommand() {
         add("init", new InitCommand());
         add("test1", new TestCommand("Test1"));
-        add("test2", new TestCommand("Test2"));
         add("help", new HelpCommand(this));
         add("completion", new CompletionCommand(this));
         add("add", new AddCommand());
@@ -32,6 +31,11 @@ public class RootCommand extends SuperCommand {
 
     @Override
     public String getHelp() {
-        return "Here be RootCommand's('shy') help text";
+        return "shy version control system";
+    }
+
+    @Override
+    public String getHelpBrief() {
+        return null;
     }
 }

@@ -29,7 +29,16 @@ public class NameCommand implements Command {
 
     @Override
     public String getHelp() {
-        return "NameCommand help!";
+        return "Usage with arguments:\n" +
+                "\t<name>\n" +
+                "\t\t - set author's name\n\n" +
+                "Usage without arguments:\n" +
+                "\t\t - get author's name\n";
+    }
+
+    @Override
+    public String getHelpBrief() {
+        return "View current or alter 'author' file's name field.";
     }
 
     @Override

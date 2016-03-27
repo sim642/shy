@@ -18,6 +18,15 @@ public class AddCommand implements Command {
 
     @Override
     public String getHelp() {
-        return "Add command help.";
+        return "Usage with arguments:\n" +
+                "\t<filename>\n" +
+                "\t\t - Add given filename to current commit\n\n" +
+                "Description:\n" +
+                "\tThis command adds <filename> to current commit.\n";
+    }
+
+    @Override
+    public String getHelpBrief() {
+        return "Add file to current commit";
     }
 }

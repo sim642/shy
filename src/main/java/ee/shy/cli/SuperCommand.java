@@ -21,9 +21,9 @@ public abstract class SuperCommand implements Command {
         if (args.length > 0 && subCommands.keySet().contains(args[0])) {
             subCommands.get(args[0]).execute(argsSlice(args));
         } else if (args.length > 0){
-            System.err.format("%s is not a shy command!%n", args[0]);
+            System.err.format("%s is not a shy command! See 'shy help'.%n", args[0]);
         } else {
-            System.err.format("Not enough arguments.%n");
+            System.err.format("Not enough arguments. See 'shy help'.%n");
         }
     }
 
@@ -32,7 +32,18 @@ public abstract class SuperCommand implements Command {
         if (args.length > 0 && subCommands.keySet().contains(args[0])) {
             return subCommands.get(args[0]).getHelp(argsSlice(args));
         } else {
-            return getHelp();
+            StringBuilder sb = new StringBuilder();
+            sb.append(getHelp())
+                    .append("\n\n")
+                    .append("Possible commands:\n");
+            for (Map.Entry<String, Command> stringCommandEntry : subCommands.entrySet()) {
+                sb.append("\t")
+                        .append(stringCommandEntry.getKey())
+                        .append("\t")
+                        .append(stringCommandEntry.getValue().getHelpBrief())
+                        .append("\n");
+            }
+            return sb.toString();
         }
     }
 

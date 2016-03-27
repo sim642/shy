@@ -18,6 +18,15 @@ public class RemoveCommand implements Command {
 
     @Override
     public String getHelp() {
-        return "Remove help message";
+        return "Usage with arguments:\n" +
+                "\t<filename>\n" +
+                "\t\t - Remove given filename from current commit\n\n" +
+                "Description:\n" +
+                "\tThis command removes <filename> from current commit if present.\n";
+    }
+
+    @Override
+    public String getHelpBrief() {
+        return "Remove file from the current commit";
     }
 }

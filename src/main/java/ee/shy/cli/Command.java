@@ -29,6 +29,12 @@ public interface Command {
     String getHelp();
 
     /**
+     * Gets a brief one-line description of a command
+     * @return command description
+     */
+    String getHelpBrief();
+
+    /**
      * Gets possible completions with given arguments
      * @param args arguments for command
      * @return array of completions

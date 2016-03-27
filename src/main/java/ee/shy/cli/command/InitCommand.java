@@ -13,6 +13,15 @@ public class InitCommand implements Command {
 
     @Override
     public String getHelp() {
-        return "Init command's help(shy help init)";
+        return "Usage without arguments:\n" +
+                "\t\t - Initialize a new repostiory\n\n" +
+                "Description:\n" +
+                "\tInitialize a new empty repository or reinitialize an existing one.\n" +
+                "\t'.shy/' directory will be created with its subdirectories.\n";
+    }
+
+    @Override
+    public String getHelpBrief() {
+        return "Initialize a empty repository";
     }
 }

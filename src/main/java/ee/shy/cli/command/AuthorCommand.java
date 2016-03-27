@@ -16,6 +16,11 @@ public class AuthorCommand extends SuperCommand {
 
     @Override
     public String getHelp() {
-        return "'author' help command.";
+        return "Gets and sets author information.";
+    }
+
+    @Override
+    public String getHelpBrief() {
+        return "Alter or view repository's author";
     }
 }

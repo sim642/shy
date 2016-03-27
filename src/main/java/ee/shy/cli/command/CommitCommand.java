@@ -20,6 +20,15 @@ public class CommitCommand implements Command {
 
     @Override
     public String getHelp() {
-        return "commit current commit";
+        return "Usage with arguments:\n" +
+                "\t<message>\n" +
+                "\t\t - Commit changes with given message\n\n" +
+                "Description:\n" +
+                "\tCreate and store a snapshot of current commit with <message>.\n";
+    }
+
+    @Override
+    public String getHelpBrief() {
+        return "Record changes to the repository";
     }
 }
