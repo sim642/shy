@@ -27,4 +27,10 @@ public interface Command {
      * @return help text of the command
      */
     String getHelp();
+
+    /**
+     * Gets a brief one-line description of a command
+     * @return command description
+     */
+    String getHelpBrief();
 }

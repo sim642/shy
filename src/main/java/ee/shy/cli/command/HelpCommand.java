@@ -28,4 +28,9 @@ public class HelpCommand implements Command {
     public String getHelp() {
         return rootCommand.getHelp();
     }
+
+    @Override
+    public String getHelpBrief() {
+        return "Show help command's help";
+    }
 }

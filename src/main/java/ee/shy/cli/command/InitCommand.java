@@ -19,6 +19,11 @@ public class InitCommand implements Command {
                 "\tInitialize a new empty repository or reinitialize an existing one.\n" +
                 "\t'.shy/' directory will be created with its subdirectories.\n" +
                 "\tRunning 'shy init' on an existing repository is safe:\n" +
-                "\t\tIt will NOT overwrite existing files, but create those what are missing.\n";
+                "\tIt will NOT overwrite existing files, but create those what are missing.\n";
+    }
+
+    @Override
+    public String getHelpBrief() {
+        return "Initialize a empty repository";
     }
 }

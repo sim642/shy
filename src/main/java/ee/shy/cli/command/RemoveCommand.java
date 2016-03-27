@@ -19,8 +19,16 @@ public class RemoveCommand implements Command {
     @Override
     public String getHelp() {
         return "shy remove help\n" +
-                "\tUsage: shy remove <filename>\n\n" +
+                "\tUsage with arguments:\n" +
+                "\t<filename>\n" +
+                "\t\t - Remove given filename from the index\n\n" +
                 "Description:\n" +
-                "\tRemove given <filename> from the index.\n";
+                "\tThis command updates the index using the <filename> from the working tree.\n" +
+                "\tThe 'index' holds a snapshot of the content of the working tree.\n";
+    }
+
+    @Override
+    public String getHelpBrief() {
+        return "Remove files from the working tree and index";
     }
 }

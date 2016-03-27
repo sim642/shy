@@ -30,9 +30,15 @@ public class EmailCommand implements Command {
     @Override
     public String getHelp() {
         return "shy author email help\n" +
-                "\tUsage: shy author email [new_value]\n\n" +
-                "Description:\n" +
-                "\tChange the repository's author's email to [new_value].\n" +
-                "\tIf no [new_value] is given: return current author's email value.";
+                "\tUsage with arguments:\n" +
+                "\t<email>\n" +
+                "\t\t - set author's email\n\n" +
+                "\tUsage without arguments:\n" +
+                "\t\t - get author's email\n";
+    }
+
+    @Override
+    public String getHelpBrief() {
+        return "View current or alter 'author' file's email field. See 'shy help author email'";
     }
 }

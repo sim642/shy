@@ -30,9 +30,15 @@ public class NameCommand implements Command {
     @Override
     public String getHelp() {
         return "shy author name help\n" +
-                "\tUsage: shy author name [new_value]\n\n" +
-                "Description:\n" +
-                "\tChange the repository's author's name to [new_value].\n" +
-                "\tIf no [new_value] is given: return current author's name value.";
+                "\tUsage with arguments:\n" +
+                "\t<name>\n" +
+                "\t\t - set author's name\n\n" +
+                "\tUsage without arguments:\n" +
+                "\t\t - get author's name\n";
+    }
+
+    @Override
+    public String getHelpBrief() {
+        return "View current or alter 'author' file's name field. See 'shy help author name'";
     }
 }

@@ -1,8 +1,11 @@
 package ee.shy.cli.command;
 
+import ee.shy.cli.Command;
 import ee.shy.cli.SuperCommand;
 import ee.shy.cli.command.author.EmailCommand;
 import ee.shy.cli.command.author.NameCommand;
+
+import java.util.Map;
 
 /**
  * SuperCommand containing commands to alter 'author' file's content.
@@ -16,11 +19,22 @@ public class AuthorCommand extends SuperCommand {
 
     @Override
     public String getHelp() {
-        return "shy author help\n" +
-                "\tUsage: shy author <email | name> [new_value]\n\n" +
-                "Description:\n" +
-                "\t If command is executed without [new_value], current value is shown.\n" +
-                "\t If command is executed with [new_value], set current repository's author's details to [new_value]\n" +
-                "\t See 'shy help author email' or 'shy help author name'\n";
+        StringBuilder sb = new StringBuilder();
+        sb.append("shy author help\n")
+                .append("\tUsage: shy author [COMMAND]\n\n")
+                .append("Possible shy author commands:\n");
+        for (Map.Entry<String, Command> stringCommandEntry : subCommands.entrySet()) {
+            sb.append("\t")
+                    .append(stringCommandEntry.getKey())
+                    .append("\t")
+                    .append(stringCommandEntry.getValue().getHelpBrief())
+                    .append("\n");
+        }
+        return sb.toString();
+    }
+
+    @Override
+    public String getHelpBrief() {
+        return "Alter or view repository's author";
     }
 }

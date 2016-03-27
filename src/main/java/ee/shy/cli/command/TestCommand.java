@@ -23,4 +23,9 @@ public class TestCommand implements Command {
     public String getHelp() {
         return "Here be TestCommand's help text.";
     }
+
+    @Override
+    public String getHelpBrief() {
+        return "Command for testing";
+    }
 }
