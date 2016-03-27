@@ -35,11 +35,16 @@ public class CompletionCommand implements Command {
 
     @Override
     public String getHelp() {
-        return null;
+        return "Usage with arguments:\n" +
+                "\t<arg1> <arg2> ...\n" +
+                "\t\t - Generate completions list for given arguments list.\n" +
+                "\n" +
+                "Description:\n" +
+                "\tGenerates a list of completions to be used by completion scripts.\n";
     }
 
     @Override
     public String getHelpBrief() {
-        return null;
+        return "Generates completions list";
     }
 }
