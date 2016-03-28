@@ -3,13 +3,13 @@ package ee.shy;
 import java.util.Set;
 
 /**
- * Interface for simplified {@link java.util.Map} types.
+ * Interface for simplified read-only {@link java.util.Map} types.
  * The significantly reduced method set simplifies implementation
- * while keeping all basic functionality.
+ * while keeping most of basic functionality.
  * @param <K> type of keys in this map
  * @param <V> type of values in this map
  */
-public interface SimpleMap<K, V> {
+public interface UnmodifiableSimpleMap<K, V> {
     /**
      * Checks whether this map contains the given key.
      * @param key key which's containment to check
@@ -25,13 +25,6 @@ public interface SimpleMap<K, V> {
      * @return value for the given key
      */
     V get(K key);
-
-    /**
-     * Adds the given value with the given key in this map.
-     * @param key key for the value
-     * @param value value to add
-     */
-    void put(K key, V value);
 
     /**
      * Returns a {@link Set} of the keys contained in this map.

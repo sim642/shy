@@ -25,7 +25,7 @@ public class MapStorage extends DataStorage {
     }
 
     @Override
-    protected void add(Hash hash, InputStream source) throws IOException {
+    protected void put(Hash hash, InputStream source) throws IOException {
         storage.put(hash, IOUtils.toByteArray(source));
     }
 

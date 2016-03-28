@@ -29,7 +29,7 @@ public class FileStorage extends DataStorage {
     }
 
     @Override
-    protected void add(Hash hash, InputStream source) throws IOException {
+    protected void put(Hash hash, InputStream source) throws IOException {
         accessor.add(locators.get(0).locateAdd(hash), source); // always use first locator for add
     }
 
