@@ -7,7 +7,8 @@ _shy ()
     IFS=$'\n'
     words=($(shy completion "${COMP_WORDS[@]:1}"))
     if [ ${#words[@]} -eq 0 ]; then
-        COMPREPLY=($(compgen -f ${cur}))
+        compopt -o filenames
+        COMPREPLY=($(compgen -f -d ${cur}))
     else
         COMPREPLY=($(compgen -W '"${words[@]}"' -- ${cur}))
     fi
