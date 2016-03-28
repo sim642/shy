@@ -1,5 +1,7 @@
 package ee.shy;
 
+import java.util.Set;
+
 /**
  * Interface for simplified {@link java.util.Map} types with given key insertion.
  * The significantly reduced method set simplifies implementation
@@ -14,4 +16,10 @@ public interface KeyableSimpleMap<K, V> extends UnmodifiableSimpleMap<K, V> {
      * @param value value to add
      */
     void put(K key, V value);
+
+    /**
+     * Returns a {@link Set} of the keys contained in this map.
+     * @return a set of the keys contained in this map
+     */
+    Set<K> keySet();
 }

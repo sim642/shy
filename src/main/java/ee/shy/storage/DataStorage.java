@@ -89,9 +89,4 @@ public abstract class DataStorage implements UnkeyableSimpleMap<Hash, InputStrea
      * @throws IOException if there was a problem reading from some input
      */
     public abstract InputStream getUnchecked(Hash hash) throws IOException;
-
-    @Override
-    public Set<Hash> keySet() {
-        throw new UnsupportedOperationException("DataStorage does not support key listing");
-    }
 }

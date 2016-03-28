@@ -1,7 +1,5 @@
 package ee.shy;
 
-import java.util.Set;
-
 /**
  * Interface for simplified read-only {@link java.util.Map} types.
  * The significantly reduced method set simplifies implementation
@@ -25,10 +23,4 @@ public interface UnmodifiableSimpleMap<K, V> {
      * @return value for the given key
      */
     V get(K key);
-
-    /**
-     * Returns a {@link Set} of the keys contained in this map.
-     * @return a set of the keys contained in this map
-     */
-    Set<K> keySet();
 }
