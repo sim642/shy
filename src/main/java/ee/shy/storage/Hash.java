@@ -71,6 +71,10 @@ public class Hash {
         return DatatypeConverter.printHexBinary(bytes).toLowerCase();
     }
 
+    public static Hash valueOf(String str) {
+        return new Hash(str);
+    }
+
     /**
      * Checks if the hash object has correct size in bytes.
      * @throws IllegalArgumentException if size is invalid
