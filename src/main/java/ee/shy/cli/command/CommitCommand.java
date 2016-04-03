@@ -1,6 +1,7 @@
 package ee.shy.cli.command;
 
 import ee.shy.cli.Command;
+import ee.shy.cli.HelptextBuilder;
 import ee.shy.core.Repository;
 
 import java.io.IOException;
@@ -20,11 +21,10 @@ public class CommitCommand implements Command {
 
     @Override
     public String getHelp() {
-        return "Usage with arguments:\n" +
-                "\t<message>\n" +
-                "\t\t - Commit changes with given message\n\n" +
-                "Description:\n" +
-                "\tCreate and store a snapshot of current commit with <message>.\n";
+        HelptextBuilder helptextBuilder = new HelptextBuilder();
+        helptextBuilder.addWithArgs("<message>", "Commit changes with given message");
+        helptextBuilder.addDescription("Create and store a snapshot of current commit with <message>.");
+        return helptextBuilder.create();
     }
 
     @Override

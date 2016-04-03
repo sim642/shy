@@ -1,6 +1,7 @@
 package ee.shy.cli.command;
 
 import ee.shy.cli.Command;
+import ee.shy.cli.HelptextBuilder;
 
 import java.io.IOException;
 
@@ -35,12 +36,10 @@ public class CompletionCommand implements Command {
 
     @Override
     public String getHelp() {
-        return "Usage with arguments:\n" +
-                "\t<arg1> <arg2> ...\n" +
-                "\t\t - Generate completions list for given arguments list.\n" +
-                "\n" +
-                "Description:\n" +
-                "\tGenerates a list of completions to be used by completion scripts.\n";
+        HelptextBuilder helptextBuilder = new HelptextBuilder();
+        helptextBuilder.addWithArgs("<arg1> <arg2> ...", "Generate completions list for given arguments list.");
+        helptextBuilder.addDescription("Generates a list of completions to be used by completion scripts.");
+        return helptextBuilder.create();
     }
 
     @Override

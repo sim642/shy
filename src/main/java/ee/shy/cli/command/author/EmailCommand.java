@@ -1,6 +1,7 @@
 package ee.shy.cli.command.author;
 
 import ee.shy.cli.Command;
+import ee.shy.cli.HelptextBuilder;
 import ee.shy.core.Author;
 import ee.shy.core.Repository;
 
@@ -29,11 +30,10 @@ public class EmailCommand implements Command {
 
     @Override
     public String getHelp() {
-        return "Usage with arguments:\n" +
-                "\t<email>\n" +
-                "\t\t - set author's email\n\n" +
-                "Usage without arguments:\n" +
-                "\t\t - get author's email\n";
+        HelptextBuilder helptextBuilder = new HelptextBuilder();
+        helptextBuilder.addWithArgs("<email>", "set author's email.");
+        helptextBuilder.addWithoutArgs("get author's email.");
+        return helptextBuilder.create();
     }
 
     @Override

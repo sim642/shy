@@ -1,6 +1,7 @@
 package ee.shy.cli.command.author;
 
 import ee.shy.cli.Command;
+import ee.shy.cli.HelptextBuilder;
 import ee.shy.core.Author;
 import ee.shy.core.Repository;
 
@@ -29,11 +30,10 @@ public class NameCommand implements Command {
 
     @Override
     public String getHelp() {
-        return "Usage with arguments:\n" +
-                "\t<name>\n" +
-                "\t\t - set author's name\n\n" +
-                "Usage without arguments:\n" +
-                "\t\t - get author's name\n";
+        HelptextBuilder helptextBuilder = new HelptextBuilder();
+        helptextBuilder.addWithArgs("<name>", "set author's name.");
+        helptextBuilder.addWithoutArgs("get author's name.");
+        return helptextBuilder.create();
     }
 
     @Override

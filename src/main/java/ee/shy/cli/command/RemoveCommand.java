@@ -1,6 +1,7 @@
 package ee.shy.cli.command;
 
 import ee.shy.cli.Command;
+import ee.shy.cli.HelptextBuilder;
 import ee.shy.core.Repository;
 
 import java.io.File;
@@ -18,11 +19,10 @@ public class RemoveCommand implements Command {
 
     @Override
     public String getHelp() {
-        return "Usage with arguments:\n" +
-                "\t<filename>\n" +
-                "\t\t - Remove given filename from current commit\n\n" +
-                "Description:\n" +
-                "\tThis command removes <filename> from current commit if present.\n";
+        HelptextBuilder helptextBuilder = new HelptextBuilder();
+        helptextBuilder.addWithArgs("<filename>", "Remove given filename from current commit");
+        helptextBuilder.addDescription("This command removes <filename> from current commit if present.");
+        return helptextBuilder.create();
     }
 
     @Override

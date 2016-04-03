@@ -1,6 +1,7 @@
 package ee.shy.cli.command;
 
 import ee.shy.cli.Command;
+import ee.shy.cli.HelptextBuilder;
 
 import java.io.IOException;
 
@@ -28,11 +29,10 @@ public class HelpCommand implements Command {
 
     @Override
     public String getHelp() {
-        return "Usage with arguments:\n" +
-                "\t<command>\n" +
-                "\t\t - Show <command> help.\n\n" +
-                "Description:\n" +
-                "\tShows help about commands.\n";
+        HelptextBuilder helptextBuilder = new HelptextBuilder();
+        helptextBuilder.addWithArgs("<command>", "Show <command> help.");
+        helptextBuilder.addDescription("Shows help about commands.");
+        return helptextBuilder.create();
     }
 
     @Override

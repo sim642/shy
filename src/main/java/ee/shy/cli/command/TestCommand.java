@@ -1,6 +1,7 @@
 package ee.shy.cli.command;
 
 import ee.shy.cli.Command;
+import ee.shy.cli.HelptextBuilder;
 import ee.shy.core.Repository;
 
 /**
@@ -21,7 +22,20 @@ public class TestCommand implements Command {
 
     @Override
     public String getHelp() {
-        return "Here be TestCommand's help text.";
+        HelptextBuilder helptextBuilder = new HelptextBuilder();
+        helptextBuilder.addWithArgs("test1", "test1Description");
+        helptextBuilder.addWithArgs("test2", "test2Description");
+        helptextBuilder.addWithArgs("test3", "test3Description");
+
+        helptextBuilder.addWithoutArgs("test4WithoutArgs");
+        helptextBuilder.addWithoutArgs("test5WithoutArgs");
+        helptextBuilder.addWithoutArgs("test6WithoutArgs");
+
+        helptextBuilder.addDescription("test7Description");
+        helptextBuilder.addDescription("test8Description");
+        helptextBuilder.addDescription("test9Description");
+
+        return helptextBuilder.create();
     }
 
     @Override

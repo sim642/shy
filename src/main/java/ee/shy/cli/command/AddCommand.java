@@ -1,6 +1,7 @@
 package ee.shy.cli.command;
 
 import ee.shy.cli.Command;
+import ee.shy.cli.HelptextBuilder;
 import ee.shy.core.Repository;
 
 import java.io.File;
@@ -18,11 +19,10 @@ public class AddCommand implements Command {
 
     @Override
     public String getHelp() {
-        return "Usage with arguments:\n" +
-                "\t<filename>\n" +
-                "\t\t - Add given filename to current commit\n\n" +
-                "Description:\n" +
-                "\tThis command adds <filename> to current commit.\n";
+        HelptextBuilder helptextBuilder = new HelptextBuilder();
+        helptextBuilder.addWithArgs("<filename>", "Add given filename to current commit");
+        helptextBuilder.addDescription("This command adds <filename> to current commit.");
+        return helptextBuilder.create();
     }
 
     @Override
