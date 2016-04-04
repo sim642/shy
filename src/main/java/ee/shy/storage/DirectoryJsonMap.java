@@ -1,6 +1,5 @@
 package ee.shy.storage;
 
-import ee.shy.KeyableSimpleMap;
 import ee.shy.io.Json;
 import ee.shy.io.Jsonable;
 
@@ -10,7 +9,7 @@ import java.nio.file.Path;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class DirectoryJsonMap<T extends Jsonable> implements KeyableSimpleMap<String, T> {
+public class DirectoryJsonMap<T extends Jsonable> implements NamedObjectMap<T> {
     private final Class<T> classofT;
     private final Path directory;
 

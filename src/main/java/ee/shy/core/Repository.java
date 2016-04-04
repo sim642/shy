@@ -27,7 +27,7 @@ public class Repository {
     private final File rootDirectory;
 
     private final DataStorage storage;
-    private final DirectoryJsonMap<Branch> branches;
+    private final NamedObjectMap<Branch> branches;
 
     /**
      * Constructs a new repository class.
@@ -205,7 +205,7 @@ public class Repository {
         author.write(new FileOutputStream(new File(repositoryDirectory, "author")));
     }
 
-    public DirectoryJsonMap<Branch> getBranches() {
+    public NamedObjectMap<Branch> getBranches() {
         return branches;
     }
 }
