@@ -5,6 +5,9 @@ import ee.shy.core.Repository;
 
 import java.io.IOException;
 
+/**
+ * Command for listing existing branches.
+ */
 public class ListCommand implements Command {
     @Override
     public void execute(String[] args) throws IOException {

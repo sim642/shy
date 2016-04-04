@@ -5,6 +5,9 @@ import ee.shy.cli.command.branch.*;
 import ee.shy.cli.command.branch.AddCommand;
 import ee.shy.cli.command.branch.RemoveCommand;
 
+/**
+ * Supercommand containing branch related commands.
+ */
 public class BranchCommand extends SuperCommand {
     public BranchCommand() {
         add("add", new AddCommand());

@@ -7,6 +7,9 @@ import ee.shy.storage.Hash;
 
 import java.io.IOException;
 
+/**
+ * Command for adding new branches.
+ */
 public class AddCommand implements Command {
     @Override
     public void execute(String[] args) throws IOException {

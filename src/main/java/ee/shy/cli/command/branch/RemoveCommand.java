@@ -5,6 +5,9 @@ import ee.shy.core.Repository;
 
 import java.io.IOException;
 
+/**
+ * Command for removing branches.
+ */
 public class RemoveCommand implements Command {
     @Override
     public void execute(String[] args) throws IOException {

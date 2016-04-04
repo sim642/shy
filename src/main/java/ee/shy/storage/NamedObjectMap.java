@@ -2,6 +2,10 @@ package ee.shy.storage;
 
 import ee.shy.KeyableSimpleMap;
 
+/**
+ * Interface for simplified {@link java.util.Map} for {@link String} keys.
+ * @param <T> type of values in this map
+ */
 public interface NamedObjectMap<T> extends KeyableSimpleMap<String, T> {
 
 }

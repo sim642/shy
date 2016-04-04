@@ -9,10 +9,26 @@ import java.nio.file.Path;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * Simple map for storing named objects as JSON in a directory.
+ * @param <T> type of objects in this map
+ */
 public class DirectoryJsonMap<T extends Jsonable> implements NamedObjectMap<T> {
+    /**
+     * Class of objects.
+     */
     private final Class<T> classofT;
+
+    /**
+     * Directory used for files with keys as their name.
+     */
     private final Path directory;
 
+    /**
+     * Creates a new directory JSON map for objects of given class into given directory.
+     * @param classofT class of objects
+     * @param directory directory used for storing named JSON objects
+     */
     public DirectoryJsonMap(Class<T> classofT, Path directory) {
         this.classofT = classofT;
         this.directory = directory;
