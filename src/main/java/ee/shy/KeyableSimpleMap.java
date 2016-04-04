@@ -18,6 +18,12 @@ public interface KeyableSimpleMap<K, V> extends UnmodifiableSimpleMap<K, V> {
     void put(K key, V value);
 
     /**
+     * Removes the given key from this map.
+     * @param key key to remove
+     */
+    void remove(K key);
+
+    /**
      * Returns a {@link Set} of the keys contained in this map.
      * @return a set of the keys contained in this map
      */
