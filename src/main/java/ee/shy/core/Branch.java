@@ -10,13 +10,13 @@ public class Branch extends Jsonable {
     /**
      * Branch's commit hash.
      */
-    private final Hash hash;
+    private final Hash commit;
 
     /**
      * Constructs a branch with given commit hash.
-     * @param hash commit hash for branch
+     * @param commit commit hash for branch
      */
-    public Branch(Hash hash) {
-        this.hash = hash;
+    public Branch(Hash commit) {
+        this.commit = commit;
     }
 }
