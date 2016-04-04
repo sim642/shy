@@ -86,13 +86,10 @@ public class Repository {
             }
 
             // The following will be refactored later in the project development(Phase 2)
-            File master = new File(new File(repositoryDirectory, "branches"), "master");
             File current = new File(repositoryDirectory, "current");
-            master.createNewFile();
-
-            TeeOutputStream teeOutputStream = new TeeOutputStream(new FileOutputStream(master), new FileOutputStream(current));
-            teeOutputStream.write(Hash.ZERO.toString().getBytes());
-            teeOutputStream.close();
+            try (FileOutputStream currentStream = new FileOutputStream(current)) {
+                currentStream.write(Hash.ZERO.toString().getBytes());
+            }
 
             // TODO: 26.03.16 Create a config file to home directory upon installation to get author's details from.
             Author author = new Author(null, null);
@@ -100,7 +97,10 @@ public class Repository {
 
             System.out.println("Initialized a shy repository in " + currentDirectory.getAbsolutePath());
 
-            return new Repository(currentDirectory);
+            Repository repository = new Repository(currentDirectory);
+            repository.getBranches().put("master", new Branch(Hash.ZERO));
+
+            return repository;
         }
         else {
             throw new IOException("Repository initialization failed!");
