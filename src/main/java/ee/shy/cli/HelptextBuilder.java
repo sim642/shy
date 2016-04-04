@@ -27,16 +27,19 @@ public class HelptextBuilder implements Builder<String> {
      */
     private final List<String> descriptions = new ArrayList<>();
 
-    public void addWithArgs(String command, String description) {
+    public HelptextBuilder addWithArgs(String command, String description) {
         commandWithArgs.put(command, description);
+        return this;
     }
 
-    public void addWithoutArgs(String description) {
+    public HelptextBuilder addWithoutArgs(String description) {
         commandWithoutArgs.add(description);
+        return this;
     }
 
-    public void addDescription(String description) {
+    public HelptextBuilder addDescription(String description) {
         descriptions.add(description);
+        return this;
     }
 
     /**

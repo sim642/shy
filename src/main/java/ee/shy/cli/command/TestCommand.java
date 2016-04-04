@@ -22,20 +22,19 @@ public class TestCommand implements Command {
 
     @Override
     public String getHelp() {
-        HelptextBuilder helptextBuilder = new HelptextBuilder();
-        helptextBuilder.addWithArgs("test1", "test1Description");
-        helptextBuilder.addWithArgs("test2", "test2Description");
-        helptextBuilder.addWithArgs("test3", "test3Description");
+        return new HelptextBuilder()
+            .addWithArgs("test1", "test1Description")
+            .addWithArgs("test2", "test2Description")
+            .addWithArgs("test3", "test3Description")
 
-        helptextBuilder.addWithoutArgs("test4WithoutArgs");
-        helptextBuilder.addWithoutArgs("test5WithoutArgs");
-        helptextBuilder.addWithoutArgs("test6WithoutArgs");
+            .addWithoutArgs("test4WithoutArgs")
+            .addWithoutArgs("test5WithoutArgs")
+            .addWithoutArgs("test6WithoutArgs")
 
-        helptextBuilder.addDescription("test7Description");
-        helptextBuilder.addDescription("test8Description");
-        helptextBuilder.addDescription("test9Description");
-
-        return helptextBuilder.create();
+            .addDescription("test7Description")
+            .addDescription("test8Description")
+            .addDescription("test9Description")
+            .create();
     }
 
     @Override

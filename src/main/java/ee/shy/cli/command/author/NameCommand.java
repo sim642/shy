@@ -30,10 +30,10 @@ public class NameCommand implements Command {
 
     @Override
     public String getHelp() {
-        HelptextBuilder helptextBuilder = new HelptextBuilder();
-        helptextBuilder.addWithArgs("<name>", "set author's name.");
-        helptextBuilder.addWithoutArgs("get author's name.");
-        return helptextBuilder.create();
+        return new HelptextBuilder()
+            .addWithArgs("<name>", "set author's name.")
+            .addWithoutArgs("get author's name.")
+            .create();
     }
 
     @Override

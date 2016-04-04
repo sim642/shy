@@ -19,10 +19,10 @@ public class AddCommand implements Command {
 
     @Override
     public String getHelp() {
-        HelptextBuilder helptextBuilder = new HelptextBuilder();
-        helptextBuilder.addWithArgs("<filename>", "Add given filename to current commit");
-        helptextBuilder.addDescription("This command adds <filename> to current commit.");
-        return helptextBuilder.create();
+        return new HelptextBuilder()
+            .addWithArgs("<filename>", "Add given filename to current commit")
+            .addDescription("This command adds <filename> to current commit.")
+            .create();
     }
 
     @Override

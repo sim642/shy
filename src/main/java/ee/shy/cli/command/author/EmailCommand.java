@@ -30,10 +30,9 @@ public class EmailCommand implements Command {
 
     @Override
     public String getHelp() {
-        HelptextBuilder helptextBuilder = new HelptextBuilder();
-        helptextBuilder.addWithArgs("<email>", "set author's email.");
-        helptextBuilder.addWithoutArgs("get author's email.");
-        return helptextBuilder.create();
+        return new HelptextBuilder()
+            .addWithArgs("<email>", "set author's email.")
+            .addWithoutArgs("get author's email.").create();
     }
 
     @Override

@@ -29,10 +29,10 @@ public class HelpCommand implements Command {
 
     @Override
     public String getHelp() {
-        HelptextBuilder helptextBuilder = new HelptextBuilder();
-        helptextBuilder.addWithArgs("<command>", "Show <command> help.");
-        helptextBuilder.addDescription("Shows help about commands.");
-        return helptextBuilder.create();
+        return new HelptextBuilder()
+            .addWithArgs("<command>", "Show <command> help.")
+            .addDescription("Shows help about commands.")
+            .create();
     }
 
     @Override

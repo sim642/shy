@@ -19,10 +19,10 @@ public class RemoveCommand implements Command {
 
     @Override
     public String getHelp() {
-        HelptextBuilder helptextBuilder = new HelptextBuilder();
-        helptextBuilder.addWithArgs("<filename>", "Remove given filename from current commit");
-        helptextBuilder.addDescription("This command removes <filename> from current commit if present.");
-        return helptextBuilder.create();
+        return new HelptextBuilder()
+            .addWithArgs("<filename>", "Remove given filename from current commit")
+            .addDescription("This command removes <filename> from current commit if present.")
+            .create();
     }
 
     @Override

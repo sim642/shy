@@ -21,10 +21,10 @@ public class CommitCommand implements Command {
 
     @Override
     public String getHelp() {
-        HelptextBuilder helptextBuilder = new HelptextBuilder();
-        helptextBuilder.addWithArgs("<message>", "Commit changes with given message");
-        helptextBuilder.addDescription("Create and store a snapshot of current commit with <message>.");
-        return helptextBuilder.create();
+        return new HelptextBuilder()
+            .addWithArgs("<message>", "Commit changes with given message")
+            .addDescription("Create and store a snapshot of current commit with <message>.")
+            .create();
     }
 
     @Override

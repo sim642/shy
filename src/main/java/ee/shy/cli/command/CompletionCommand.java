@@ -36,10 +36,10 @@ public class CompletionCommand implements Command {
 
     @Override
     public String getHelp() {
-        HelptextBuilder helptextBuilder = new HelptextBuilder();
-        helptextBuilder.addWithArgs("<arg1> <arg2> ...", "Generate completions list for given arguments list.");
-        helptextBuilder.addDescription("Generates a list of completions to be used by completion scripts.");
-        return helptextBuilder.create();
+        return new HelptextBuilder()
+            .addWithArgs("<arg1> <arg2> ...", "Generate completions list for given arguments list.")
+            .addDescription("Generates a list of completions to be used by completion scripts.")
+            .create();
     }
 
     @Override
