@@ -2,10 +2,7 @@ package ee.shy.cli;
 
 import ee.shy.Builder;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Class for building help text with preset format
@@ -15,7 +12,7 @@ public class HelptextBuilder implements Builder<String> {
     /**
      * Data structure that contains command's argument and its corresponding description.
      */
-    private final Map<String, String> commandWithArgs = new HashMap<>();
+    private final Map<String, String> commandWithArgs = new LinkedHashMap<>();
 
     /**
      * List that provides information about executing the command without arguments.
