@@ -1,6 +1,4 @@
-package ee.shy.storage;
-
-import ee.shy.KeyableSimpleMap;
+package ee.shy.map;
 
 /**
  * Interface for simplified {@link java.util.Map} for {@link String} keys.

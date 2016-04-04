@@ -1,4 +1,4 @@
-package ee.shy.storage;
+package ee.shy.map;
 
 import ee.shy.io.Json;
 import ee.shy.io.Jsonable;

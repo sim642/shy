@@ -1,13 +1,12 @@
 package ee.shy.storage;
 
-import ee.shy.UnkeyableSimpleMap;
+import ee.shy.map.UnkeyableSimpleMap;
 import org.apache.commons.io.IOUtils;
 
 import java.io.*;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Set;
 
 /**
  * Map-like abstract storage class for binary data.

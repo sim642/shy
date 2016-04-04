@@ -1,4 +1,4 @@
-package ee.shy;
+package ee.shy.map;
 
 /**
  * Interface for simplified read-only {@link java.util.Map} types.

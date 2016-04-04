@@ -1,4 +1,4 @@
-package ee.shy;
+package ee.shy.map;
 
 /**
  * Interface for simplified {@link java.util.Map} types with unpickable key insertion.

@@ -1,6 +1,8 @@
 package ee.shy.core;
 
 import ee.shy.io.Json;
+import ee.shy.map.DirectoryJsonMap;
+import ee.shy.map.NamedObjectMap;
 import ee.shy.storage.*;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.TeeOutputStream;

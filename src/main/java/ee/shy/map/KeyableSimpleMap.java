@@ -1,4 +1,4 @@
-package ee.shy;
+package ee.shy.map;
 
 import java.util.Set;
 
