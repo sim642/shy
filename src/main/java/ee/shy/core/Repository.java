@@ -27,6 +27,7 @@ public class Repository {
     private final File rootDirectory;
 
     private final DataStorage storage;
+    private final DirectoryJsonMap<Branch> branches;
 
     /**
      * Constructs a new repository class.
@@ -40,6 +41,7 @@ public class Repository {
                         new FlatFileLocator(new File(repositoryDirectory, "storage"))
                 ),
                 new PlainFileAccessor());
+        branches = new DirectoryJsonMap<>(Branch.class, repositoryDirectory.toPath().resolve("branches"));
     }
 
     /**
@@ -201,5 +203,9 @@ public class Repository {
      */
     public void setAuthor(Author author) throws IOException {
         author.write(new FileOutputStream(new File(repositoryDirectory, "author")));
+    }
+
+    public DirectoryJsonMap<Branch> getBranches() {
+        return branches;
     }
 }
