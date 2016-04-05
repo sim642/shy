@@ -1,5 +1,6 @@
 package ee.shy.storage;
 
+import ee.shy.map.UnkeyableSimpleMap;
 import org.apache.commons.io.IOUtils;
 
 import java.io.*;
@@ -15,14 +16,14 @@ import java.security.NoSuchAlgorithmException;
  * @see MapStorage
  * @see FileStorage
  */
-public abstract class DataStorage {
+public abstract class DataStorage implements UnkeyableSimpleMap<Hash, InputStream> {
     /**
      * Adds binary data from input stream to storage.
      * @param source input stream to get data from
      * @return hash of stored data
-     * @throws IOException if there was a problem reading the input stream or writing to some output
      */
-    public final Hash add(InputStream source) throws IOException {
+    @Override
+    public final Hash put(InputStream source) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-1");
             DigestInputStream dis = new DigestInputStream(source, md);
@@ -31,10 +32,13 @@ public abstract class DataStorage {
             IOUtils.copy(dis, baos);
 
             Hash hash = new Hash(md);
-            add(hash, new ByteArrayInputStream(baos.toByteArray()));
+            put(hash, new ByteArrayInputStream(baos.toByteArray()));
             return hash;
         }
         catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+        catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
@@ -45,16 +49,16 @@ public abstract class DataStorage {
      * @param source input stream to get data from
      * @throws IOException if there was a problem reading the input stream or writing to some output
      */
-    protected abstract void add(Hash hash, InputStream source) throws IOException;
+    protected abstract void put(Hash hash, InputStream source) throws IOException;
 
     /**
      * Gets binary data as input stream by hash.
      * Input data is checked against given hash to ensure correctness.
      * @param hash hash of data to get
      * @return input stream of data
-     * @throws IOException if there was a problem reading from some input
      */
-    public final InputStream get(Hash hash) throws IOException {
+    @Override
+    public final InputStream get(Hash hash) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-1");
             DigestInputStream dis = new DigestInputStream(getUnchecked(hash), md);
@@ -69,6 +73,9 @@ public abstract class DataStorage {
             return new ByteArrayInputStream(baos.toByteArray());
         }
         catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+        catch (IOException e) {
             throw new RuntimeException(e);
         }
     }

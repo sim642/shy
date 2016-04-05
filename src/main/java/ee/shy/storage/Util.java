@@ -1,6 +1,6 @@
 package ee.shy.storage;
 
-import java.io.*;
+import java.io.File;
 
 /**
  * Utilities class for storage-related functions.

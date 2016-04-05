@@ -4,7 +4,9 @@ import ee.shy.io.Jsonable;
 import ee.shy.storage.DataStorage;
 import ee.shy.storage.Hash;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.TreeMap;
@@ -75,12 +77,12 @@ public class Tree extends Jsonable {
 
             for (File file : files) {
                 if (file.isFile()) {
-                    Hash hash = storage.add(new FileInputStream(file));
+                    Hash hash = storage.put(new FileInputStream(file));
                     addItem(file.getName(), new TreeItem(TreeItem.Type.FILE, hash));
                 }
                 else if (file.isDirectory()) {
                     Tree tree = new Builder(storage).fromDirectory(file).create();
-                    Hash hash = storage.add(tree.inputify());
+                    Hash hash = storage.put(tree.inputify());
                     addItem(file.getName(), new TreeItem(TreeItem.Type.TREE, hash));
                 }
             }

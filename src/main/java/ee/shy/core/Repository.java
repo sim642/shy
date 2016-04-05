@@ -1,6 +1,8 @@
 package ee.shy.core;
 
 import ee.shy.io.Json;
+import ee.shy.map.DirectoryJsonMap;
+import ee.shy.map.NamedObjectMap;
 import ee.shy.storage.*;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.TeeOutputStream;
@@ -27,6 +29,7 @@ public class Repository {
     private final File rootDirectory;
 
     private final DataStorage storage;
+    private final NamedObjectMap<Branch> branches;
 
     /**
      * Constructs a new repository class.
@@ -40,6 +43,7 @@ public class Repository {
                         new FlatFileLocator(new File(repositoryDirectory, "storage"))
                 ),
                 new PlainFileAccessor());
+        branches = new DirectoryJsonMap<>(Branch.class, repositoryDirectory.toPath().resolve("branches"));
     }
 
     /**
@@ -82,13 +86,10 @@ public class Repository {
             }
 
             // The following will be refactored later in the project development(Phase 2)
-            File master = new File(new File(repositoryDirectory, "branches"), "master");
             File current = new File(repositoryDirectory, "current");
-            master.createNewFile();
-
-            TeeOutputStream teeOutputStream = new TeeOutputStream(new FileOutputStream(master), new FileOutputStream(current));
-            teeOutputStream.write(Hash.ZERO.toString().getBytes());
-            teeOutputStream.close();
+            try (FileOutputStream currentStream = new FileOutputStream(current)) {
+                currentStream.write(Hash.ZERO.toString().getBytes());
+            }
 
             // TODO: 26.03.16 Create a config file to home directory upon installation to get author's details from.
             Author author = new Author(null, null);
@@ -96,7 +97,10 @@ public class Repository {
 
             System.out.println("Initialized a shy repository in " + currentDirectory.getAbsolutePath());
 
-            return new Repository(currentDirectory);
+            Repository repository = new Repository(currentDirectory);
+            repository.getBranches().put("master", new Branch(Hash.ZERO));
+
+            return repository;
         }
         else {
             throw new IOException("Repository initialization failed!");
@@ -134,7 +138,7 @@ public class Repository {
      */
     private Hash createCommitTree() throws IOException {
         Tree tree = new Tree.Builder(storage).fromDirectory(new File(repositoryDirectory, "commit")).create();
-        return storage.add(tree.inputify());
+        return storage.put(tree.inputify());
     }
 
     /**
@@ -154,7 +158,7 @@ public class Repository {
                 .setTimeCurrent()
                 .setMessage(message)
                 .create();
-        Hash hash = storage.add(commit.inputify());
+        Hash hash = storage.put(commit.inputify());
 
         File branchFile = new File(new File(repositoryDirectory, "branches"), "master"); // TODO: 26.03.16 update correct branch
         IOUtils.write(hash.toString(), new TeeOutputStream(new FileOutputStream(currentFile), new FileOutputStream(branchFile)), "UTF-8");
@@ -201,5 +205,9 @@ public class Repository {
      */
     public void setAuthor(Author author) throws IOException {
         author.write(new FileOutputStream(new File(repositoryDirectory, "author")));
+    }
+
+    public NamedObjectMap<Branch> getBranches() {
+        return branches;
     }
 }
