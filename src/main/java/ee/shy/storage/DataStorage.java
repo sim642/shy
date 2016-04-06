@@ -87,5 +87,5 @@ public abstract class DataStorage implements UnkeyableSimpleMap<Hash, InputStrea
      * @return input stream of data
      * @throws IOException if there was a problem reading from some input
      */
-    public abstract InputStream getUnchecked(Hash hash) throws IOException;
+    protected abstract InputStream getUnchecked(Hash hash) throws IOException;
 }
