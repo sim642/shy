@@ -94,9 +94,14 @@ public class Repository {
      * @param path file which's path to transform
      * @return transformed path in ".shy/commit/"
      */
-    private Path getCommitPath(Path path) {
+    private Path getCommitPath(Path path) throws IOException {
         Path commitPath = getRepositoryPath().resolve("commit");
-        return commitPath.resolve(rootPath.relativize(path.toAbsolutePath()));
+        /*
+            Beware of the pitfalls of oh-so-wonderful Path:
+            Path#toAbsolutePath does NOT normalize the path to an actual absolute path,
+            but simply prepends the current working directory.
+         */
+        return commitPath.resolve(rootPath.relativize(path.toRealPath()));
     }
 
     /**
@@ -106,6 +111,11 @@ public class Repository {
      */
     public void add(Path path) throws IOException {
         Path commitPath = getCommitPath(path);
+        /*
+            Beware of the pitfalls of oh-so-wonderful Path:
+            Files.createDirectories does unintuitive things for paths ending in "..".
+            For example, "/tmp/foo/bar/.." will cause "/tmp/foo/bar/" to be created yet it's not in the normalized path.
+         */
         Files.createDirectories(commitPath.getParent());
         Files.copy(path, commitPath);
     }
