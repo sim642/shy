@@ -27,6 +27,7 @@ public class RootCommand extends SuperCommand {
         add("remove", new RemoveCommand());
         add("commit", new CommitCommand());
         add("author", new AuthorCommand());
+        add("diff", new DiffCommand());
     }
 
     @Override
