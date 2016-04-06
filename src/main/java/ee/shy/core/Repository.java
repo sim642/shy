@@ -138,7 +138,7 @@ public class Repository {
      */
     private Hash createCommitTree() throws IOException {
         Tree tree = new Tree.Builder(storage).fromDirectory(new File(repositoryDirectory, "commit")).create();
-        return storage.put(tree.inputify());
+        return storage.put(tree);
     }
 
     /**
@@ -158,7 +158,7 @@ public class Repository {
                 .setTimeCurrent()
                 .setMessage(message)
                 .create();
-        Hash hash = storage.put(commit.inputify());
+        Hash hash = storage.put(commit);
 
         File branchFile = new File(new File(repositoryDirectory, "branches"), "master"); // TODO: 26.03.16 update correct branch
         IOUtils.write(hash.toString(), new TeeOutputStream(new FileOutputStream(currentFile), new FileOutputStream(branchFile)), "UTF-8");

@@ -14,7 +14,7 @@ import java.util.TreeMap;
 /**
  * Class representing a directory tree.
  */
-public class Tree extends Jsonable {
+public class Tree implements Jsonable {
     /**
      * Mapping of names to {@link TreeItem}s.
      */
@@ -82,7 +82,7 @@ public class Tree extends Jsonable {
                 }
                 else if (file.isDirectory()) {
                     Tree tree = new Builder(storage).fromDirectory(file).create();
-                    Hash hash = storage.put(tree.inputify());
+                    Hash hash = storage.put(tree);
                     addItem(file.getName(), new TreeItem(TreeItem.Type.TREE, hash));
                 }
             }

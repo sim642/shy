@@ -1,10 +1,12 @@
 package ee.shy.storage;
 
+import ee.shy.io.Jsonable;
 import ee.shy.map.UnkeyableSimpleMap;
 import org.apache.commons.io.IOUtils;
 
 import java.io.*;
 import java.security.DigestInputStream;
+import java.security.DigestOutputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -30,6 +32,31 @@ public abstract class DataStorage implements UnkeyableSimpleMap<Hash, InputStrea
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
             IOUtils.copy(dis, baos);
+
+            Hash hash = new Hash(md);
+            put(hash, new ByteArrayInputStream(baos.toByteArray()));
+            return hash;
+        }
+        catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Adds object as JSON to storage.
+     * @param object object to store
+     * @return hash of stored data
+     */
+    public final Hash put(Jsonable object) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-1");
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            DigestOutputStream dos = new DigestOutputStream(baos, md);
+
+            object.write(dos);
 
             Hash hash = new Hash(md);
             put(hash, new ByteArrayInputStream(baos.toByteArray()));

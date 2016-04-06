@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Class representing a commit.
  */
-public class Commit extends Jsonable {
+public class Commit implements Jsonable {
     /**
      * Commit's tree hash.
      */
