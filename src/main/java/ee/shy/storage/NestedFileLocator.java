@@ -1,5 +1,7 @@
 package ee.shy.storage;
 
+import ee.shy.io.PathUtils;
+
 import java.io.IOException;
 import java.nio.file.Path;
 
@@ -62,7 +64,7 @@ public class NestedFileLocator extends FileLocator {
     @Override
     public Path locateAdd(Hash hash) throws IOException {
         Path path = locate(hash);
-        Util.ensurePath(path);
+        PathUtils.createParentDirectories(path);
         return path;
     }
 }

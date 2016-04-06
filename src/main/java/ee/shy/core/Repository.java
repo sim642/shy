@@ -1,7 +1,7 @@
 package ee.shy.core;
 
 import ee.shy.io.Json;
-import ee.shy.io.Utils;
+import ee.shy.io.PathUtils;
 import ee.shy.map.DirectoryJsonMap;
 import ee.shy.map.NamedObjectMap;
 import ee.shy.storage.*;
@@ -43,7 +43,7 @@ public class Repository {
      * @return repository object if existing repository was found, null otherwise
      */
     public static Repository newExisting() throws RepositoryNotFoundException, IOException {
-        Path currentPath = Utils.getCurrentPath();
+        Path currentPath = PathUtils.getCurrentPath();
         while (currentPath != null) {
             Path repositoryPath = getRepositoryPath(currentPath);
             if (Files.isDirectory(repositoryPath)) {
@@ -61,7 +61,7 @@ public class Repository {
      * @throws IOException if repository hierarchy generation fails
      */
     public static Repository newEmpty() throws IOException {
-        Path repositoryPath = getRepositoryPath(Utils.getCurrentPath());
+        Path repositoryPath = getRepositoryPath(PathUtils.getCurrentPath());
         Files.createDirectory(repositoryPath);
 
         String[] subDirectories = {"commit", "branches", "tags", "storage"};

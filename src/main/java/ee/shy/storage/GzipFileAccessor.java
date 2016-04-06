@@ -1,5 +1,6 @@
 package ee.shy.storage;
 
+import ee.shy.io.PathUtils;
 import org.apache.commons.io.IOUtils;
 
 import java.io.*;
@@ -20,7 +21,7 @@ public class GzipFileAccessor implements FileAccessor {
 
     @Override
     public void add(Path path, InputStream source) throws IOException {
-        try (GZIPOutputStream target = new GZIPOutputStream(Files.newOutputStream(Util.addExtension(path, EXTENSION)))) {
+        try (GZIPOutputStream target = new GZIPOutputStream(Files.newOutputStream(PathUtils.addExtension(path, EXTENSION)))) {
             IOUtils.copy(source, target);
         }
     }
@@ -28,7 +29,7 @@ public class GzipFileAccessor implements FileAccessor {
     @Override
     public InputStream get(Path path) throws IOException {
         try {
-            return new GZIPInputStream(Files.newInputStream(Util.addExtension(path, EXTENSION)));
+            return new GZIPInputStream(Files.newInputStream(PathUtils.addExtension(path, EXTENSION)));
         }
         catch (FileNotFoundException e) {
             return null;
