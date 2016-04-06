@@ -4,6 +4,8 @@ import ee.shy.cli.Command;
 import ee.shy.cli.HelptextBuilder;
 import ee.shy.core.Repository;
 
+import java.io.IOException;
+
 /**
  * A simple command for testing.
  */
@@ -15,7 +17,7 @@ public class TestCommand implements Command {
     }
 
     @Override
-    public void execute(String[] args) {
+    public void execute(String[] args) throws IOException {
         System.out.println(name);
         Repository repository = Repository.newExisting();
     }

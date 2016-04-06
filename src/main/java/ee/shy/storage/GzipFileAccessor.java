@@ -3,6 +3,8 @@ package ee.shy.storage;
 import org.apache.commons.io.IOUtils;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -17,16 +19,16 @@ public class GzipFileAccessor implements FileAccessor {
     private static final String EXTENSION = ".gz"; // TODO: 9.03.16 create superclass for extension handling
 
     @Override
-    public void add(File file, InputStream source) throws IOException {
-        try (GZIPOutputStream target = new GZIPOutputStream(new FileOutputStream(Util.addExtension(file, EXTENSION)))) {
+    public void add(Path path, InputStream source) throws IOException {
+        try (GZIPOutputStream target = new GZIPOutputStream(Files.newOutputStream(Util.addExtension(path, EXTENSION)))) {
             IOUtils.copy(source, target);
         }
     }
 
     @Override
-    public InputStream get(File file) throws IOException {
+    public InputStream get(Path path) throws IOException {
         try {
-            return new GZIPInputStream(new FileInputStream(Util.addExtension(file, EXTENSION)));
+            return new GZIPInputStream(Files.newInputStream(Util.addExtension(path, EXTENSION)));
         }
         catch (FileNotFoundException e) {
             return null;

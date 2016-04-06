@@ -1,6 +1,8 @@
 package ee.shy.storage;
 
-import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
  * Utilities class for storage-related functions.
@@ -12,28 +14,20 @@ public class Util {
 
     /**
      * Adds given extension to file path.
-     * @param file file path to extend
+     * @param path file path to extend
      * @param extension extension to add
      * @return file path with given extension
      */
-    public static File addExtension(File file, String extension) {
-        return new File(file.getAbsolutePath() + extension);
+    public static Path addExtension(Path path, String extension) {
+        return path.resolveSibling(path.getFileName().toString() + extension);
     }
 
     /**
      * Ensures file path's validity by creating required missing parent directories.
-     * @param file file path which's validity to ensure
-     * @return whether file path is now valid
+     * @param path file path which's validity to ensure
      */
-    public static boolean ensurePath(File file) {
-        if (file.isDirectory())
-            return true;
-        else {
-            File parent = file.getParentFile();
-            if (parent.exists())
-                return parent.isDirectory();
-            else
-                return parent.mkdirs();
-        }
+    public static void ensurePath(Path path) throws IOException {
+        if (!Files.isDirectory(path))
+            Files.createDirectories(path.getParent());
     }
 }

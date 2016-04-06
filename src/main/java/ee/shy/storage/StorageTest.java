@@ -3,14 +3,15 @@ package ee.shy.storage;
 import org.apache.commons.io.IOUtils;
 
 import java.io.*;
+import java.nio.file.Paths;
 import java.util.Arrays;
 
 public class StorageTest {
     public static void main(String[] args) throws IOException {
         DataStorage storage = new FileStorage(
             Arrays.asList(
-                new GitFileLocator(new File("teststore")),
-                new FlatFileLocator(new File("teststore2"))),
+                new GitFileLocator(Paths.get("teststore")),
+                new FlatFileLocator(Paths.get("teststore2"))),
             new AggregateFileAccessor(Arrays.asList(
                 new GzipFileAccessor(),
                 new PlainFileAccessor())));

@@ -28,11 +28,11 @@ public class Repository {
      * Constructs a new repository class.
      * @param rootPath root directory for repository
      */
-    private Repository(Path rootPath) {
+    private Repository(Path rootPath) throws IOException {
         this.rootPath = rootPath;
         this.storage = new FileStorage(
                 Arrays.asList(
-                        new FlatFileLocator(getRepositoryPath().resolve("storage").toFile())
+                        new FlatFileLocator(getRepositoryPath().resolve("storage"))
                 ),
                 new PlainFileAccessor());
         branches = new DirectoryJsonMap<>(Branch.class, getRepositoryPath().resolve("branches"));
@@ -42,7 +42,7 @@ public class Repository {
      * Tries to find an existing repository in the directory shy was executed or its parent directories.
      * @return repository object if existing repository was found, null otherwise
      */
-    public static Repository newExisting() throws RepositoryNotFoundException {
+    public static Repository newExisting() throws RepositoryNotFoundException, IOException {
         Path currentPath = Utils.getCurrentPath();
         while (currentPath != null) {
             Path repositoryPath = getRepositoryPath(currentPath);

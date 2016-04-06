@@ -1,6 +1,8 @@
 package ee.shy.storage;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
 
 /**
  * File locator for having hashes in nested directory structure in the root directory:
@@ -29,7 +31,7 @@ public class NestedFileLocator extends FileLocator {
      * @param root root directory to use
      * @param directoryLength length of each subdirectory name
      */
-    public NestedFileLocator(File root, int directoryLength) {
+    public NestedFileLocator(Path root, int directoryLength) throws IOException {
         this(root, directoryLength, DEPTH_UNLIMITED);
     }
 
@@ -39,28 +41,29 @@ public class NestedFileLocator extends FileLocator {
      * @param directoryLength length of each subdirectory name
      * @param depthMax maximum nesting depth, unlimited with {@link #DEPTH_UNLIMITED}
      */
-    public NestedFileLocator(File root, int directoryLength, int depthMax) {
+    public NestedFileLocator(Path root, int directoryLength, int depthMax) throws IOException {
         super(root);
         this.directoryLength = directoryLength;
         this.depthMax = depthMax;
     }
 
     @Override
-    public File locate(Hash hash) {
+    public Path locate(Hash hash) {
         String hashString = hash.toString();
-        File file = root;
+        File file = root.toFile(); // TODO: 6.04.16 don't use File
 
         int depth;
         for (depth = 0; (depthMax == DEPTH_UNLIMITED || depth < depthMax) && (directoryLength * (depth + 1) < hashString.length()); depth++)
             file = new File(file, hashString.substring(directoryLength * depth, directoryLength * (depth + 1)));
 
         file = new File(file, hashString.substring(directoryLength * depth));
-        return file;
+        return file.toPath();
     }
 
     @Override
-    public File locateAdd(Hash hash) {
-        File file = locate(hash);
-        return Util.ensurePath(file) ? file : null;
+    public Path locateAdd(Hash hash) throws IOException {
+        Path path = locate(hash);
+        Util.ensurePath(path);
+        return path;
     }
 }
