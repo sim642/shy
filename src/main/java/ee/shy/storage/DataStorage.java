@@ -1,5 +1,6 @@
 package ee.shy.storage;
 
+import ee.shy.io.Json;
 import ee.shy.io.Jsonable;
 import ee.shy.map.UnkeyableSimpleMap;
 import org.apache.commons.io.IOUtils;
@@ -105,6 +106,18 @@ public abstract class DataStorage implements UnkeyableSimpleMap<Hash, InputStrea
         catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * Gets object from JSON by hash.
+     * @param hash hash of object to get
+     * @param classofT class of object to get
+     * @param <T> type of obect to get
+     * @return object from JSON
+     * @throws IOException
+     */
+    public final <T> T get(Hash hash, Class<T> classofT) throws IOException {
+        return Json.read(get(hash), classofT);
     }
 
     /**
