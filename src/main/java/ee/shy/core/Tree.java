@@ -4,12 +4,11 @@ import ee.shy.io.Jsonable;
 import ee.shy.storage.DataStorage;
 import ee.shy.storage.Hash;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.TreeMap;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Class representing a directory tree.
@@ -68,22 +67,20 @@ public class Tree extends Jsonable {
          * @return builder itself
          * @throws IOException if there was a problem reading an addable file or tree to storage
          */
-        public Builder fromDirectory(File directory) throws IOException {
-            File[] files = directory.listFiles();
-            if (files == null)
-                throw new IOException("Attempted to build Tree from a non-directory");
+        public Builder fromDirectory(Path directory) throws IOException {
+            List<Path> files = new ArrayList<>(Files.list(directory).collect(Collectors.toList())); // TODO: 6.04.16 Stream#toCollection for creating ArrayList
 
-            Arrays.sort(files); // guarantee stable order
+            Collections.sort(files);
 
-            for (File file : files) {
-                if (file.isFile()) {
-                    Hash hash = storage.put(new FileInputStream(file));
-                    addItem(file.getName(), new TreeItem(TreeItem.Type.FILE, hash));
+            for (Path file : files) {
+                if (Files.isRegularFile(file)) {
+                    Hash hash = storage.put(Files.newInputStream(file));
+                    addItem(file.getFileName().toString(), new TreeItem(TreeItem.Type.FILE, hash));
                 }
-                else if (file.isDirectory()) {
+                else if (Files.isDirectory(file)) {
                     Tree tree = new Builder(storage).fromDirectory(file).create();
                     Hash hash = storage.put(tree.inputify());
-                    addItem(file.getName(), new TreeItem(TreeItem.Type.TREE, hash));
+                    addItem(file.getFileName().toString(), new TreeItem(TreeItem.Type.TREE, hash));
                 }
             }
 

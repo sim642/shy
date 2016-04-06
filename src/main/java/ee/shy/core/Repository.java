@@ -125,7 +125,7 @@ public class Repository {
      * @throws IOException if there was a problem storing the tree
      */
     private Hash createCommitTree() throws IOException {
-        Tree tree = new Tree.Builder(storage).fromDirectory(getRepositoryPath().resolve("commit").toFile()).create();
+        Tree tree = new Tree.Builder(storage).fromDirectory(getRepositoryPath().resolve("commit")).create();
         return storage.put(tree.inputify());
     }
 
