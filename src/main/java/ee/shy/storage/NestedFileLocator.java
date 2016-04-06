@@ -1,6 +1,5 @@
 package ee.shy.storage;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 
@@ -50,14 +49,14 @@ public class NestedFileLocator extends FileLocator {
     @Override
     public Path locate(Hash hash) {
         String hashString = hash.toString();
-        File file = root.toFile(); // TODO: 6.04.16 don't use File
+        Path path = root;
 
         int depth;
         for (depth = 0; (depthMax == DEPTH_UNLIMITED || depth < depthMax) && (directoryLength * (depth + 1) < hashString.length()); depth++)
-            file = new File(file, hashString.substring(directoryLength * depth, directoryLength * (depth + 1)));
+            path = path.resolve(hashString.substring(directoryLength * depth, directoryLength * (depth + 1)));
 
-        file = new File(file, hashString.substring(directoryLength * depth));
-        return file.toPath();
+        path = path.resolve(hashString.substring(directoryLength * depth));
+        return path;
     }
 
     @Override

@@ -16,9 +16,9 @@ public class StorageTest {
                 new GzipFileAccessor(),
                 new PlainFileAccessor())));
 
-        /*Hash h1 = storage.add(new ByteArrayInputStream("foo".getBytes("UTF-8")));
-        Hash h2 = storage.add(new ByteArrayInputStream("bar".getBytes("UTF-8")));
-        Hash h3 = storage.add(new FileInputStream("README.md"));
+        Hash h1 = storage.put(new ByteArrayInputStream("foo".getBytes("UTF-8")));
+        Hash h2 = storage.put(new ByteArrayInputStream("bar".getBytes("UTF-8")));
+        Hash h3 = storage.put(new FileInputStream("README.md"));
 
         System.out.println(h1);
         System.out.println(h2);
@@ -29,7 +29,7 @@ public class StorageTest {
         InputStream i2 = storage.get(h2);
         System.out.println(new String(IOUtils.toByteArray(i2), "UTF-8"));
         InputStream i3 = storage.get(h3);
-        IOUtils.copyStream(i3, new FileOutputStream("README2.md"));*/
+        IOUtils.copy(i3, new FileOutputStream("README2.md"));
 
         InputStream i = storage.get(new Hash("0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33"));
         System.out.println(new String(IOUtils.toByteArray(i), "UTF-8"));
