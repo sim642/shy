@@ -2,7 +2,6 @@ package ee.shy.cli;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,7 +17,7 @@ public abstract class SuperCommand implements Command {
 
     @Override
     public final void execute(String[] args) throws IOException {
-        if (args.length > 0 && subCommands.keySet().contains(args[0])) {
+        if (args.length > 0 && subCommands.containsKey(args[0])) {
             subCommands.get(args[0]).execute(argsSlice(args));
         } else if (args.length > 0){
             System.err.format("%s is not a shy command! See 'shy help'.%n", args[0]);
@@ -29,7 +28,7 @@ public abstract class SuperCommand implements Command {
 
     @Override
     public String getHelp(String[] args) {
-        if (args.length > 0 && subCommands.keySet().contains(args[0])) {
+        if (args.length > 0 && subCommands.containsKey(args[0])) {
             return subCommands.get(args[0]).getHelp(argsSlice(args));
         } else {
             StringBuilder sb = new StringBuilder();
