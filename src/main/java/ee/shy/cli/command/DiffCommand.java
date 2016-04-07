@@ -1,11 +1,11 @@
 package ee.shy.cli.command;
 
-import difflib.Chunk;
 import ee.shy.cli.Command;
 import ee.shy.core.diff.FileComparator;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.List;
 
 public class DiffCommand implements Command {
 
@@ -14,24 +14,11 @@ public class DiffCommand implements Command {
         if (args.length < 2) {
             System.err.println("Not enough parameters for diff command. See shy help diff.");
         } else {
-            FileComparator fileComparator = new FileComparator(new File(args[0]), new File(args[1]));
-            System.out.println("\nInserts");
-            for (Chunk chunk : fileComparator.getInsertsFromOriginal()) {
-                for (int i = 0; i < chunk.size(); i++) {
-                    System.out.println(chunk.getLines().get(i).toString());
-                }
-            }
-            System.out.println("\nDelete:");
-            for (Chunk chunk : fileComparator.getDeletesFromOriginal()) {
-                for (int i = 0; i < chunk.size(); i++) {
-                    System.out.println(chunk.getLines().get(i).toString());
-                }
-            }
-            System.out.println("\nChanges:");
-            for (Chunk chunk : fileComparator.getChangesFromOriginal()) {
-                for (int i = 0; i < chunk.size(); i++) {
-                    System.out.println(chunk.getLines().get(i).toString());
-                }
+            FileComparator fileComparator = new FileComparator(Paths.get(args[0]), Paths.get(args[1]));
+
+            List<String> diffStrings = fileComparator.getDiffRows();
+            for (String diffString : diffStrings) {
+                System.out.println(diffString);
             }
         }
 
