@@ -1,6 +1,7 @@
 package ee.shy.cli.command;
 
 import ee.shy.cli.Command;
+import ee.shy.cli.HelptextBuilder;
 import ee.shy.core.diff.FileComparator;
 
 import java.io.IOException;
@@ -23,11 +24,14 @@ public class DiffCommand implements Command {
 
     @Override
     public String getHelp() {
-        return null;
+        return new HelptextBuilder()
+                .addWithArgs("<filename1> <filename2>", "Show user-readable colorized diff output.")
+                .addDescription("Shows the differences between two given filenames.")
+                .create();
     }
 
     @Override
     public String getHelpBrief() {
-        return null;
+        return "Show differences";
     }
 }

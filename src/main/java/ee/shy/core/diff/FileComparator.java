@@ -14,6 +14,10 @@ public class FileComparator {
     private static final String ANSI_RED = "\u001B[31m";
     private static final String ANSI_GREEN = "\u001B[32m";
     private static final String ANSI_RESET = "\u001B[0m";
+
+    /**
+     * Constant defining how many rows before and after each difference is shown.
+     */
     private static final int CONTEXT_SIZE = 5;
 
     public FileComparator(Path original, Path comparable) {
@@ -21,6 +25,10 @@ public class FileComparator {
         this.original = original;
     }
 
+    /**
+     * Outputs {@link #getDiffRows()}'s output to terminal with colors indicating additions and removes.
+     * @throws IOException
+     */
     public void outputColorizedDiff() throws IOException {
         List<String> rows = getDiffRows();
         for (String row : rows) {
@@ -37,6 +45,11 @@ public class FileComparator {
         }
     }
 
+    /**
+     * Uses DiffUtils to generate an unified diff
+     * @return
+     * @throws IOException
+     */
     private List<String> getDiffRows() throws IOException {
         final List<String> originalFileLines = Util.fileToLines(original);
         final List<String> revisedFileLines = Util.fileToLines(comparable);
