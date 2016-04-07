@@ -34,7 +34,7 @@ public abstract class DataStorage implements UnkeyableSimpleMap<Hash, InputStrea
 
             IOUtils.copy(dis, baos);
 
-            Hash hash = new Hash(md);
+            Hash hash = new Hash(md.digest());
             put(hash, new ByteArrayInputStream(baos.toByteArray()));
             return hash;
         }
@@ -59,7 +59,7 @@ public abstract class DataStorage implements UnkeyableSimpleMap<Hash, InputStrea
 
             object.write(dos);
 
-            Hash hash = new Hash(md);
+            Hash hash = new Hash(md.digest());
             put(hash, new ByteArrayInputStream(baos.toByteArray()));
             return hash;
         }
@@ -95,7 +95,7 @@ public abstract class DataStorage implements UnkeyableSimpleMap<Hash, InputStrea
 
                 IOUtils.copy(dis, baos);
 
-                Hash hashComputed = new Hash(md);
+                Hash hashComputed = new Hash(md.digest());
                 if (!hash.equals(hashComputed))
                     throw new RuntimeException("stored file content does not match hash");
 
