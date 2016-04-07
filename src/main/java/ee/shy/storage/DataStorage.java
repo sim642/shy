@@ -89,21 +89,23 @@ public abstract class DataStorage implements UnkeyableSimpleMap<Hash, InputStrea
     public final InputStream get(Hash hash) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-1");
-            DigestInputStream dis = new DigestInputStream(getUnchecked(hash), md);
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-            IOUtils.copy(dis, baos);
+            try (DigestInputStream dis = new DigestInputStream(getUnchecked(hash), md);
+                 ByteArrayOutputStream baos = new ByteArrayOutputStream();) {
 
-            Hash hashComputed = new Hash(md);
-            if (!hash.equals(hashComputed))
-                throw new RuntimeException("stored file content does not match hash");
+                IOUtils.copy(dis, baos);
 
-            return new ByteArrayInputStream(baos.toByteArray());
+                Hash hashComputed = new Hash(md);
+                if (!hash.equals(hashComputed))
+                    throw new RuntimeException("stored file content does not match hash");
+
+                return new ByteArrayInputStream(baos.toByteArray());
+            }
+            catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
         catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
-        catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
