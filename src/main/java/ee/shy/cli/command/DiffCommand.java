@@ -5,8 +5,10 @@ import ee.shy.core.diff.FileComparator;
 
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.List;
 
+/**
+ * Command used to see differences between two given objects.
+ */
 public class DiffCommand implements Command {
 
     @Override
@@ -15,13 +17,8 @@ public class DiffCommand implements Command {
             System.err.println("Not enough parameters for diff command. See shy help diff.");
         } else {
             FileComparator fileComparator = new FileComparator(Paths.get(args[0]), Paths.get(args[1]));
-
-            List<String> diffStrings = fileComparator.getDiffRows();
-            for (String diffString : diffStrings) {
-                System.out.println(diffString);
-            }
+            fileComparator.outputColorizedDiff();
         }
-
     }
 
     @Override

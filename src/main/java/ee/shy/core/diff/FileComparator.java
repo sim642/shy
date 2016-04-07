@@ -11,6 +11,9 @@ public class FileComparator {
     private final Path original;
     private final Path comparable;
 
+    private static final String ANSI_RED = "\u001B[31m";
+    private static final String ANSI_GREEN = "\u001B[32m";
+    private static final String ANSI_RESET = "\u001B[0m";
     private static final int CONTEXT_SIZE = 5;
 
     public FileComparator(Path original, Path comparable) {
@@ -18,12 +21,26 @@ public class FileComparator {
         this.original = original;
     }
 
-    public List<String> getDiffRows() throws IOException {
+    public void outputColorizedDiff() throws IOException {
+        List<String> rows = getDiffRows();
+        for (String row : rows) {
+            switch (row.charAt(0)) {
+                case '+':
+                    System.out.println(ANSI_GREEN + row + ANSI_RESET);
+                    break;
+                case '-':
+                    System.out.println(ANSI_RED + row + ANSI_RESET);
+                    break;
+                default:
+                    System.out.println(row);
+            }
+        }
+    }
+
+    private List<String> getDiffRows() throws IOException {
         final List<String> originalFileLines = Util.fileToLines(original);
         final List<String> revisedFileLines = Util.fileToLines(comparable);
         return DiffUtils.generateUnifiedDiff(original.toString(), comparable.toString(), originalFileLines,
                 DiffUtils.diff(originalFileLines, revisedFileLines), CONTEXT_SIZE);
     }
-
-
 }
