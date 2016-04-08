@@ -30,8 +30,7 @@ public class FileComparator {
      * @throws IOException
      */
     public void outputColorizedDiff() throws IOException {
-        List<String> rows = getDiffRows();
-        for (String row : rows) {
+        for (String row :getDiffRows()) {
             switch (row.charAt(0)) {
                 case '+':
                     System.out.println(ANSI_GREEN + row + ANSI_RESET);
@@ -41,8 +40,17 @@ public class FileComparator {
                     break;
                 default:
                     System.out.println(row);
+                    break;
             }
         }
+    }
+
+    /**
+     * Output {@link #getDiffRows()}'s output to terminal without colors.
+     * @throws IOException
+     */
+    public void outputDiff() throws IOException {
+        getDiffRows().forEach(System.out::println);
     }
 
     /**

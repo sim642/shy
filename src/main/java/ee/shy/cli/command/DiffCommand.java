@@ -3,6 +3,7 @@ package ee.shy.cli.command;
 import ee.shy.cli.Command;
 import ee.shy.cli.HelptextBuilder;
 import ee.shy.core.diff.FileComparator;
+import ee.shy.core.diff.Util;
 
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -18,7 +19,11 @@ public class DiffCommand implements Command {
             System.err.println("Not enough parameters for diff command. See shy help diff.");
         } else {
             FileComparator fileComparator = new FileComparator(Paths.get(args[0]), Paths.get(args[1]));
-            fileComparator.outputColorizedDiff();
+            if (Util.isOSWindows()) {
+                fileComparator.outputDiff();
+            } else {
+                fileComparator.outputColorizedDiff();
+            }
         }
     }
 
