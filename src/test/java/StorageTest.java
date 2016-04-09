@@ -2,10 +2,11 @@ import ee.shy.storage.*;
 import org.apache.commons.io.IOUtils;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
@@ -22,15 +23,15 @@ public class StorageTest {
         eventually dooming the entire world.
      */
     @Rule
-    public final TemporaryFolder temporaryFolder = new TemporaryFolder();
+    public final TemporaryDirectory temporaryDirectory = new TemporaryDirectory();
 
     @Test
     public void testRetrieve() throws IOException {
-        File storageDirectory = temporaryFolder.newFolder("storage");
+        Path storageDirectory = temporaryDirectory.newDirectory("storage");
         DataStorage storage = new FileStorage(
                 Arrays.asList(
-                        new GitFileLocator(storageDirectory),
-                        new FlatFileLocator(storageDirectory)),
+                        new GitFileLocator(storageDirectory.toFile()),
+                        new FlatFileLocator(storageDirectory.toFile())),
                 new AggregateFileAccessor(Arrays.asList(
                         new GzipFileAccessor(),
                         new PlainFileAccessor())));
@@ -44,55 +45,54 @@ public class StorageTest {
 
     @Test
     public void testFlatLocator() throws IOException {
-        File storageDirectory = temporaryFolder.newFolder("storage");
-        FileLocator locator = new FlatFileLocator(storageDirectory);
+        Path storageDirectory = temporaryDirectory.newDirectory("storage");
+        FileLocator locator = new FlatFileLocator(storageDirectory.toFile());
 
-        assertEquals(storageDirectory.toPath().resolve("0000000000000000000000000000000000000000").toFile(), locator.locate(Hash.ZERO));
+        assertEquals(storageDirectory.resolve("0000000000000000000000000000000000000000").toFile(), locator.locate(Hash.ZERO));
     }
 
     @Test
     public void testGitLocator() throws IOException {
-        File storageDirectory = temporaryFolder.newFolder("storage");
-        FileLocator locator = new GitFileLocator(storageDirectory);
+        Path storageDirectory = temporaryDirectory.newDirectory("storage");
+        FileLocator locator = new GitFileLocator(storageDirectory.toFile());
 
-        assertEquals(storageDirectory.toPath().resolve("00").resolve("00000000000000000000000000000000000000").toFile(), locator.locate(Hash.ZERO));
+        assertEquals(storageDirectory.resolve("00").resolve("00000000000000000000000000000000000000").toFile(), locator.locate(Hash.ZERO));
     }
 
     @Test
     public void testPlainAccessor() throws IOException {
         FileAccessor accessor = new PlainFileAccessor();
 
-        File file = temporaryFolder.newFile("testfile");
-        accessor.add(file, IOUtils.toInputStream("Hello, World!"));
-        assertTrue(file.exists());
-        assertTrue(file.isFile());
-        assertEquals("Hello, World!", IOUtils.toString(accessor.get(file)));
+        Path file = temporaryDirectory.newFile("testfile");
+        accessor.add(file.toFile(), IOUtils.toInputStream("Hello, World!"));
+        assertTrue(Files.isRegularFile(file));
+        assertEquals("Hello, World!", IOUtils.toString(accessor.get(file.toFile())));
     }
 
     @Test
     public void testGzipAccessor() throws IOException {
         FileAccessor accessor = new GzipFileAccessor();
 
-        File file = temporaryFolder.newFile("testfile");
-        accessor.add(file, IOUtils.toInputStream("Hello, World!"));
-        File extendedFile = Util.addExtension(file, ".gz");
+        Path file = temporaryDirectory.newFile("testfile");
+        accessor.add(file.toFile(), IOUtils.toInputStream("Hello, World!"));
+        File extendedFile = Util.addExtension(file.toFile(), ".gz");
         assertTrue(extendedFile.exists());
         assertTrue(extendedFile.isFile());
-        assertEquals("Hello, World!", IOUtils.toString(accessor.get(file)));
+        assertEquals("Hello, World!", IOUtils.toString(accessor.get(file.toFile())));
     }
 
     @Test
     public void testAggregateAccessor() throws IOException {
         FileAccessor writeAccessor = new PlainFileAccessor();
 
-        File file = temporaryFolder.newFile("testfile");
-        writeAccessor.add(file, IOUtils.toInputStream("Hello, World!"));
+        Path file = temporaryDirectory.newFile("testfile");
+        writeAccessor.add(file.toFile(), IOUtils.toInputStream("Hello, World!"));
 
         FileAccessor readAccessor = new AggregateFileAccessor(Arrays.asList(
                 new GzipFileAccessor(),
                 new PlainFileAccessor()
         ));
 
-        assertEquals("Hello, World!", IOUtils.toString(readAccessor.get(file)));
+        assertEquals("Hello, World!", IOUtils.toString(readAccessor.get(file.toFile())));
     }
 }
