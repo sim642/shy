@@ -50,4 +50,30 @@ JSON:
 ```
 
 ### current
-Plaintext: hash to currently checked out commit.
+JSON based on checked out state:
+
+* branch (can be committed to)
+
+    ```json
+    {
+        "branch": "aaa",
+        "commit": "###"
+    }
+    ```
+
+* tag (cannot be committed to)
+
+    ```json
+    {
+        "tag": "aaa",
+        "commit": "###"
+    }
+    ```
+
+* commit (cannot be committed to)
+
+    ```json
+    {
+        "commit": "###"
+    }
+    ```
