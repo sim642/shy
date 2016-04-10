@@ -10,6 +10,7 @@ import org.apache.commons.io.IOUtils;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 
 /**
@@ -117,7 +118,7 @@ public class Repository {
             For example, "/tmp/foo/bar/.." will cause "/tmp/foo/bar/" to be created yet it's not in the normalized path.
          */
         Files.createDirectories(commitPath.getParent());
-        Files.copy(path, commitPath);
+        Files.copy(path, commitPath, StandardCopyOption.REPLACE_EXISTING);
     }
 
     /**
