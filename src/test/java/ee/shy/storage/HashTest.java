@@ -1,4 +1,5 @@
-import ee.shy.storage.Hash;
+package ee.shy.storage;
+
 import org.junit.Test;
 
 import java.security.MessageDigest;

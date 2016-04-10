@@ -1,4 +1,5 @@
-import ee.shy.core.Commit;
+package ee.shy.core;
+
 import ee.shy.io.Json;
 import ee.shy.storage.Hash;
 import org.apache.commons.io.output.NullOutputStream;
@@ -19,7 +20,7 @@ public class CommitTest {
 
     @Test
     public void testJson() throws IOException {
-        Commit commit = Json.read(getClass().getResourceAsStream("commit1.json"), Commit.class);
+        Commit commit = Json.read(getClass().getResourceAsStream("/commit1.json"), Commit.class);
         commit.write(new NullOutputStream());
     }
 }

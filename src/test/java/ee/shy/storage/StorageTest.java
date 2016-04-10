@@ -1,4 +1,6 @@
-import ee.shy.storage.*;
+package ee.shy.storage;
+
+import ee.shy.TemporaryDirectory;
 import org.apache.commons.io.IOUtils;
 import org.junit.Rule;
 import org.junit.Test;
@@ -30,7 +32,7 @@ public class StorageTest {
         Hash hash1 = storage.put(IOUtils.toInputStream("Hello, World!"));
         assertEquals("Hello, World!", IOUtils.toString(storage.get(hash1)));
 
-        Hash hash2 = storage.put(getClass().getResourceAsStream("fox.txt"));
+        Hash hash2 = storage.put(getClass().getResourceAsStream("/fox.txt"));
         assertEquals(new Hash("2fd4e1c67a2d28fced849ee1bb76e7391b93eb12"), hash2);
     }
 

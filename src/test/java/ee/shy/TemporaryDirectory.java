@@ -1,3 +1,5 @@
+package ee.shy;
+
 import org.junit.rules.ExternalResource;
 
 import java.io.IOException;
