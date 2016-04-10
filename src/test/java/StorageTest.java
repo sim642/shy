@@ -13,15 +13,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class StorageTest {
-    /*
-        JUnit may be great but TemporaryFolder isn't. It uses File but File is satan!
-        I want to use Path but JUnit won't let me so I have to suffer under its archaic limitations.
-        As an alternative I can .toPath() and .toFile() all over so my eyes continue to bleed.
-
-        Horrendous API design is the root of all evil, there is no solution other than duplicating everything properly,
-        but that's a programming sin as well. Crappy APIs doom not only themselves but every other project using them
-        eventually dooming the entire world.
-     */
     @Rule
     public final TemporaryDirectory temporaryDirectory = new TemporaryDirectory();
 
@@ -63,7 +54,7 @@ public class StorageTest {
     public void testPlainAccessor() throws IOException {
         FileAccessor accessor = new PlainFileAccessor();
 
-        Path file = temporaryDirectory.newFile("testfile");
+        Path file = temporaryDirectory.newFile();
         accessor.add(file.toFile(), IOUtils.toInputStream("Hello, World!"));
         assertTrue(Files.isRegularFile(file));
         assertEquals("Hello, World!", IOUtils.toString(accessor.get(file.toFile())));
@@ -73,7 +64,7 @@ public class StorageTest {
     public void testGzipAccessor() throws IOException {
         FileAccessor accessor = new GzipFileAccessor();
 
-        Path file = temporaryDirectory.newFile("testfile");
+        Path file = temporaryDirectory.newFile();
         accessor.add(file.toFile(), IOUtils.toInputStream("Hello, World!"));
         File extendedFile = Util.addExtension(file.toFile(), ".gz");
         assertTrue(extendedFile.exists());
@@ -85,7 +76,7 @@ public class StorageTest {
     public void testAggregateAccessor() throws IOException {
         FileAccessor writeAccessor = new PlainFileAccessor();
 
-        Path file = temporaryDirectory.newFile("testfile");
+        Path file = temporaryDirectory.newFile();
         writeAccessor.add(file.toFile(), IOUtils.toInputStream("Hello, World!"));
 
         FileAccessor readAccessor = new AggregateFileAccessor(Arrays.asList(

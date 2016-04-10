@@ -4,17 +4,33 @@ import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 
+/*
+    JUnit may be great but TemporaryFolder isn't. It uses File but File is satan!
+    I want to use Path but JUnit won't let me so I have to suffer under its archaic limitations.
+    As an alternative I can .toPath() and .toFile() all over so my eyes continue to bleed.
+
+    Horrendous API design is the root of all evil, there is no solution other than duplicating everything properly,
+    but that's a programming sin as well. Crappy APIs doom not only themselves but every other project using them
+    eventually dooming the entire world.
+
+    And that, folks, is why TemporaryDirectory is a thing, seeking to save the world of its miseries.
+ */
+
+/**
+ * {@link org.junit.rules.TemporaryFolder} replacement which works using {@link Path}.
+ *
+ * @see org.junit.rules.TemporaryFolder
+ */
 public class TemporaryDirectory extends ExternalResource {
-    private final Path parentDirectory;
-    private Path directory;
+    /**
+     * Prefix used for unnamed temporary directories and files.
+     */
+    private static final String TEMPORARY_PREFIX = "junit";
 
-    public TemporaryDirectory() {
-        this(null);
-    }
-
-    public TemporaryDirectory(Path parentDirectory) {
-        this.parentDirectory = parentDirectory;
-    }
+    /**
+     * Root path of given temporary directory.
+     */
+    private Path root;
 
     @Override
     protected void before() throws Throwable {
@@ -29,45 +45,92 @@ public class TemporaryDirectory extends ExternalResource {
         catch (IOException e) {
             throw new RuntimeException(e);
         }
+        finally {
+            root = null; // restore null value after cleanup (unlike TemporaryFolder)
+        }
     }
 
-    public Path newFile(String fileName) throws IOException {
-        Path path = getRoot().resolve(fileName);
+    /**
+     * Creates a new file with given path in the temporary directory.
+     * @param path relative path of file
+     * @return full path of file
+     * @throws IOException
+     */
+    public Path newFile(Path path) throws IOException {
+        Path fullPath = getRoot().resolve(path);
+        // TODO: 10.04.16 create parent directories for path
         Files.createFile(path);
-        return path;
+        return fullPath;
     }
 
+    /**
+     * Creates a new file with given path components in the temporary directory.
+     * @param first initial component of path
+     * @param more additional components of path
+     * @return full path of file
+     * @throws IOException
+     */
+    public Path newFile(String first, String... more) throws IOException {
+        return newFile(Paths.get(first, more));
+    }
+
+    /**
+     * Creates a new file with random name in the temporary directory.
+     * @return full path of file
+     * @throws IOException
+     */
     public Path newFile() throws IOException {
-        return Files.createTempFile(getRoot(), "junit", null);
+        return Files.createTempFile(getRoot(), TEMPORARY_PREFIX, null);
     }
 
-    public Path newDirectory(String directoryName) throws IOException {
-        return newDirectory(Paths.get(directoryName));
-    }
-
+    /**
+     * Creates a new directory with given path in the temporary directory.
+     * @param path relative path of directory
+     * @return full path of directory
+     * @throws IOException
+     */
     public Path newDirectory(Path path) throws IOException {
         Path fullPath = getRoot().resolve(path);
         Files.createDirectories(fullPath);
         return fullPath;
     }
 
+    /**
+     * Creates a new directory with given path components in the temporary directory.
+     * @param first initial component of path
+     * @param more additional components of path
+     * @return full path of directory
+     * @throws IOException
+     */
+    public Path newDirectory(String first, String... more) throws IOException {
+        return newDirectory(Paths.get(first, more));
+    }
+
+    /**
+     * Creates a new directory with random name in the temporary directory.
+     * @return full path of directory
+     * @throws IOException
+     */
     public Path newDirectory() throws IOException {
-        return Files.createTempDirectory(getRoot(), null);
+        return Files.createTempDirectory(getRoot(), TEMPORARY_PREFIX);
+    }
+
+    /**
+     * Returns the root path of the temporary directory.
+     * @return root path
+     */
+    public Path getRoot() {
+        if (root == null)
+            throw new IllegalStateException("temporary directory has not been created");
+        return root;
     }
 
     protected void create() throws IOException {
-        directory = createTemporaryDirectoryIn(parentDirectory);
-    }
-
-    private Path createTemporaryDirectoryIn(Path parentDirectory) throws IOException {
-        if (parentDirectory != null)
-            return Files.createTempDirectory(parentDirectory, "junit");
-        else
-            return Files.createTempDirectory("junit");
+        root = Files.createTempDirectory(TEMPORARY_PREFIX);
     }
 
     protected void delete() throws IOException {
-        Files.walkFileTree(directory, new SimpleFileVisitor<Path>() {
+        Files.walkFileTree(getRoot(), new SimpleFileVisitor<Path>() {
             @Override
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException
             {
@@ -81,17 +144,12 @@ public class TemporaryDirectory extends ExternalResource {
                 if (e == null) {
                     Files.delete(dir);
                     return FileVisitResult.CONTINUE;
-                } else {
+                }
+                else {
                     // directory iteration failed
                     throw e;
                 }
             }
         });
-    }
-
-    public Path getRoot() {
-        if (directory == null)
-            throw new IllegalStateException("temporary directory has not been created");
-        return directory;
     }
 }
