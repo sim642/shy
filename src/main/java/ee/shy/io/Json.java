@@ -26,10 +26,9 @@ public class Json {
      * Writes an object to an output stream as JSON.
      * @param os output stream to write to
      * @param object object to write
-     * @param <T> type of writable object
      * @throws IOException if there was a problem writing to the output stream
      */
-    public static <T> void write(OutputStream os, T object) throws IOException {
+    public static void write(OutputStream os, Object object) throws IOException {
         try (Writer writer = new OutputStreamWriter(os, "UTF-8")) {
             JsonWriter jsonWriter = gson.newJsonWriter(writer);
             jsonWriter.setIndent("    ");

@@ -6,7 +6,7 @@ import ee.shy.storage.Hash;
 /**
  * Class representing a branch.
  */
-public class Branch extends Jsonable {
+public class Branch implements Jsonable {
     /**
      * Branch's commit hash.
      */

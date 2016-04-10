@@ -12,9 +12,13 @@ public class RootCommand extends SuperCommand {
     public static void main(String[] args) throws IOException {
         try {
             new RootCommand().execute(args);
-        } catch (UserPresentableException e) {
-            System.err.println(e);
-            //System.err.println(e.getLocalizedMessage()); // TODO: 25.03.16 use more user friendly output for release
+        } catch (Exception e) {
+            if (e instanceof UserPresentableException) { // interfaces can't be caught
+                System.err.println(((UserPresentableException) e).getUserMessage());
+            }
+            else {
+                throw e;
+            }
         }
     }
 

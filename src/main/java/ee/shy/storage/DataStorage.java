@@ -1,10 +1,13 @@
 package ee.shy.storage;
 
+import ee.shy.io.Json;
+import ee.shy.io.Jsonable;
 import ee.shy.map.UnkeyableSimpleMap;
 import org.apache.commons.io.IOUtils;
 
 import java.io.*;
 import java.security.DigestInputStream;
+import java.security.DigestOutputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -31,7 +34,32 @@ public abstract class DataStorage implements UnkeyableSimpleMap<Hash, InputStrea
 
             IOUtils.copy(dis, baos);
 
-            Hash hash = new Hash(md);
+            Hash hash = new Hash(md.digest());
+            put(hash, new ByteArrayInputStream(baos.toByteArray()));
+            return hash;
+        }
+        catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Adds object as JSON to storage.
+     * @param object object to store
+     * @return hash of stored data
+     */
+    public final Hash put(Jsonable object) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-1");
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            DigestOutputStream dos = new DigestOutputStream(baos, md);
+
+            object.write(dos);
+
+            Hash hash = new Hash(md.digest());
             put(hash, new ByteArrayInputStream(baos.toByteArray()));
             return hash;
         }
@@ -61,23 +89,37 @@ public abstract class DataStorage implements UnkeyableSimpleMap<Hash, InputStrea
     public final InputStream get(Hash hash) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-1");
-            DigestInputStream dis = new DigestInputStream(getUnchecked(hash), md);
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-            IOUtils.copy(dis, baos);
+            try (DigestInputStream dis = new DigestInputStream(getUnchecked(hash), md);
+                 ByteArrayOutputStream baos = new ByteArrayOutputStream();) {
 
-            Hash hashComputed = new Hash(md);
-            if (!hash.equals(hashComputed))
-                throw new RuntimeException("stored file content does not match hash");
+                IOUtils.copy(dis, baos);
 
-            return new ByteArrayInputStream(baos.toByteArray());
+                Hash hashComputed = new Hash(md.digest());
+                if (!hash.equals(hashComputed))
+                    throw new RuntimeException("stored file content does not match hash");
+
+                return new ByteArrayInputStream(baos.toByteArray());
+            }
+            catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
         catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
-        catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    }
+
+    /**
+     * Gets object from JSON by hash.
+     * @param hash hash of object to get
+     * @param classofT class of object to get
+     * @param <T> type of obect to get
+     * @return object from JSON
+     * @throws IOException if JSON deserialization from underlying stream fails
+     */
+    public final <T> T get(Hash hash, Class<T> classofT) throws IOException {
+        return Json.read(get(hash), classofT);
     }
 
     /**
@@ -87,5 +129,5 @@ public abstract class DataStorage implements UnkeyableSimpleMap<Hash, InputStrea
      * @return input stream of data
      * @throws IOException if there was a problem reading from some input
      */
-    public abstract InputStream getUnchecked(Hash hash) throws IOException;
+    protected abstract InputStream getUnchecked(Hash hash) throws IOException;
 }

@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 /**
  * Class representing a directory tree.
  */
-public class Tree extends Jsonable {
+public class Tree implements Jsonable {
     /**
      * Mapping of names to {@link TreeItem}s.
      */
@@ -79,7 +79,7 @@ public class Tree extends Jsonable {
                 }
                 else if (Files.isDirectory(file)) {
                     Tree tree = new Builder(storage).fromDirectory(file).create();
-                    Hash hash = storage.put(tree.inputify());
+                    Hash hash = storage.put(tree);
                     addItem(file.getFileName().toString(), new TreeItem(TreeItem.Type.TREE, hash));
                 }
             }
