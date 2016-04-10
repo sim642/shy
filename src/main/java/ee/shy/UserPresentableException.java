@@ -1,45 +1,22 @@
 package ee.shy;
 
 /**
- * An exception with a category to be presented to the user.
+ * Interface for exceptions presentable to the user.
  */
-public class UserPresentableException extends RuntimeException {
+public interface UserPresentableException {
     /**
-     * Category of the exception.
+     * Prerequisite from {@link Throwable} for default {@link UserPresentableException#getUserMessage()}.
+     * @see Throwable#getLocalizedMessage()
+     * @return localized description of this exception
      */
-    private final String category;
+    String getLocalizedMessage();
 
-    public UserPresentableException(String category) {
-        super();
-        this.category = category;
-    }
-
-    public UserPresentableException(String category, String message) {
-        super(message);
-        this.category = category;
-    }
-
-    public UserPresentableException(String category, String message, Throwable cause) {
-        super(message, cause);
-        this.category = category;
-    }
-
-    public UserPresentableException(String category, Throwable cause) {
-        super(cause);
-        this.category = category;
-    }
-
-    protected UserPresentableException(String category, String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
-        this.category = category;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    @Override
-    public String getLocalizedMessage() {
-        return getCategory() + ": " + getMessage();
+    /**
+     * Returns the message to be displayed to the user.
+     * Defaults to {@link Throwable#getLocalizedMessage()}.
+     * @return message to show the user
+     */
+    default String getUserMessage() {
+        return getLocalizedMessage();
     }
 }

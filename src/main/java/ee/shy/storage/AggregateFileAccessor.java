@@ -1,8 +1,8 @@
 package ee.shy.storage;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.List;
 
 /**
@@ -25,26 +25,26 @@ public class AggregateFileAccessor implements FileAccessor {
 
     /**
      * Adds file content via first file accessor.
-     * @param file base path of file to add
+     * @param path base path of file to add
      * @param source input stream to get data from
      * @throws IOException if there was a problem reading the input stream or writing to the file
      */
     @Override
-    public void add(File file, InputStream source) throws IOException {
-        accessors.get(0).add(file, source); // always use first accessor for add
+    public void add(Path path, InputStream source) throws IOException {
+        accessors.get(0).add(path, source); // always use first accessor for add
     }
 
     /**
      * Gets file content via first successful file accessor.
-     * @param file base path of file to get
+     * @param path base path of file to get
      * @return input stream to get data from
      * @throws IOException if there was a problem reading from the file
      */
     @Override
-    public InputStream get(File file) throws IOException {
+    public InputStream get(Path path) throws IOException {
         InputStream source;
         for (FileAccessor accessor : accessors) {
-            if ((source = accessor.get(file)) != null)
+            if ((source = accessor.get(path)) != null)
                 return source;
         }
         return null;

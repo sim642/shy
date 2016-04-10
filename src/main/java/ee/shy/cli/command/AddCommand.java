@@ -4,8 +4,8 @@ import ee.shy.cli.Command;
 import ee.shy.cli.HelptextBuilder;
 import ee.shy.core.Repository;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 
 /**
  * A command to add given file to its respective directory in the repository.
@@ -14,7 +14,7 @@ public class AddCommand implements Command {
     @Override
     public void execute(String[] args) throws IOException {
         Repository repository = Repository.newExisting();
-        repository.add(new File(args[0]));
+        repository.add(Paths.get(args[0]));
     }
 
     @Override

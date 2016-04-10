@@ -1,6 +1,7 @@
 package ee.shy.storage;
 
-import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
 
 /**
  * File locator for having hashes in git-like directory structure in the root directory:
@@ -12,7 +13,7 @@ public class GitFileLocator extends NestedFileLocator {
      * Constructs a new git file locator with given root.
      * @param root root directory to use
      */
-    public GitFileLocator(File root) {
+    public GitFileLocator(Path root) throws IOException {
         super(root, 2, 1);
     }
 }

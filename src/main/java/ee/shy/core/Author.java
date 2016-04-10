@@ -5,7 +5,7 @@ import ee.shy.io.Jsonable;
 /**
  * Class representing a commit author.
  */
-public class Author extends Jsonable {
+public class Author implements Jsonable {
     /**
      * Author's full name.
      */

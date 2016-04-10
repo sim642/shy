@@ -1,11 +1,11 @@
 package ee.shy.storage;
 
 import ee.shy.TemporaryDirectory;
+import ee.shy.io.PathUtils;
 import org.apache.commons.io.IOUtils;
 import org.junit.Rule;
 import org.junit.Test;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -23,8 +23,8 @@ public class StorageTest {
         Path storageDirectory = temporaryDirectory.newDirectory("storage");
         DataStorage storage = new FileStorage(
                 Arrays.asList(
-                        new GitFileLocator(storageDirectory.toFile()),
-                        new FlatFileLocator(storageDirectory.toFile())),
+                        new GitFileLocator(storageDirectory),
+                        new FlatFileLocator(storageDirectory)),
                 new AggregateFileAccessor(Arrays.asList(
                         new GzipFileAccessor(),
                         new PlainFileAccessor())));
@@ -39,17 +39,17 @@ public class StorageTest {
     @Test
     public void testFlatLocator() throws IOException {
         Path storageDirectory = temporaryDirectory.newDirectory("storage");
-        FileLocator locator = new FlatFileLocator(storageDirectory.toFile());
+        FileLocator locator = new FlatFileLocator(storageDirectory);
 
-        assertEquals(storageDirectory.resolve("0000000000000000000000000000000000000000").toFile(), locator.locate(Hash.ZERO));
+        assertEquals(storageDirectory.resolve("0000000000000000000000000000000000000000"), locator.locate(Hash.ZERO));
     }
 
     @Test
     public void testGitLocator() throws IOException {
         Path storageDirectory = temporaryDirectory.newDirectory("storage");
-        FileLocator locator = new GitFileLocator(storageDirectory.toFile());
+        FileLocator locator = new GitFileLocator(storageDirectory);
 
-        assertEquals(storageDirectory.resolve("00").resolve("00000000000000000000000000000000000000").toFile(), locator.locate(Hash.ZERO));
+        assertEquals(storageDirectory.resolve("00").resolve("00000000000000000000000000000000000000"), locator.locate(Hash.ZERO));
     }
 
     @Test
@@ -57,9 +57,9 @@ public class StorageTest {
         FileAccessor accessor = new PlainFileAccessor();
 
         Path file = temporaryDirectory.newFile();
-        accessor.add(file.toFile(), IOUtils.toInputStream("Hello, World!"));
+        accessor.add(file, IOUtils.toInputStream("Hello, World!"));
         assertTrue(Files.isRegularFile(file));
-        assertEquals("Hello, World!", IOUtils.toString(accessor.get(file.toFile())));
+        assertEquals("Hello, World!", IOUtils.toString(accessor.get(file)));
     }
 
     @Test
@@ -67,11 +67,10 @@ public class StorageTest {
         FileAccessor accessor = new GzipFileAccessor();
 
         Path file = temporaryDirectory.newFile();
-        accessor.add(file.toFile(), IOUtils.toInputStream("Hello, World!"));
-        File extendedFile = Util.addExtension(file.toFile(), ".gz");
-        assertTrue(extendedFile.exists());
-        assertTrue(extendedFile.isFile());
-        assertEquals("Hello, World!", IOUtils.toString(accessor.get(file.toFile())));
+        accessor.add(file, IOUtils.toInputStream("Hello, World!"));
+        Path extendedFile = PathUtils.addExtension(file, ".gz");
+        assertTrue(Files.isRegularFile(extendedFile));
+        assertEquals("Hello, World!", IOUtils.toString(accessor.get(file)));
     }
 
     @Test
@@ -79,13 +78,13 @@ public class StorageTest {
         FileAccessor writeAccessor = new PlainFileAccessor();
 
         Path file = temporaryDirectory.newFile();
-        writeAccessor.add(file.toFile(), IOUtils.toInputStream("Hello, World!"));
+        writeAccessor.add(file, IOUtils.toInputStream("Hello, World!"));
 
         FileAccessor readAccessor = new AggregateFileAccessor(Arrays.asList(
                 new GzipFileAccessor(),
                 new PlainFileAccessor()
         ));
 
-        assertEquals("Hello, World!", IOUtils.toString(readAccessor.get(file.toFile())));
+        assertEquals("Hello, World!", IOUtils.toString(readAccessor.get(file)));
     }
 }

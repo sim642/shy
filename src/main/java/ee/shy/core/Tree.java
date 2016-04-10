@@ -4,17 +4,17 @@ import ee.shy.io.Jsonable;
 import ee.shy.storage.DataStorage;
 import ee.shy.storage.Hash;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Arrays;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Map;
 import java.util.TreeMap;
 
 /**
  * Class representing a directory tree.
  */
-public class Tree extends Jsonable {
+public class Tree implements Jsonable {
     /**
      * Mapping of names to {@link TreeItem}s.
      */
@@ -68,22 +68,18 @@ public class Tree extends Jsonable {
          * @return builder itself
          * @throws IOException if there was a problem reading an addable file or tree to storage
          */
-        public Builder fromDirectory(File directory) throws IOException {
-            File[] files = directory.listFiles();
-            if (files == null)
-                throw new IOException("Attempted to build Tree from a non-directory");
-
-            Arrays.sort(files); // guarantee stable order
-
-            for (File file : files) {
-                if (file.isFile()) {
-                    Hash hash = storage.put(new FileInputStream(file));
-                    addItem(file.getName(), new TreeItem(TreeItem.Type.FILE, hash));
-                }
-                else if (file.isDirectory()) {
-                    Tree tree = new Builder(storage).fromDirectory(file).create();
-                    Hash hash = storage.put(tree.inputify());
-                    addItem(file.getName(), new TreeItem(TreeItem.Type.TREE, hash));
+        public Builder fromDirectory(Path directory) throws IOException {
+            try (DirectoryStream<Path> fileStream = Files.newDirectoryStream(directory)) {
+                for (Path file : fileStream) {
+                    if (Files.isRegularFile(file)) {
+                        Hash hash = storage.put(Files.newInputStream(file));
+                        addItem(file.getFileName().toString(), new TreeItem(TreeItem.Type.FILE, hash));
+                    }
+                    else if (Files.isDirectory(file)) {
+                        Tree tree = new Builder(storage).fromDirectory(file).create();
+                        Hash hash = storage.put(tree);
+                        addItem(file.getFileName().toString(), new TreeItem(TreeItem.Type.TREE, hash));
+                    }
                 }
             }
 
