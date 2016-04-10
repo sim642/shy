@@ -5,10 +5,11 @@ import ee.shy.storage.DataStorage;
 import ee.shy.storage.Hash;
 
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Class representing a directory tree.
@@ -68,19 +69,17 @@ public class Tree implements Jsonable {
          * @throws IOException if there was a problem reading an addable file or tree to storage
          */
         public Builder fromDirectory(Path directory) throws IOException {
-            List<Path> files = new ArrayList<>(Files.list(directory).collect(Collectors.toList())); // TODO: 6.04.16 Stream#toCollection for creating ArrayList
-
-            Collections.sort(files);
-
-            for (Path file : files) {
-                if (Files.isRegularFile(file)) {
-                    Hash hash = storage.put(Files.newInputStream(file));
-                    addItem(file.getFileName().toString(), new TreeItem(TreeItem.Type.FILE, hash));
-                }
-                else if (Files.isDirectory(file)) {
-                    Tree tree = new Builder(storage).fromDirectory(file).create();
-                    Hash hash = storage.put(tree);
-                    addItem(file.getFileName().toString(), new TreeItem(TreeItem.Type.TREE, hash));
+            try (DirectoryStream<Path> fileStream = Files.newDirectoryStream(directory)) {
+                for (Path file : fileStream) {
+                    if (Files.isRegularFile(file)) {
+                        Hash hash = storage.put(Files.newInputStream(file));
+                        addItem(file.getFileName().toString(), new TreeItem(TreeItem.Type.FILE, hash));
+                    }
+                    else if (Files.isDirectory(file)) {
+                        Tree tree = new Builder(storage).fromDirectory(file).create();
+                        Hash hash = storage.put(tree);
+                        addItem(file.getFileName().toString(), new TreeItem(TreeItem.Type.TREE, hash));
+                    }
                 }
             }
 
