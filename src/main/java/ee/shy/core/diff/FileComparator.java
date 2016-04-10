@@ -1,19 +1,19 @@
 package ee.shy.core.diff;
 
 import difflib.DiffUtils;
+import org.fusesource.jansi.Ansi;
+import org.fusesource.jansi.AnsiConsole;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
-public class FileComparator {
+
+// TODO: 8.04.16 Make methods static. Remove constructor
+public class FileComparator  {
 
     private final Path original;
     private final Path comparable;
-
-    private static final String ANSI_RED = "\u001B[31m";
-    private static final String ANSI_GREEN = "\u001B[32m";
-    private static final String ANSI_RESET = "\u001B[0m";
 
     /**
      * Constant defining how many rows before and after each difference is shown.
@@ -30,19 +30,22 @@ public class FileComparator {
      * @throws IOException
      */
     public void outputColorizedDiff() throws IOException {
-        for (String row :getDiffRows()) {
+        // TODO: 10.04.16 Test this on Windows OS.
+        AnsiConsole.systemInstall();
+        for (String row : getDiffRows()) {
             switch (row.charAt(0)) {
                 case '+':
-                    System.out.println(ANSI_GREEN + row + ANSI_RESET);
+                    System.out.println(Ansi.ansi().fg(Ansi.Color.GREEN).a(row).reset());
                     break;
                 case '-':
-                    System.out.println(ANSI_RED + row + ANSI_RESET);
+                    System.out.println(Ansi.ansi().fg(Ansi.Color.RED).a(row).reset());
                     break;
                 default:
                     System.out.println(row);
                     break;
             }
         }
+        AnsiConsole.systemUninstall();
     }
 
     /**
