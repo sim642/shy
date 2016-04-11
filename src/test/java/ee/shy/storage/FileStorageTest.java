@@ -18,5 +18,6 @@ public class FileStorageTest extends DataStorageTest {
                 new AggregateFileAccessor(Arrays.asList(
                         new GzipFileAccessor(),
                         new PlainFileAccessor())));
+        super.setUp();
     }
 }

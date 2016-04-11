@@ -6,5 +6,6 @@ public class MapStorageTest extends DataStorageTest {
     @Before
     public void setUp() throws Exception {
         storage = new MapStorage();
+        super.setUp();
     }
 }
