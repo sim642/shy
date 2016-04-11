@@ -38,4 +38,12 @@ public class TreeItem {
         this.type = type;
         this.hash = hash;
     }
+
+    public Type getType() {
+        return type;
+    }
+
+    public Hash getHash() {
+        return hash;
+    }
 }

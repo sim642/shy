@@ -6,6 +6,7 @@ import ee.shy.storage.Hash;
 
 import java.io.*;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -24,6 +25,14 @@ public class Tree extends Jsonable {
      */
     public Tree(Builder builder) {
         this.items = new TreeMap<>(builder.items);
+    }
+
+    /**
+     * Get Tree's items as an unmodifiable Map.
+     * @return tree's items
+     */
+    public Map<String, TreeItem> getItems() {
+        return Collections.unmodifiableMap(items);
     }
 
     /**

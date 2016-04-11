@@ -1,5 +1,6 @@
 package ee.shy.core;
 
+import ee.shy.core.diff.TreeDiffer;
 import ee.shy.io.Json;
 import ee.shy.storage.*;
 import org.apache.commons.io.IOUtils;
@@ -201,5 +202,14 @@ public class Repository {
      */
     public void setAuthor(Author author) throws IOException {
         author.write(new FileOutputStream(new File(repositoryDirectory, "author")));
+    }
+
+    public TreeDiffer getTreeDiffer() {
+        return new TreeDiffer(storage);
+    }
+
+    public DataStorage getStorage() {
+        // TODO: 11.04.16 Delete this method.
+        return storage;
     }
 }
