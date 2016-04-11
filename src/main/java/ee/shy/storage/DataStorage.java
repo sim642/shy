@@ -5,7 +5,10 @@ import ee.shy.io.Jsonable;
 import ee.shy.map.UnkeyableSimpleMap;
 import org.apache.commons.io.IOUtils;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.security.DigestInputStream;
 import java.security.DigestOutputStream;
 import java.security.MessageDigest;
@@ -90,7 +93,11 @@ public abstract class DataStorage implements UnkeyableSimpleMap<Hash, InputStrea
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-1");
 
-            try (DigestInputStream dis = new DigestInputStream(getUnchecked(hash), md);
+            InputStream is = getUnchecked(hash);
+            if (is == null)
+                return null;
+
+            try (DigestInputStream dis = new DigestInputStream(is, md);
                  ByteArrayOutputStream baos = new ByteArrayOutputStream();) {
 
                 IOUtils.copy(dis, baos);
@@ -101,11 +108,11 @@ public abstract class DataStorage implements UnkeyableSimpleMap<Hash, InputStrea
 
                 return new ByteArrayInputStream(baos.toByteArray());
             }
-            catch (IOException e) {
-                throw new RuntimeException(e);
-            }
         }
         catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+        catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
