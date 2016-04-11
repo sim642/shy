@@ -2,12 +2,13 @@ package ee.shy.cli.command;
 
 import ee.shy.cli.Command;
 import ee.shy.cli.HelptextBuilder;
-import ee.shy.core.diff.FileDiffer;
+import ee.shy.core.diff.InputStreamDiffer;
 import ee.shy.core.diff.Util;
 import ee.shy.storage.Hash;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import org.apache.commons.lang3.NotImplementedException;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 
 /**
@@ -23,12 +24,14 @@ public class DiffCommand implements Command {
             try {
                 Hash original = new Hash(args[0]);
                 Hash target = new Hash(args[1]);
-                throw new NotImplementedException();
+                throw new NotImplementedException("Commit diff not implemented.");
             } catch (IllegalArgumentException e) {
                 // If no hashes given, try to open as file.
-                Util.outputDiff(new FileDiffer().diff(Paths.get(args[0]), Paths.get(args[1])));
+                Util.outputDiff(new InputStreamDiffer().diff(
+                        Files.newInputStream(Paths.get(args[0])),
+                        Files.newInputStream(Paths.get(args[1]))
+                ));
             }
-
         }
     }
 
