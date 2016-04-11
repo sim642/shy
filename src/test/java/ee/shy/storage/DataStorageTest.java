@@ -1,10 +1,9 @@
 package ee.shy.storage;
 
+import ee.shy.SecurityProviderRecoverer;
 import ee.shy.TemporaryDirectory;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.ArrayUtils;
 import org.hamcrest.CoreMatchers;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -24,20 +23,15 @@ public abstract class DataStorageTest {
 
     @Rule
     public final TemporaryDirectory temporaryDirectory = new TemporaryDirectory();
+    @Rule
+    public final SecurityProviderRecoverer securityProviderRecoverer = new SecurityProviderRecoverer();
 
     protected DataStorage storage;
-    protected Provider provider;
+    protected Provider hashProvider;
 
     @Before
     public void setUp() throws Exception {
-        provider = MessageDigest.getInstance("SHA-1").getProvider();
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        if (!ArrayUtils.contains(Security.getProviders(), provider)) {
-            Security.addProvider(provider);
-        }
+        hashProvider = MessageDigest.getInstance("SHA-1").getProvider();
     }
 
     @Test
@@ -59,7 +53,7 @@ public abstract class DataStorageTest {
 
     @Test
     public void testPutNoAlgorithm() throws Exception {
-        Security.removeProvider(provider.getName());
+        Security.removeProvider(hashProvider.getName());
 
         expectedException.expect(RuntimeException.class);
         expectedException.expectCause(CoreMatchers.isA(NoSuchAlgorithmException.class));
@@ -70,7 +64,7 @@ public abstract class DataStorageTest {
     public void testGetNoAlgorithm() throws Exception {
         Hash hash = storage.put(IOUtils.toInputStream("Hello, World!"));
 
-        Security.removeProvider(provider.getName());
+        Security.removeProvider(hashProvider.getName());
 
         expectedException.expect(RuntimeException.class);
         expectedException.expectCause(CoreMatchers.isA(NoSuchAlgorithmException.class));
