@@ -1,5 +1,6 @@
 package ee.shy;
 
+import ee.shy.io.PathUtils;
 import org.junit.rules.ExternalResource;
 
 import java.io.IOException;
@@ -60,8 +61,8 @@ public class TemporaryDirectory extends ExternalResource {
      */
     public Path newFile(Path path) throws IOException {
         Path fullPath = getRoot().resolve(path);
-        // TODO: 10.04.16 create parent directories for path
-        Files.createFile(path);
+        PathUtils.createParentDirectories(fullPath);
+        Files.createFile(fullPath);
         return fullPath;
     }
 
