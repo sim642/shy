@@ -1,6 +1,7 @@
 package ee.shy.storage;
 
 import org.apache.commons.io.IOUtils;
+import org.hamcrest.CustomTypeSafeMatcher;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -32,9 +33,13 @@ public class FileStorageTest extends DataStorageTest {
 
         gzipFileAccessor.add(gitFileLocator.locate(hash), IOUtils.toInputStream("Hello, World!"));
 
-        expectedException.expect(RuntimeException.class);
-        expectedException.expectMessage("not");
-        expectedException.expectMessage("match");
+        expectedException.expect(DataIntegrityException.class);
+        expectedException.expect(new CustomTypeSafeMatcher<DataIntegrityException>("expected hash of " + hash) {
+            @Override
+            protected boolean matchesSafely(DataIntegrityException e) {
+                return e.getExpected().equals(hash);
+            }
+        });
         storage.get(hash);
     }
 }

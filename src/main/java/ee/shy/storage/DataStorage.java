@@ -104,7 +104,7 @@ public abstract class DataStorage implements UnkeyableSimpleMap<Hash, InputStrea
 
                 Hash hashComputed = new Hash(md.digest());
                 if (!hash.equals(hashComputed))
-                    throw new RuntimeException("stored file content does not match hash");
+                    throw new DataIntegrityException(hash, hashComputed);
 
                 return new ByteArrayInputStream(baos.toByteArray());
             }
