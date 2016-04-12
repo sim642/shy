@@ -3,6 +3,7 @@ package ee.shy.core.diff;
 import ee.shy.core.Tree;
 import ee.shy.core.TreeItem;
 import ee.shy.storage.DataStorage;
+import org.apache.commons.io.input.ClosedInputStream;
 
 import java.io.IOException;
 import java.util.*;
@@ -30,6 +31,14 @@ public class TreeDiffer implements Differ<Tree> {
         itemCases.put(new ItemCase(TreeItem.Type.FILE, TreeItem.Type.FILE),
                 (originalItem, revisedItem) ->
                         new InputStreamDiffer().diff(storage.get(originalItem.getHash()), storage.get(revisedItem.getHash())));
+
+        itemCases.put(new ItemCase(null, TreeItem.Type.FILE),
+                (originalItem, revisedItem) ->
+                        new InputStreamDiffer().diff(new ClosedInputStream(), storage.get(revisedItem.getHash())));
+
+        itemCases.put(new ItemCase(TreeItem.Type.FILE, null),
+                (originalItem, revisedItem) ->
+                        new InputStreamDiffer().diff(storage.get(originalItem.getHash()), new ClosedInputStream()));
 
         for (String name : unionTreeKeySet) {
             TreeItem originalItem = originalItems.get(name);
@@ -68,7 +77,6 @@ public class TreeDiffer implements Differ<Tree> {
             if (originalType != itemCase.originalType)
                 return false;
             return revisedType == itemCase.revisedType;
-
         }
 
         @Override
@@ -80,7 +88,6 @@ public class TreeDiffer implements Differ<Tree> {
     }
 
     private interface ItemCaseHandler {
-        List<String> handle(TreeItem original, TreeItem revised) throws IOException;
+        List<String> handle(TreeItem originalItem, TreeItem revisedItem) throws IOException;
     }
-
 }
