@@ -6,7 +6,6 @@ import ee.shy.storage.DataStorage;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.function.BiFunction;
 
 public class TreeDiffer implements Differ<Tree> {
 
@@ -26,30 +25,22 @@ public class TreeDiffer implements Differ<Tree> {
         unionTreeKeySet.addAll(originalItems.keySet());
         unionTreeKeySet.addAll(revisedItems.keySet());
 
-        Map<ItemCase, BiFunction<TreeItem, TreeItem, List<String>>> itemCases = new HashMap<>();
+        Map<ItemCase, ItemCaseHandler> itemCases = new HashMap<>();
 
-        itemCases.put(new ItemCase(true, true, TreeItem.Type.FILE, TreeItem.Type.FILE),
-                (originalItem, revisedItem) -> {
-                    try {
-                        return new InputStreamDiffer().diff(
-                                storage.get(originalItem.getHash()),
-                                storage.get(revisedItem.getHash())
-                        );
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                });
+        itemCases.put(new ItemCase(TreeItem.Type.FILE, TreeItem.Type.FILE),
+                (originalItem, revisedItem) ->
+                        new InputStreamDiffer().diff(storage.get(originalItem.getHash()), storage.get(revisedItem.getHash())));
 
         for (String name : unionTreeKeySet) {
+            TreeItem originalItem = originalItems.get(name);
+            TreeItem revisedItem = revisedItems.get(name);
             ItemCase itemCase = new ItemCase(
-                    originalItems.containsKey(name),
-                    revisedItems.containsKey(name),
-                    originalItems.get(name).getType(),
-                    revisedItems.get(name).getType()
+                    originalItem != null ? originalItem.getType() : null,
+                    revisedItem != null ? revisedItem.getType() : null
             );
-            BiFunction<TreeItem, TreeItem, List<String>> treeItemTreeItemListBiFunction = itemCases.get(itemCase);
+            ItemCaseHandler treeItemTreeItemListBiFunction = itemCases.get(itemCase);
             if (treeItemTreeItemListBiFunction != null) {
-                List<String> singleDiffStrings = treeItemTreeItemListBiFunction.apply(originalItems.get(name), revisedItems.get(name));
+                List<String> singleDiffStrings = treeItemTreeItemListBiFunction.handle(originalItem, revisedItem);
                 diffStrings.addAll(singleDiffStrings);
             }
         }
@@ -57,14 +48,10 @@ public class TreeDiffer implements Differ<Tree> {
     }
 
     private static class ItemCase {
-        private final boolean originalContains;
-        private final boolean revisedContains;
         private final TreeItem.Type originalType;
         private final TreeItem.Type revisedType;
 
-        private ItemCase(boolean originalContains, boolean revisedContains, TreeItem.Type originalType, TreeItem.Type revisedType) {
-            this.originalContains = originalContains;
-            this.revisedContains = revisedContains;
+        private ItemCase(TreeItem.Type originalType, TreeItem.Type revisedType) {
             this.originalType = originalType;
             this.revisedType = revisedType;
         }
@@ -78,10 +65,6 @@ public class TreeDiffer implements Differ<Tree> {
 
             ItemCase itemCase = (ItemCase) o;
 
-            if (originalContains != itemCase.originalContains)
-                return false;
-            if (revisedContains != itemCase.revisedContains)
-                return false;
             if (originalType != itemCase.originalType)
                 return false;
             return revisedType == itemCase.revisedType;
@@ -90,12 +73,14 @@ public class TreeDiffer implements Differ<Tree> {
 
         @Override
         public int hashCode() {
-            int result = (originalContains ? 1 : 0);
-            result = 31 * result + (revisedContains ? 1 : 0);
-            result = 31 * result + originalType.hashCode();
-            result = 31 * result + revisedType.hashCode();
+            int result = originalType != null ? originalType.hashCode() : 0;
+            result = 31 * result + (revisedType != null ? revisedType.hashCode() : 0);
             return result;
         }
+    }
+
+    private interface ItemCaseHandler {
+        List<String> handle(TreeItem original, TreeItem revised) throws IOException;
     }
 
 }
