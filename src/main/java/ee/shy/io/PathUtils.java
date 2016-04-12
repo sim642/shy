@@ -8,7 +8,7 @@ import java.nio.file.Paths;
 /**
  * Utilities class for I/O-related methods.
  */
-public class PathUtils {
+public final class PathUtils {
     private PathUtils() {
 
     }
