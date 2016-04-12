@@ -2,6 +2,7 @@ package ee.shy.core.diff;
 
 import ee.shy.core.Tree;
 import ee.shy.core.TreeItem;
+import ee.shy.io.Json;
 import ee.shy.storage.DataStorage;
 import org.apache.commons.io.input.ClosedInputStream;
 
@@ -11,6 +12,8 @@ import java.util.*;
 public class TreeDiffer implements Differ<Tree> {
 
     private final DataStorage storage;
+    private final Map<ItemCase, ItemCaseHandler> itemCases = new HashMap<>();
+    private static final InputStreamDiffer inputStreamDiffer = new InputStreamDiffer();
 
     public TreeDiffer(DataStorage storage) {
         this.storage = storage;
@@ -26,19 +29,45 @@ public class TreeDiffer implements Differ<Tree> {
         unionTreeKeySet.addAll(originalItems.keySet());
         unionTreeKeySet.addAll(revisedItems.keySet());
 
-        Map<ItemCase, ItemCaseHandler> itemCases = new HashMap<>();
-
         itemCases.put(new ItemCase(TreeItem.Type.FILE, TreeItem.Type.FILE),
                 (originalItem, revisedItem) ->
-                        new InputStreamDiffer().diff(storage.get(originalItem.getHash()), storage.get(revisedItem.getHash())));
+                        inputStreamDiffer.diff(storage.get(originalItem.getHash()), storage.get(revisedItem.getHash())));
 
         itemCases.put(new ItemCase(null, TreeItem.Type.FILE),
                 (originalItem, revisedItem) ->
-                        new InputStreamDiffer().diff(new ClosedInputStream(), storage.get(revisedItem.getHash())));
+                        inputStreamDiffer.diff(ClosedInputStream.CLOSED_INPUT_STREAM, storage.get(revisedItem.getHash())));
 
         itemCases.put(new ItemCase(TreeItem.Type.FILE, null),
                 (originalItem, revisedItem) ->
-                        new InputStreamDiffer().diff(storage.get(originalItem.getHash()), new ClosedInputStream()));
+                        inputStreamDiffer.diff(storage.get(originalItem.getHash()), ClosedInputStream.CLOSED_INPUT_STREAM));
+
+        itemCases.put(new ItemCase(TreeItem.Type.TREE, TreeItem.Type.TREE),
+                (originalItem, revisedItem) -> diff(
+                        Json.read(storage.get(originalItem.getHash()), Tree.class),
+                        Json.read(storage.get(revisedItem.getHash()), Tree.class)
+                ));
+
+        itemCases.put(new ItemCase(TreeItem.Type.TREE, null),
+                (originalItem, revisedItem) -> diff(
+                        Json.read(storage.get(originalItem.getHash()), Tree.class),
+                        Tree.EMPTY
+                ));
+
+        itemCases.put(new ItemCase(null, TreeItem.Type.TREE),
+                (originalItem, revisedItem) -> diff(
+                        Tree.EMPTY,
+                        Json.read(storage.get(revisedItem.getHash()), Tree.class)
+                ));
+
+        ItemCaseHandler treeFileCase = (originalItem, revisedItem) -> {
+            List<String> treeFileDiff = new ArrayList<>();
+            treeFileDiff.addAll(itemCases.get(new ItemCase(originalItem.getType(), null)).handle(originalItem, revisedItem));
+            treeFileDiff.addAll(itemCases.get(new ItemCase(null, revisedItem.getType())).handle(originalItem, revisedItem));
+            return treeFileDiff;
+        };
+
+        itemCases.put(new ItemCase(TreeItem.Type.TREE, TreeItem.Type.FILE), treeFileCase);
+        itemCases.put(new ItemCase(TreeItem.Type.FILE, TreeItem.Type.TREE), treeFileCase);
 
         for (String name : unionTreeKeySet) {
             TreeItem originalItem = originalItems.get(name);
@@ -47,9 +76,9 @@ public class TreeDiffer implements Differ<Tree> {
                     originalItem != null ? originalItem.getType() : null,
                     revisedItem != null ? revisedItem.getType() : null
             );
-            ItemCaseHandler treeItemTreeItemListBiFunction = itemCases.get(itemCase);
-            if (treeItemTreeItemListBiFunction != null) {
-                List<String> singleDiffStrings = treeItemTreeItemListBiFunction.handle(originalItem, revisedItem);
+            ItemCaseHandler itemCaseHandler = itemCases.get(itemCase);
+            if (itemCaseHandler != null) {
+                List<String> singleDiffStrings = itemCaseHandler.handle(originalItem, revisedItem);
                 diffStrings.addAll(singleDiffStrings);
             }
         }

@@ -5,19 +5,26 @@ import ee.shy.storage.DataStorage;
 import ee.shy.storage.Hash;
 
 import java.io.*;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * Class representing a directory tree.
  */
 public class Tree extends Jsonable {
+
+    /**
+     * Empty tree constant.
+     */
+    public static final Tree EMPTY = new Tree(Collections.emptyMap());
+
     /**
      * Mapping of names to {@link TreeItem}s.
      */
     private final Map<String, TreeItem> items;
+
+    public Tree(Map<String, TreeItem> items) {
+        this.items = new TreeMap<>(items);
+    }
 
     /**
      * Constructs a tree from its builder.
