@@ -3,8 +3,10 @@ package ee.shy.storage;
 import ee.shy.io.PathUtils;
 import org.apache.commons.io.IOUtils;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -31,7 +33,7 @@ public class GzipFileAccessor implements FileAccessor {
         try {
             return new GZIPInputStream(Files.newInputStream(PathUtils.addExtension(path, EXTENSION)));
         }
-        catch (FileNotFoundException e) {
+        catch (NoSuchFileException e) {
             return null;
         }
     }
