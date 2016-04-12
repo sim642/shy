@@ -1,5 +1,6 @@
 package ee.shy.map;
 
+import java.io.IOException;
 import java.util.Set;
 
 /**
@@ -14,18 +15,21 @@ public interface KeyableSimpleMap<K, V> extends UnmodifiableSimpleMap<K, V> {
      * Adds the given value with the given key in this map.
      * @param key key for the value
      * @param value value to add
+     * @throws IOException if underlying I/O operation fails
      */
-    void put(K key, V value);
+    void put(K key, V value) throws IOException;
 
     /**
      * Removes the given key from this map.
      * @param key key to remove
+     * @throws IOException if underlying I/O operation fails
      */
-    void remove(K key);
+    void remove(K key) throws IOException;
 
     /**
      * Returns a {@link Set} of the keys contained in this map.
      * @return a set of the keys contained in this map
+     * @throws IOException if underlying I/O operation fails
      */
-    Set<K> keySet();
+    Set<K> keySet() throws IOException;
 }

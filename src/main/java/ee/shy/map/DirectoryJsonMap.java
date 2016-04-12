@@ -36,48 +36,30 @@ public class DirectoryJsonMap<T extends Jsonable> implements NamedObjectMap<T> {
     }
 
     @Override
-    public void put(String key, T value) {
-        try {
-            value.write(Files.newOutputStream(directory.resolve(key)));
-        }
-        catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public void put(String key, T value) throws IOException {
+        value.write(Files.newOutputStream(directory.resolve(key)));
     }
 
     @Override
-    public void remove(String key) {
-        try {
-            Files.delete(directory.resolve(key));
-        }
-        catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public void remove(String key) throws IOException {
+        Files.delete(directory.resolve(key));
     }
 
     @Override
-    public Set<String> keySet() {
-        try {
-            return Files.list(directory)
-                    .map(Path::getFileName)
-                    .map(Path::toString)
-                    .collect(Collectors.toSet());
-        }
-        catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public Set<String> keySet() throws IOException {
+        return Files.list(directory)
+                .map(Path::getFileName)
+                .map(Path::toString)
+                .collect(Collectors.toSet());
     }
 
     @Override
-    public T get(String key) {
+    public T get(String key) throws IOException {
         try {
             return Json.read(Files.newInputStream(directory.resolve(key)), classofT);
         }
         catch (NoSuchFileException e) {
             return null;
-        }
-        catch (IOException e) {
-            throw new RuntimeException(e);
         }
     }
 }

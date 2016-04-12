@@ -29,7 +29,7 @@ public abstract class DataStorage implements UnkeyableSimpleMap<Hash, InputStrea
      * @return hash of stored data
      */
     @Override
-    public final Hash put(InputStream source) {
+    public final Hash put(InputStream source) throws IOException {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-1");
             DigestInputStream dis = new DigestInputStream(source, md);
@@ -44,9 +44,6 @@ public abstract class DataStorage implements UnkeyableSimpleMap<Hash, InputStrea
         catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
-        catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     /**
@@ -54,7 +51,7 @@ public abstract class DataStorage implements UnkeyableSimpleMap<Hash, InputStrea
      * @param object object to store
      * @return hash of stored data
      */
-    public final Hash put(Jsonable object) {
+    public final Hash put(Jsonable object) throws IOException {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-1");
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -67,9 +64,6 @@ public abstract class DataStorage implements UnkeyableSimpleMap<Hash, InputStrea
             return hash;
         }
         catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
-        catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
@@ -89,7 +83,7 @@ public abstract class DataStorage implements UnkeyableSimpleMap<Hash, InputStrea
      * @return input stream of data
      */
     @Override
-    public final InputStream get(Hash hash) {
+    public final InputStream get(Hash hash) throws IOException {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-1");
 
@@ -110,9 +104,6 @@ public abstract class DataStorage implements UnkeyableSimpleMap<Hash, InputStrea
             }
         }
         catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
-        catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
