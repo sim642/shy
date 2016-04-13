@@ -17,17 +17,6 @@ public class TreeDiffer implements Differ<Tree> {
 
     public TreeDiffer(DataStorage storage) {
         this.storage = storage;
-    }
-
-    @Override
-    public List<String> diff(Tree original, Tree revised) throws IOException {
-        List<String> diffStrings = new ArrayList<>();
-        Map<String, TreeItem> originalItems = original.getItems();
-        Map<String, TreeItem> revisedItems = revised.getItems();
-
-        Set<String> unionTreeKeySet = new HashSet<>();
-        unionTreeKeySet.addAll(originalItems.keySet());
-        unionTreeKeySet.addAll(revisedItems.keySet());
 
         itemCases.put(new ItemCase(TreeItem.Type.FILE, TreeItem.Type.FILE),
                 (originalItem, revisedItem) ->
@@ -68,6 +57,18 @@ public class TreeDiffer implements Differ<Tree> {
 
         itemCases.put(new ItemCase(TreeItem.Type.TREE, TreeItem.Type.FILE), treeFileCase);
         itemCases.put(new ItemCase(TreeItem.Type.FILE, TreeItem.Type.TREE), treeFileCase);
+    }
+
+    @Override
+    public List<String> diff(Tree original, Tree revised) throws IOException {
+        List<String> diffStrings = new ArrayList<>();
+        Map<String, TreeItem> originalItems = original.getItems();
+        Map<String, TreeItem> revisedItems = revised.getItems();
+
+        Set<String> unionTreeKeySet = new HashSet<>();
+        unionTreeKeySet.addAll(originalItems.keySet());
+        unionTreeKeySet.addAll(revisedItems.keySet());
+
 
         for (String name : unionTreeKeySet) {
             TreeItem originalItem = originalItems.get(name);
