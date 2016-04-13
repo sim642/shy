@@ -18,6 +18,7 @@ public class Json {
      */
     private static final Gson gson = new GsonBuilder()
             .setPrettyPrinting()
+            .registerTypeAdapterFactory(new RequiredTypeAdapterFactory())
             .registerTypeAdapter(Hash.class, new HashBiserializer())
             .registerTypeAdapter(OffsetDateTime.class, new OffsetDateTimeBiserializer())
             .create();

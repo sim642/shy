@@ -1,7 +1,9 @@
 package ee.shy.core;
 
 import ee.shy.io.Jsonable;
+import ee.shy.io.Required;
 import ee.shy.storage.Hash;
+
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -14,11 +16,13 @@ public class Commit implements Jsonable {
     /**
      * Commit's tree hash.
      */
+    @Required
     private final Hash tree;
 
     /**
      * Commit's parent hashes.
      */
+    @Required
     private final List<Hash> parents;
 
     /**
