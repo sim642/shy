@@ -5,6 +5,7 @@ import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
@@ -23,7 +24,8 @@ public class GzipFileAccessor implements FileAccessor {
 
     @Override
     public void add(Path path, InputStream source) throws IOException {
-        try (GZIPOutputStream target = new GZIPOutputStream(Files.newOutputStream(PathUtils.addExtension(path, EXTENSION)))) {
+        try (OutputStream outputStream = Files.newOutputStream(PathUtils.addExtension(path, EXTENSION));
+             GZIPOutputStream target = new GZIPOutputStream(outputStream)) {
             IOUtils.copy(source, target);
         }
     }

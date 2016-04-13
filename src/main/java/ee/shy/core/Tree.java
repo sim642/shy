@@ -5,6 +5,7 @@ import ee.shy.storage.DataStorage;
 import ee.shy.storage.Hash;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -72,7 +73,10 @@ public class Tree implements Jsonable {
             try (DirectoryStream<Path> fileStream = Files.newDirectoryStream(directory)) {
                 for (Path file : fileStream) {
                     if (Files.isRegularFile(file)) {
-                        Hash hash = storage.put(Files.newInputStream(file));
+                        Hash hash;
+                        try (InputStream inputStream = Files.newInputStream(file)) {
+                            hash = storage.put(inputStream);
+                        }
                         addItem(file.getFileName().toString(), new TreeItem(TreeItem.Type.FILE, hash));
                     }
                     else if (Files.isDirectory(file)) {

@@ -8,6 +8,9 @@ import ee.shy.storage.*;
 import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -76,7 +79,9 @@ public class Repository {
         }
 
         // TODO: 6.04.16 move current commit handling into separate class
-        IOUtils.write(Hash.ZERO.toString(), Files.newOutputStream(repositoryPath.resolve("current")));
+        try (OutputStream currentStream = Files.newOutputStream(repositoryPath.resolve("current"))) {
+            IOUtils.write(Hash.ZERO.toString(), currentStream, StandardCharsets.UTF_8);
+        }
 
         Repository repository = new Repository(repositoryPath.getParent());
 
@@ -147,8 +152,12 @@ public class Repository {
      */
     public void commit(String message) throws IOException {
         Hash tree = createCommitTree();
+
         Path currentPath = getRepositoryPath().resolve("current");
-        Hash parent = new Hash(IOUtils.toString(Files.newInputStream(currentPath), "UTF-8"));
+        Hash parent;
+        try (InputStream currentStream = Files.newInputStream(currentPath)) {
+            parent = new Hash(IOUtils.toString(currentStream, StandardCharsets.UTF_8));
+        }
 
         Commit commit = new Commit.Builder()
                 .setTree(tree)
@@ -160,7 +169,9 @@ public class Repository {
         Hash hash = storage.put(commit);
 
         branches.put("master", new Branch(hash)); // TODO: 26.03.16 update correct branch
-        IOUtils.write(hash.toString(), Files.newOutputStream(currentPath));
+        try (OutputStream currentStream = Files.newOutputStream(currentPath)) {
+            IOUtils.write(hash.toString(), currentStream, StandardCharsets.UTF_8);
+        }
     }
 
     /**
@@ -169,7 +180,9 @@ public class Repository {
      * @throws IOException if file '.shy/author' does not exist or reading fails
      */
     public Author getAuthor() throws IOException {
-        return Json.read(Files.newInputStream(getAuthorPath()), Author.class);
+        try (InputStream authorStream = Files.newInputStream(getAuthorPath())) {
+            return Json.read(authorStream, Author.class);
+        }
     }
 
     /**
@@ -178,7 +191,9 @@ public class Repository {
      * @throws IOException if write fails
      */
     public void setAuthor(Author author) throws IOException {
-        author.write(Files.newOutputStream(getAuthorPath()));
+        try (OutputStream authorStream = Files.newOutputStream(getAuthorPath())) {
+            author.write(authorStream);
+        }
     }
 
     public NamedObjectMap<Branch> getBranches() {

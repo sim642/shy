@@ -32,14 +32,16 @@ public abstract class DataStorage implements UnkeyableSimpleMap<Hash, InputStrea
     public final Hash put(InputStream source) throws IOException {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-1");
-            DigestInputStream dis = new DigestInputStream(source, md);
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-            IOUtils.copy(dis, baos);
+            try (DigestInputStream dis = new DigestInputStream(source, md);
+                 ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 
-            Hash hash = new Hash(md.digest());
-            put(hash, new ByteArrayInputStream(baos.toByteArray()));
-            return hash;
+                IOUtils.copy(dis, baos);
+
+                Hash hash = new Hash(md.digest());
+                put(hash, new ByteArrayInputStream(baos.toByteArray()));
+                return hash;
+            }
         }
         catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
@@ -54,14 +56,16 @@ public abstract class DataStorage implements UnkeyableSimpleMap<Hash, InputStrea
     public final Hash put(Jsonable object) throws IOException {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-1");
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            DigestOutputStream dos = new DigestOutputStream(baos, md);
 
-            object.write(dos);
+            try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                 DigestOutputStream dos = new DigestOutputStream(baos, md)) {
 
-            Hash hash = new Hash(md.digest());
-            put(hash, new ByteArrayInputStream(baos.toByteArray()));
-            return hash;
+                object.write(dos);
+
+                Hash hash = new Hash(md.digest());
+                put(hash, new ByteArrayInputStream(baos.toByteArray()));
+                return hash;
+            }
         }
         catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
@@ -87,20 +91,21 @@ public abstract class DataStorage implements UnkeyableSimpleMap<Hash, InputStrea
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-1");
 
-            InputStream is = getUnchecked(hash);
-            if (is == null)
-                return null;
+            try (InputStream is = getUnchecked(hash)) {
+                if (is == null)
+                    return null;
 
-            try (DigestInputStream dis = new DigestInputStream(is, md);
-                 ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+                try (DigestInputStream dis = new DigestInputStream(is, md);
+                     ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 
-                IOUtils.copy(dis, baos);
+                    IOUtils.copy(dis, baos);
 
-                Hash hashComputed = new Hash(md.digest());
-                if (!hash.equals(hashComputed))
-                    throw new DataIntegrityException(hash, hashComputed);
+                    Hash hashComputed = new Hash(md.digest());
+                    if (!hash.equals(hashComputed))
+                        throw new DataIntegrityException(hash, hashComputed);
 
-                return new ByteArrayInputStream(baos.toByteArray());
+                    return new ByteArrayInputStream(baos.toByteArray());
+                }
             }
         }
         catch (NoSuchAlgorithmException e) {
