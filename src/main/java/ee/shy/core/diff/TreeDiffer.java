@@ -31,7 +31,7 @@ public class TreeDiffer implements Differ<Tree> {
     }
 
     @Override
-    public List<String> diff(Tree original, Tree revised) throws IOException {
+    public List<String> diff(String prefixPath, Tree original, Tree revised) throws IOException {
         List<String> diffStrings = new ArrayList<>();
         Map<String, TreeItem> originalItems = original.getItems();
         Map<String, TreeItem> revisedItems = revised.getItems();
@@ -43,7 +43,7 @@ public class TreeDiffer implements Differ<Tree> {
         for (String name : unionTreeKeySet) {
             TreeItem originalItem = originalItems.get(name);
             TreeItem revisedItem = revisedItems.get(name);
-            diffStrings.addAll(treeItemDiffer.diff(originalItem, revisedItem));
+            diffStrings.addAll(treeItemDiffer.diff(prefixPath + "/" + name, originalItem, revisedItem));
             diffStrings.add("");
         }
         if (!diffStrings.isEmpty()) {

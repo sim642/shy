@@ -41,39 +41,42 @@ public class TreeItemDiffer implements Differ<TreeItem> {
         this.storage = treeDiffer.getStorage();
 
         itemCases.put(new ItemCase(TreeItem.Type.FILE, TreeItem.Type.FILE),
-                (originalItem, revisedItem) ->
+                (name, originalItem, revisedItem) ->
                         inputStreamDiffer.diff(storage.get(originalItem.getHash()), storage.get(revisedItem.getHash())));
 
         itemCases.put(new ItemCase(null, TreeItem.Type.FILE),
-                (originalItem, revisedItem) ->
+                (name, originalItem, revisedItem) ->
                         inputStreamDiffer.diff(ClosedInputStream.CLOSED_INPUT_STREAM, storage.get(revisedItem.getHash())));
 
         itemCases.put(new ItemCase(TreeItem.Type.FILE, null),
-                (originalItem, revisedItem) ->
+                (name, originalItem, revisedItem) ->
                         inputStreamDiffer.diff(storage.get(originalItem.getHash()), ClosedInputStream.CLOSED_INPUT_STREAM));
 
         itemCases.put(new ItemCase(TreeItem.Type.TREE, TreeItem.Type.TREE),
-                (originalItem, revisedItem) -> treeDiffer.diff(
+                (name, originalItem, revisedItem) -> treeDiffer.diff(
+                        name,
                         Json.read(storage.get(originalItem.getHash()), Tree.class),
                         Json.read(storage.get(revisedItem.getHash()), Tree.class)
                 ));
 
         itemCases.put(new ItemCase(TreeItem.Type.TREE, null),
-                (originalItem, revisedItem) -> treeDiffer.diff(
+                (name, originalItem, revisedItem) -> treeDiffer.diff(
+                        name,
                         Json.read(storage.get(originalItem.getHash()), Tree.class),
                         Tree.EMPTY
                 ));
 
         itemCases.put(new ItemCase(null, TreeItem.Type.TREE),
-                (originalItem, revisedItem) -> treeDiffer.diff(
+                (name, originalItem, revisedItem) -> treeDiffer.diff(
+                        name,
                         Tree.EMPTY,
                         Json.read(storage.get(revisedItem.getHash()), Tree.class)
                 ));
 
-        Differ<TreeItem> treeFileCase = (originalItem, revisedItem) -> {
+        Differ<TreeItem> treeFileCase = (name, originalItem, revisedItem) -> {
             List<String> treeFileDiff = new ArrayList<>();
-            treeFileDiff.addAll(itemCases.get(new ItemCase(originalItem.getType(), null)).diff(originalItem, revisedItem));
-            treeFileDiff.addAll(itemCases.get(new ItemCase(null, revisedItem.getType())).diff(originalItem, revisedItem));
+            treeFileDiff.addAll(itemCases.get(new ItemCase(originalItem.getType(), null)).diff(name, originalItem, revisedItem));
+            treeFileDiff.addAll(itemCases.get(new ItemCase(null, revisedItem.getType())).diff(name, originalItem, revisedItem));
             return treeFileDiff;
         };
 
@@ -82,7 +85,7 @@ public class TreeItemDiffer implements Differ<TreeItem> {
     }
 
     @Override
-    public List<String> diff(TreeItem original, TreeItem revised) throws IOException {
+    public List<String> diff(String name, TreeItem original, TreeItem revised) throws IOException {
         ItemCase itemCase = new ItemCase(
                 original != null ? original.getType() : null,
                 revised != null ? revised.getType() : null
@@ -92,7 +95,7 @@ public class TreeItemDiffer implements Differ<TreeItem> {
         if (itemCaseHandler == null)
             throw new RuntimeException("Item case handler not found (" + itemCase + ")");
 
-        return itemCaseHandler.diff(original, revised);
+        return itemCaseHandler.diff(name, original, revised);
     }
 
     /**
