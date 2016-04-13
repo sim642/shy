@@ -45,6 +45,7 @@ public class TestUtilsTest {
 
         }
 
+        @SuppressWarnings("UnusedParameters")
         private MultiConstructorUtils(boolean placeholder) {
 
         }
@@ -64,6 +65,7 @@ public class TestUtilsTest {
 
         }
 
+        @SuppressWarnings({"EmptyMethod", "unused"})
         public void placeholder() {
 
         }

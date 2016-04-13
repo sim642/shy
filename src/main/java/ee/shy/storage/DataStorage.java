@@ -92,7 +92,7 @@ public abstract class DataStorage implements UnkeyableSimpleMap<Hash, InputStrea
                 return null;
 
             try (DigestInputStream dis = new DigestInputStream(is, md);
-                 ByteArrayOutputStream baos = new ByteArrayOutputStream();) {
+                 ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 
                 IOUtils.copy(dis, baos);
 

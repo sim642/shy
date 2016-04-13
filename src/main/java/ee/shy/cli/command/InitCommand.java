@@ -15,7 +15,7 @@ public class InitCommand implements Command {
     @Override
     public String getHelp() {
         return new HelptextBuilder()
-            .addWithoutArgs("Initialize a new repostiory")
+            .addWithoutArgs("Initialize a new repository")
             .addDescription("Initialize a new empty repository or reinitialize an existing one.")
             .addDescription("'.shy/' directory will be created with its subdirectories.")
             .create();
