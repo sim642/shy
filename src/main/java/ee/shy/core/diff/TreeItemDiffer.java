@@ -87,12 +87,12 @@ public class TreeItemDiffer implements Differ<TreeItem> {
                 original != null ? original.getType() : null,
                 revised != null ? revised.getType() : null
         );
+
         Differ<TreeItem> itemCaseHandler = itemCases.get(itemCase);
-        if (itemCaseHandler != null) {
-            // TODO: 13.04.16 Add file/directory names to the beginning of diff list.
-            return itemCaseHandler.diff(original, revised);
-        }
-        throw new RuntimeException("Item case handler not found (" + itemCase + ")");
+        if (itemCaseHandler == null)
+            throw new RuntimeException("Item case handler not found (" + itemCase + ")");
+
+        return itemCaseHandler.diff(original, revised);
     }
 
     /**
