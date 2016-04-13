@@ -44,6 +44,10 @@ public class TreeDiffer implements Differ<Tree> {
             TreeItem originalItem = originalItems.get(name);
             TreeItem revisedItem = revisedItems.get(name);
             diffStrings.addAll(treeItemDiffer.diff(originalItem, revisedItem));
+            diffStrings.add("");
+        }
+        if (!diffStrings.isEmpty()) {
+            diffStrings.remove(diffStrings.size() - 1);
         }
         return diffStrings;
     }

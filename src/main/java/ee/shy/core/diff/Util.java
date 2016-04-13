@@ -21,16 +21,21 @@ public class Util {
     public static void outputDiff(List<String> diffLines) {
         AnsiConsole.systemInstall();
         for (String row : diffLines) {
-            switch (row.charAt(0)) {
-                case '+':
-                    System.out.println(Ansi.ansi().fg(Ansi.Color.GREEN).a(row).reset());
-                    break;
-                case '-':
-                    System.out.println(Ansi.ansi().fg(Ansi.Color.RED).a(row).reset());
-                    break;
-                default:
-                    System.out.println(row);
-                    break;
+            if (row.length() >= 1) {
+                switch (row.charAt(0)) {
+                    case '+':
+                        System.out.println(Ansi.ansi().fg(Ansi.Color.GREEN).a(row).reset());
+                        break;
+                    case '-':
+                        System.out.println(Ansi.ansi().fg(Ansi.Color.RED).a(row).reset());
+                        break;
+                    default:
+                        System.out.println(row);
+                        break;
+                }
+            } else {
+                // TODO: 13.04.16 Refactor this
+                System.out.println(row);
             }
         }
         AnsiConsole.systemUninstall();
