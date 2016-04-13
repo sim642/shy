@@ -23,6 +23,9 @@ public class Util {
         for (String row : diffLines) {
             if (row.length() >= 1) {
                 switch (row.charAt(0)) {
+                    case '@':
+                        System.out.println(Ansi.ansi().fg(Ansi.Color.CYAN).a(row).reset());
+                        break;
                     case '+':
                         System.out.println(Ansi.ansi().fg(Ansi.Color.GREEN).a(row).reset());
                         break;

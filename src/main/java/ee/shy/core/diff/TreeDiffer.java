@@ -43,7 +43,11 @@ public class TreeDiffer implements Differ<Tree> {
         for (String name : unionTreeKeySet) {
             TreeItem originalItem = originalItems.get(name);
             TreeItem revisedItem = revisedItems.get(name);
-            diffStrings.addAll(treeItemDiffer.diff(prefixPath + "/" + name, originalItem, revisedItem));
+            if (prefixPath != null) {
+                diffStrings.addAll(treeItemDiffer.diff(prefixPath + "/" + name, originalItem, revisedItem));
+            } else {
+                diffStrings.addAll(treeItemDiffer.diff("/" + name, originalItem, revisedItem));
+            }
             diffStrings.add("");
         }
         if (!diffStrings.isEmpty()) {

@@ -1,5 +1,6 @@
 package ee.shy.core.diff;
 
+import ee.shy.CollectionUtils;
 import ee.shy.core.Tree;
 import ee.shy.core.TreeItem;
 import ee.shy.io.Json;
@@ -42,42 +43,60 @@ public class TreeItemDiffer implements Differ<TreeItem> {
 
         itemCases.put(new ItemCase(TreeItem.Type.FILE, TreeItem.Type.FILE),
                 (name, originalItem, revisedItem) ->
-                        inputStreamDiffer.diff(storage.get(originalItem.getHash()), storage.get(revisedItem.getHash())));
+                        CollectionUtils.prependAll(
+                                inputStreamDiffer.diff(storage.get(originalItem.getHash()), storage.get(revisedItem.getHash())),
+                                name
+                        ));
 
         itemCases.put(new ItemCase(null, TreeItem.Type.FILE),
                 (name, originalItem, revisedItem) ->
-                        inputStreamDiffer.diff(ClosedInputStream.CLOSED_INPUT_STREAM, storage.get(revisedItem.getHash())));
+                        CollectionUtils.prependAll(
+                                inputStreamDiffer.diff(ClosedInputStream.CLOSED_INPUT_STREAM, storage.get(revisedItem.getHash())),
+                                name
+                        ));
 
         itemCases.put(new ItemCase(TreeItem.Type.FILE, null),
                 (name, originalItem, revisedItem) ->
-                        inputStreamDiffer.diff(storage.get(originalItem.getHash()), ClosedInputStream.CLOSED_INPUT_STREAM));
+                        CollectionUtils.prependAll(
+                                inputStreamDiffer.diff(storage.get(originalItem.getHash()), ClosedInputStream.CLOSED_INPUT_STREAM),
+                                name
+                        ));
 
         itemCases.put(new ItemCase(TreeItem.Type.TREE, TreeItem.Type.TREE),
-                (name, originalItem, revisedItem) -> treeDiffer.diff(
-                        name,
-                        Json.read(storage.get(originalItem.getHash()), Tree.class),
-                        Json.read(storage.get(revisedItem.getHash()), Tree.class)
+                (name, originalItem, revisedItem) ->
+                        CollectionUtils.prependAll(
+                                treeDiffer.diff(
+                                        name,
+                                        Json.read(storage.get(originalItem.getHash()), Tree.class),
+                                        Json.read(storage.get(revisedItem.getHash()), Tree.class)),
+                                name
                 ));
 
         itemCases.put(new ItemCase(TreeItem.Type.TREE, null),
-                (name, originalItem, revisedItem) -> treeDiffer.diff(
-                        name,
-                        Json.read(storage.get(originalItem.getHash()), Tree.class),
-                        Tree.EMPTY
-                ));
+                (name, originalItem, revisedItem) ->
+                        CollectionUtils.prependAll(
+                                treeDiffer.diff(
+                                        name,
+                                        Json.read(storage.get(originalItem.getHash()), Tree.class),
+                                        Tree.EMPTY),
+                                name
+                        ));
 
         itemCases.put(new ItemCase(null, TreeItem.Type.TREE),
-                (name, originalItem, revisedItem) -> treeDiffer.diff(
-                        name,
-                        Tree.EMPTY,
-                        Json.read(storage.get(revisedItem.getHash()), Tree.class)
+                (name, originalItem, revisedItem) ->
+                        CollectionUtils.prependAll(
+                                treeDiffer.diff(
+                                        name,
+                                        Tree.EMPTY,
+                                        Json.read(storage.get(revisedItem.getHash()), Tree.class)),
+                                name
                 ));
 
         Differ<TreeItem> treeFileCase = (name, originalItem, revisedItem) -> {
             List<String> treeFileDiff = new ArrayList<>();
             treeFileDiff.addAll(itemCases.get(new ItemCase(originalItem.getType(), null)).diff(name, originalItem, revisedItem));
             treeFileDiff.addAll(itemCases.get(new ItemCase(null, revisedItem.getType())).diff(name, originalItem, revisedItem));
-            return treeFileDiff;
+            return CollectionUtils.prependAll(treeFileDiff, name);
         };
 
         itemCases.put(new ItemCase(TreeItem.Type.TREE, TreeItem.Type.FILE), treeFileCase);

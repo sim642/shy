@@ -5,6 +5,7 @@ import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -23,6 +24,9 @@ public class InputStreamDiffer implements Differ<InputStream> {
         List<String> diffLines = DiffUtils.generateUnifiedDiff(null, null,
                 originalLines, DiffUtils.diff(originalLines,
                         IOUtils.readLines(revised)), CONTEXT_SIZE);
-        return diffLines.subList(2, diffLines.size());
+        if (diffLines.size() > 2) {
+            return diffLines.subList(2, diffLines.size());
+        } else
+            return Collections.emptyList();
     }
 }
