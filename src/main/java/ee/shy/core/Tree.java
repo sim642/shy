@@ -22,6 +22,10 @@ public class Tree extends Jsonable {
      */
     private final Map<String, TreeItem> items;
 
+    /**
+     * Constructs a tree from given items.
+     * @param items map of items
+     */
     public Tree(Map<String, TreeItem> items) {
         this.items = new TreeMap<>(items);
     }

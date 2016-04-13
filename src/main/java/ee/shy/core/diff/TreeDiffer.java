@@ -9,12 +9,30 @@ import org.apache.commons.io.input.ClosedInputStream;
 import java.io.IOException;
 import java.util.*;
 
+/**
+ * Class to get the differences between two tree objects.
+ */
 public class TreeDiffer implements Differ<Tree> {
 
+    /**
+     * Storage object to get stored items according to their hash values.
+     */
     private final DataStorage storage;
+
+    /**
+     * Map containing all the possible item cases and their corresponding handlers.
+     */
     private final Map<ItemCase, Differ<TreeItem>> itemCases = new HashMap<>();
+
+    /**
+     * InputStreamDiffer to differentiate input streams from FILE type tree items.
+     */
     private static final InputStreamDiffer inputStreamDiffer = new InputStreamDiffer();
 
+    /**
+     * Construct a new {@link TreeDiffer} with given {@link DataStorage} object.
+     * @param storage storage to use
+     */
     public TreeDiffer(DataStorage storage) {
         this.storage = storage;
 
@@ -69,7 +87,6 @@ public class TreeDiffer implements Differ<Tree> {
         unionTreeKeySet.addAll(originalItems.keySet());
         unionTreeKeySet.addAll(revisedItems.keySet());
 
-
         for (String name : unionTreeKeySet) {
             TreeItem originalItem = originalItems.get(name);
             TreeItem revisedItem = revisedItems.get(name);
@@ -80,14 +97,25 @@ public class TreeDiffer implements Differ<Tree> {
             Differ<TreeItem> itemCaseHandler = itemCases.get(itemCase);
             if (itemCaseHandler != null) {
                 List<String> singleDiffStrings = itemCaseHandler.diff(originalItem, revisedItem);
+                // TODO: 13.04.16 Add file/directory names to the beginning of diff list.
                 diffStrings.addAll(singleDiffStrings);
             }
         }
         return diffStrings;
     }
 
+    /**
+     * Class to represent a specific case of all the possible cases.
+     */
     private static class ItemCase {
+        /**
+         * Type of original {@link TreeItem}.
+         */
         private final TreeItem.Type originalType;
+
+        /**
+         * Type of revised {@link TreeItem}.
+         */
         private final TreeItem.Type revisedType;
 
         private ItemCase(TreeItem.Type originalType, TreeItem.Type revisedType) {

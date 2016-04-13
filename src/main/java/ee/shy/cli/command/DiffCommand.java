@@ -48,8 +48,9 @@ public class DiffCommand implements Command {
     @Override
     public String getHelp() {
         return new HelptextBuilder()
+                .addWithArgs("<hash1> <hash2>", "Show user-readable diff for two storage objects.")
                 .addWithArgs("<filename1> <filename2>", "Show user-readable colorized diff output.")
-                .addDescription("Shows the differences between two given filenames.")
+                .addDescription("Shows the differences between two given items.")
                 .create();
     }
 

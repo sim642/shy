@@ -7,6 +7,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
+/**
+ * Class to get the difference of two given InputStreams.
+ */
 public class InputStreamDiffer implements Differ<InputStream> {
 
     /**

@@ -16,7 +16,7 @@ public class Util {
      * Take lines as parameter and output them with colors.
      * Green color indicating additions.
      * Red color indicating removed lines.
-     * @param diffLines
+     * @param diffLines unified diff lines
      */
     public static void outputDiff(List<String> diffLines) {
         AnsiConsole.systemInstall();
