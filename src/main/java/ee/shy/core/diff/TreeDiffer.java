@@ -12,7 +12,7 @@ import java.util.*;
 public class TreeDiffer implements Differ<Tree> {
 
     private final DataStorage storage;
-    private final Map<ItemCase, ItemCaseHandler> itemCases = new HashMap<>();
+    private final Map<ItemCase, Differ<TreeItem>> itemCases = new HashMap<>();
     private static final InputStreamDiffer inputStreamDiffer = new InputStreamDiffer();
 
     public TreeDiffer(DataStorage storage) {
@@ -48,10 +48,10 @@ public class TreeDiffer implements Differ<Tree> {
                         Json.read(storage.get(revisedItem.getHash()), Tree.class)
                 ));
 
-        ItemCaseHandler treeFileCase = (originalItem, revisedItem) -> {
+        Differ<TreeItem> treeFileCase = (originalItem, revisedItem) -> {
             List<String> treeFileDiff = new ArrayList<>();
-            treeFileDiff.addAll(itemCases.get(new ItemCase(originalItem.getType(), null)).handle(originalItem, revisedItem));
-            treeFileDiff.addAll(itemCases.get(new ItemCase(null, revisedItem.getType())).handle(originalItem, revisedItem));
+            treeFileDiff.addAll(itemCases.get(new ItemCase(originalItem.getType(), null)).diff(originalItem, revisedItem));
+            treeFileDiff.addAll(itemCases.get(new ItemCase(null, revisedItem.getType())).diff(originalItem, revisedItem));
             return treeFileDiff;
         };
 
@@ -77,9 +77,9 @@ public class TreeDiffer implements Differ<Tree> {
                     originalItem != null ? originalItem.getType() : null,
                     revisedItem != null ? revisedItem.getType() : null
             );
-            ItemCaseHandler itemCaseHandler = itemCases.get(itemCase);
+            Differ<TreeItem> itemCaseHandler = itemCases.get(itemCase);
             if (itemCaseHandler != null) {
-                List<String> singleDiffStrings = itemCaseHandler.handle(originalItem, revisedItem);
+                List<String> singleDiffStrings = itemCaseHandler.diff(originalItem, revisedItem);
                 diffStrings.addAll(singleDiffStrings);
             }
         }
@@ -115,9 +115,5 @@ public class TreeDiffer implements Differ<Tree> {
             result = 31 * result + (revisedType != null ? revisedType.hashCode() : 0);
             return result;
         }
-    }
-
-    private interface ItemCaseHandler {
-        List<String> handle(TreeItem originalItem, TreeItem revisedItem) throws IOException;
     }
 }
