@@ -50,7 +50,7 @@ public class TreeDiffer implements Differ<Tree> {
             TreeItem revisedItem = revisedItems.get(name);
 
             diffStrings.addAll(treeItemDiffer.diff(prefixPath + "/" + name, originalItem, revisedItem));
-            diffStrings.add("");
+            if (!diffStrings.isEmpty()) diffStrings.add("");
         }
         if (!diffStrings.isEmpty()) {
             diffStrings.remove(diffStrings.size() - 1);

@@ -8,10 +8,7 @@ import ee.shy.storage.DataStorage;
 import org.apache.commons.io.input.ClosedInputStream;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Class to get the differences between two TreeItem objects.
@@ -45,11 +42,12 @@ public class TreeItemDiffer implements Differ<TreeItem> {
         this.storage = treeDiffer.getStorage();
 
         itemCases.put(new ItemCase(TreeItem.Type.FILE, TreeItem.Type.FILE),
-                (name, originalItem, revisedItem) ->
-                        CollectionUtils.prependAll(
-                                inputStreamDiffer.diff(storage.get(originalItem.getHash()), storage.get(revisedItem.getHash())),
-                                NAME_REMOVE + name, NAME_ADD + name
-                        ));
+                (name, originalItem, revisedItem) -> {
+                        List<String> diff = inputStreamDiffer.diff(storage.get(originalItem.getHash()), storage.get(revisedItem.getHash()));
+                        if (!diff.isEmpty())
+                            diff.addAll(0, Arrays.asList(NAME_REMOVE + name, NAME_ADD + name));
+                        return diff;
+                });
 
         itemCases.put(new ItemCase(null, TreeItem.Type.FILE),
                 (name, originalItem, revisedItem) ->
