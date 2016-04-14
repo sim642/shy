@@ -17,6 +17,9 @@ import java.util.Map;
  * Class to get the differences between two TreeItem objects.
  */
 public class TreeItemDiffer implements Differ<TreeItem> {
+    private static final String NAME_ADD = "+++ ";
+    private static final String NAME_REMOVE = "--- ";
+
     /**
      * Storage object to get stored items according to their hash values.
      */
@@ -45,32 +48,30 @@ public class TreeItemDiffer implements Differ<TreeItem> {
                 (name, originalItem, revisedItem) ->
                         CollectionUtils.prependAll(
                                 inputStreamDiffer.diff(storage.get(originalItem.getHash()), storage.get(revisedItem.getHash())),
-                                name
+                                NAME_REMOVE + name, NAME_ADD + name
                         ));
 
         itemCases.put(new ItemCase(null, TreeItem.Type.FILE),
                 (name, originalItem, revisedItem) ->
                         CollectionUtils.prependAll(
                                 inputStreamDiffer.diff(ClosedInputStream.CLOSED_INPUT_STREAM, storage.get(revisedItem.getHash())),
-                                name
+                                NAME_ADD + name
                         ));
 
         itemCases.put(new ItemCase(TreeItem.Type.FILE, null),
                 (name, originalItem, revisedItem) ->
                         CollectionUtils.prependAll(
                                 inputStreamDiffer.diff(storage.get(originalItem.getHash()), ClosedInputStream.CLOSED_INPUT_STREAM),
-                                name
+                                NAME_REMOVE + name
                         ));
 
         itemCases.put(new ItemCase(TreeItem.Type.TREE, TreeItem.Type.TREE),
                 (name, originalItem, revisedItem) ->
-                        CollectionUtils.prependAll(
-                                treeDiffer.diff(
-                                        name,
-                                        Json.read(storage.get(originalItem.getHash()), Tree.class),
-                                        Json.read(storage.get(revisedItem.getHash()), Tree.class)),
-                                name
-                ));
+                        treeDiffer.diff(
+                                name,
+                                Json.read(storage.get(originalItem.getHash()), Tree.class),
+                                Json.read(storage.get(revisedItem.getHash()), Tree.class))
+                );
 
         itemCases.put(new ItemCase(TreeItem.Type.TREE, null),
                 (name, originalItem, revisedItem) ->
@@ -79,7 +80,7 @@ public class TreeItemDiffer implements Differ<TreeItem> {
                                         name,
                                         Json.read(storage.get(originalItem.getHash()), Tree.class),
                                         Tree.EMPTY),
-                                name
+                                NAME_REMOVE + name, ""
                         ));
 
         itemCases.put(new ItemCase(null, TreeItem.Type.TREE),
@@ -89,14 +90,14 @@ public class TreeItemDiffer implements Differ<TreeItem> {
                                         name,
                                         Tree.EMPTY,
                                         Json.read(storage.get(revisedItem.getHash()), Tree.class)),
-                                name
+                                NAME_ADD + name, ""
                 ));
 
         Differ<TreeItem> treeFileCase = (name, originalItem, revisedItem) -> {
             List<String> treeFileDiff = new ArrayList<>();
             treeFileDiff.addAll(itemCases.get(new ItemCase(originalItem.getType(), null)).diff(name, originalItem, revisedItem));
             treeFileDiff.addAll(itemCases.get(new ItemCase(null, revisedItem.getType())).diff(name, originalItem, revisedItem));
-            return CollectionUtils.prependAll(treeFileDiff, name);
+            return CollectionUtils.prependAll(treeFileDiff, NAME_REMOVE + name, NAME_ADD + name);
         };
 
         itemCases.put(new ItemCase(TreeItem.Type.TREE, TreeItem.Type.FILE), treeFileCase);

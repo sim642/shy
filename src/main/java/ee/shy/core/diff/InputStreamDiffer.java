@@ -21,9 +21,11 @@ public class InputStreamDiffer implements Differ<InputStream> {
     @Override
     public List<String> diff(String ignoredName, InputStream original, InputStream revised) throws IOException {
         List<String> originalLines = IOUtils.readLines(original);
+        List<String> revisedLines = IOUtils.readLines(revised);
         List<String> diffLines = DiffUtils.generateUnifiedDiff(null, null,
                 originalLines, DiffUtils.diff(originalLines,
-                        IOUtils.readLines(revised)), CONTEXT_SIZE);
+                        revisedLines), CONTEXT_SIZE);
+
         if (diffLines.size() > 2) {
             return diffLines.subList(2, diffLines.size());
         } else
