@@ -3,12 +3,8 @@ package ee.shy.cli.command;
 import ee.shy.cli.Command;
 import ee.shy.cli.HelptextBuilder;
 import ee.shy.core.Repository;
-import ee.shy.core.Tree;
 import ee.shy.core.diff.InputStreamDiffer;
-import ee.shy.core.diff.TreeDiffer;
 import ee.shy.core.diff.Util;
-import ee.shy.io.Json;
-import ee.shy.storage.DataStorage;
 import ee.shy.storage.Hash;
 
 import java.io.IOException;
@@ -29,12 +25,7 @@ public class DiffCommand implements Command {
                 Hash original = new Hash(args[0]);
                 Hash target = new Hash(args[1]);
                 Repository repository = Repository.newExisting();
-                TreeDiffer treeDiffer = repository.getTreeDiffer();
-                DataStorage storage = repository.getStorage();
-                Util.outputDiff(treeDiffer.diff(
-                        Json.read(storage.get(original), Tree.class),
-                        Json.read(storage.get(target), Tree.class)
-                ));
+                Util.outputDiff(repository.getCommitDiff(original, target));
             } catch (IllegalArgumentException e) {
                 // If no hashes given, try to open as file.
                 Util.outputDiff(new InputStreamDiffer().diff(
@@ -48,7 +39,7 @@ public class DiffCommand implements Command {
     @Override
     public String getHelp() {
         return new HelptextBuilder()
-                .addWithArgs("<hash1> <hash2>", "Show user-readable diff for two storage objects.")
+                .addWithArgs("<hash1> <hash2>", "Show user-readable diff for two commits.")
                 .addWithArgs("<filename1> <filename2>", "Show user-readable colorized diff output.")
                 .addDescription("Shows the differences between two given items.")
                 .create();
