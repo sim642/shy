@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -111,28 +112,64 @@ public class Repository {
     }
 
     /**
+     * Returns commit directory files' path in root directory.
+     * @param path file which's path to transform
+     * @return transformed path in root directory
+     */
+    private Path getCurrentPath(Path path) throws IOException {
+        Path commitPath = getRepositoryPath().resolve("commit");
+        return getRootPath().resolve(commitPath.relativize(path.toRealPath()));
+    }
+
+    /**
      * Copies given file to its respective directory in ".shy/commit/" directory.
      * @param path file that user wants to add to repository
-     * @throws IOException if file can't be found or copying fails
+     * @throws IOException if file can't be found, copying fails or path is of unknown type
      */
     public void add(Path path) throws IOException {
-        Path commitPath = getCommitPath(path);
-        /*
-            Beware of the pitfalls of oh-so-wonderful Path:
-            Files.createDirectories does unintuitive things for paths ending in "..".
-            For example, "/tmp/foo/bar/.." will cause "/tmp/foo/bar/" to be created yet it's not in the normalized path.
-         */
-        Files.createDirectories(commitPath.getParent());
-        Files.copy(path, commitPath, StandardCopyOption.REPLACE_EXISTING);
+        if (Files.isRegularFile(path)) {
+            Path commitPath = getCommitPath(path);
+            /*
+                Beware of the pitfalls of oh-so-wonderful Path:
+                Files.createDirectories does unintuitive things for paths ending in "..".
+                For example, "/tmp/foo/bar/.." will cause "/tmp/foo/bar/" to be created yet it's not in the normalized path.
+             */
+            Files.createDirectories(commitPath.getParent());
+            Files.copy(path, commitPath, StandardCopyOption.REPLACE_EXISTING);
+        }
+        else if (Files.isDirectory(path)) {
+            try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(path)) {
+                for (Path innerPath : directoryStream) {
+                    add(innerPath);
+                }
+            }
+        }
+        else {
+            throw new IOException("addable path (" + path + ") is neither file nor directory");
+        }
     }
 
     /**
      * Removes given file from its directory in ".shy/commit".
      * @param path file that user wants to remove from repository
-     * @throws IOException if file could not be deleted
+     * @throws IOException if file could not be deleted or path is of unknown type
      */
     public void remove(Path path) throws IOException {
-        Files.deleteIfExists(getCommitPath(path));
+        Path commitPath = getCommitPath(path);
+        if (Files.isRegularFile(commitPath)) {
+            Files.deleteIfExists(commitPath);
+        }
+        else if (Files.isDirectory(commitPath)) {
+            try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(commitPath)) {
+                for (Path innerPath : directoryStream) {
+                    remove(getCurrentPath(innerPath));
+                }
+            }
+            Files.delete(commitPath);
+        }
+        else {
+            throw new IOException("removable path (" + path + ") is neither file nor directory");
+        }
     }
 
     /**
