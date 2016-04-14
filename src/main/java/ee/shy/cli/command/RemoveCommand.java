@@ -14,7 +14,10 @@ public class RemoveCommand implements Command {
     @Override
     public void execute(String[] args) throws IOException {
         Repository repository = Repository.newExisting();
-        repository.remove(Paths.get(args[0]));
+
+        for (String arg : args) {
+            repository.remove(Paths.get(arg));
+        }
     }
 
     @Override

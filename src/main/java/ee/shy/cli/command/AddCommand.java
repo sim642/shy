@@ -14,7 +14,10 @@ public class AddCommand implements Command {
     @Override
     public void execute(String[] args) throws IOException {
         Repository repository = Repository.newExisting();
-        repository.add(Paths.get(args[0]));
+
+        for (String arg : args) {
+            repository.add(Paths.get(arg));
+        }
     }
 
     @Override
