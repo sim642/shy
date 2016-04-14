@@ -97,18 +97,25 @@ public class Repository {
     }
 
     /**
+     * Returns repository's ".shy/commit/" directory path.
+     * @return commit directory path
+     */
+    private Path getCommitPath() {
+        return getRepositoryPath().resolve("commit");
+    }
+
+    /**
      * Returns current directory file's path in ".shy/commit/" directory.
      * @param path file which's path to transform
      * @return transformed path in ".shy/commit/"
      */
     private Path getCommitPath(Path path) throws IOException {
-        Path commitPath = getRepositoryPath().resolve("commit");
         /*
             Beware of the pitfalls of oh-so-wonderful Path:
             Path#toAbsolutePath does NOT normalize the path to an actual absolute path,
             but simply prepends the current working directory.
          */
-        return commitPath.resolve(rootPath.relativize(path.toRealPath()));
+        return getCommitPath().resolve(rootPath.relativize(path.toRealPath()));
     }
 
     /**
@@ -117,8 +124,7 @@ public class Repository {
      * @return transformed path in root directory
      */
     private Path getCurrentPath(Path path) throws IOException {
-        Path commitPath = getRepositoryPath().resolve("commit");
-        return getRootPath().resolve(commitPath.relativize(path.toRealPath()));
+        return getRootPath().resolve(getCommitPath().relativize(path.toRealPath()));
     }
 
     /**
@@ -178,7 +184,9 @@ public class Repository {
                     remove(getCurrentPath(innerPath));
                 }
             }
-            Files.delete(commitPath);
+
+            if (!Files.isSameFile(getCommitPath(), commitPath)) // prevent "./shy/commit/" from being deleted
+                Files.delete(commitPath);
         }
         else {
             throw new IOException("removable path (" + path + ") is neither file nor directory");
