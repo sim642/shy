@@ -3,7 +3,6 @@ package ee.shy.storage;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.xml.bind.DatatypeConverter;
-import java.security.MessageDigest;
 import java.util.Arrays;
 
 /**
@@ -28,12 +27,12 @@ public class Hash {
     private final byte[] bytes;
 
     /**
-     * Constructs a hash object from digested message.
-     * @param md message digester
+     * Constructs a hash object from bytes.
+     * @param bytes bytes
      * @throws IllegalArgumentException if size is invalid
      */
-    public Hash(MessageDigest md) throws IllegalArgumentException {
-        bytes = md.digest();
+    public Hash(byte[] bytes) throws IllegalArgumentException {
+        this.bytes = bytes;
         checkSize();
     }
 

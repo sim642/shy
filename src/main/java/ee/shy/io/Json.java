@@ -6,6 +6,7 @@ import ee.shy.storage.Hash;
 
 import java.io.*;
 import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -18,6 +19,7 @@ public class Json {
      */
     private static final Gson gson = new GsonBuilder()
             .setPrettyPrinting()
+            .registerTypeAdapterFactory(new RequiredTypeAdapterFactory())
             .registerTypeAdapter(Hash.class, new HashBiserializer())
             .registerTypeAdapter(OffsetDateTime.class, new OffsetDateTimeBiserializer())
             .create();
@@ -26,11 +28,10 @@ public class Json {
      * Writes an object to an output stream as JSON.
      * @param os output stream to write to
      * @param object object to write
-     * @param <T> type of writable object
      * @throws IOException if there was a problem writing to the output stream
      */
-    public static <T> void write(OutputStream os, T object) throws IOException {
-        try (Writer writer = new OutputStreamWriter(os, "UTF-8")) {
+    public static void write(OutputStream os, Object object) throws IOException {
+        try (Writer writer = new OutputStreamWriter(os, StandardCharsets.UTF_8)) {
             JsonWriter jsonWriter = gson.newJsonWriter(writer);
             jsonWriter.setIndent("    ");
             gson.toJson(object, object.getClass(), jsonWriter);
@@ -46,7 +47,7 @@ public class Json {
      * @throws IOException if there was a problem reading from the input stream
      */
     public static <T> T read(InputStream is, Class<T> classofT) throws IOException {
-        try (Reader reader = new InputStreamReader(is, "UTF-8")) {
+        try (Reader reader = new InputStreamReader(is, StandardCharsets.UTF_8)) {
             return gson.fromJson(reader, classofT);
         }
     }

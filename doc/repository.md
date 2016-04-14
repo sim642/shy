@@ -16,7 +16,12 @@ See [storage.md](storage.md).
     * `develop`
     * ...
 
-Plaintext: hash to branch commit.
+JSON:
+```json
+{
+    "commit": "###"
+}
+```
 
 ### tags/
 * `tags/`
@@ -24,7 +29,13 @@ Plaintext: hash to branch commit.
     * `v2.0`
     * ...
 
-Plaintext: hash to tag commit.
+JSON:
+```json
+{
+    "commit": "###",
+    "message": "aaa"
+}
+```
 
 ### commit/
 Copy of current commit directory.
@@ -39,4 +50,30 @@ JSON:
 ```
 
 ### current
-Plaintext: hash to currently checked out commit.
+JSON based on checked out state:
+
+* branch (can be committed to)
+
+    ```json
+    {
+        "branch": "aaa",
+        "commit": "###"
+    }
+    ```
+
+* tag (cannot be committed to)
+
+    ```json
+    {
+        "tag": "aaa",
+        "commit": "###"
+    }
+    ```
+
+* commit (cannot be committed to)
+
+    ```json
+    {
+        "commit": "###"
+    }
+    ```

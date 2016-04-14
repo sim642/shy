@@ -1,6 +1,8 @@
 package ee.shy.storage;
 
-import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
  * An abstract class for locating files by hash.
@@ -10,18 +12,14 @@ public abstract class FileLocator {
     /**
      * Root directory to use.
      */
-    protected final File root;
+    protected final Path root;
 
     /**
      * Constructs a new locator with given root.
      * @param root root directory to use
      */
-    public FileLocator(File root) {
-        if (!root.exists())
-            root.mkdirs();
-        if (!root.isDirectory())
-            throw new RuntimeException("root must be a directory"); // TODO: 9.03.16 throw better exception
-
+    public FileLocator(Path root) throws IOException {
+        Files.createDirectories(root);
         this.root = root;
     }
 
@@ -31,7 +29,7 @@ public abstract class FileLocator {
      * @param hash hash to get path for
      * @return path to file for given hash
      */
-    public File locate(Hash hash) {
+    public Path locate(Hash hash) throws IOException {
         return null;
     }
 
@@ -41,7 +39,7 @@ public abstract class FileLocator {
      * @param hash hash to get path for
      * @return supposed path to file for given hash
      */
-    public File locateAdd(Hash hash) {
+    public Path locateAdd(Hash hash) throws IOException {
         return locate(hash);
     }
 
@@ -51,7 +49,7 @@ public abstract class FileLocator {
      * @param hash hash to get path for
      * @return path to file for given hash
      */
-    public File locateGet(Hash hash) {
+    public Path locateGet(Hash hash) throws IOException {
         return locate(hash);
     }
 }

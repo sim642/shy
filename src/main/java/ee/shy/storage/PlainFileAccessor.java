@@ -2,7 +2,12 @@ package ee.shy.storage;
 
 import org.apache.commons.io.IOUtils;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
 
 /**
  * File accessor to store data plainly as-is.
@@ -10,19 +15,18 @@ import java.io.*;
  */
 public class PlainFileAccessor implements FileAccessor {
     @Override
-    public void add(File file, InputStream source) throws IOException {
-        try (FileOutputStream target = new FileOutputStream(file)) {
+    public void add(Path path, InputStream source) throws IOException {
+        try (OutputStream target = Files.newOutputStream(path)) {
             IOUtils.copy(source, target);
         }
-
     }
 
     @Override
-    public InputStream get(File file) {
+    public InputStream get(Path path) throws IOException {
         try {
-            return new FileInputStream(file);
+            return Files.newInputStream(path);
         }
-        catch (FileNotFoundException e) {
+        catch (NoSuchFileException e) { // TODO: 6.04.16 don't catch exception
             return null;
         }
     }

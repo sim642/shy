@@ -1,4 +1,7 @@
 # shy
+
+[![Travis](https://img.shields.io/travis/sim642/shy.svg)](https://travis-ci.org/sim642/shy)
+
 Version Control System made as UT OOP course project.
 
 #### Contributors

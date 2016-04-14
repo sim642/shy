@@ -38,6 +38,7 @@ public interface Command {
      * Gets possible completions with given arguments
      * @param args arguments for command
      * @return array of completions
+     * @throws IOException if I/O problem occurred during completion generation
      */
     default String[] getCompletion(String args[]) throws IOException {
         return new String[]{};
