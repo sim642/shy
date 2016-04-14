@@ -123,29 +123,42 @@ public class Repository {
 
     /**
      * Copies given file to its respective directory in ".shy/commit/" directory.
+     * Forces creation (see {@link #add(Path, boolean)}.
      * @param path file that user wants to add to repository
      * @throws IOException if file can't be found, copying fails or path is of unknown type
      */
     public void add(Path path) throws IOException {
-        if (Files.isRegularFile(path)) {
-            Path commitPath = getCommitPath(path);
-            /*
-                Beware of the pitfalls of oh-so-wonderful Path:
-                Files.createDirectories does unintuitive things for paths ending in "..".
-                For example, "/tmp/foo/bar/.." will cause "/tmp/foo/bar/" to be created yet it's not in the normalized path.
-             */
-            Files.createDirectories(commitPath.getParent());
-            Files.copy(path, commitPath, StandardCopyOption.REPLACE_EXISTING);
-        }
-        else if (Files.isDirectory(path)) {
-            try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(path)) {
-                for (Path innerPath : directoryStream) {
-                    add(innerPath);
+        add(path, true);
+    }
+
+    /**
+     * Copies given file to its respective directory in ".shy/commit/" directory.
+     * @param path file that user wants to add to repository
+     * @param force whether addition should be forced, e.g. creation of hidden item
+     * @throws IOException if file can't be found, copying fails or path is of unknown type
+     */
+    public void add(Path path, boolean force) throws IOException {
+        if (force || !Files.isHidden(path)) {
+            if (Files.isRegularFile(path)) {
+                Path commitPath = getCommitPath(path);
+                /*
+                    Beware of the pitfalls of oh-so-wonderful Path:
+                    Files.createDirectories does unintuitive things for paths ending in "..".
+                    For example, "/tmp/foo/bar/.." will cause "/tmp/foo/bar/" to be created yet it's not in the normalized path.
+                 */
+                Files.createDirectories(commitPath.getParent());
+                Files.copy(path, commitPath, StandardCopyOption.REPLACE_EXISTING);
+            }
+            else if (Files.isDirectory(path)) {
+                try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(path)) {
+                    for (Path innerPath : directoryStream) {
+                        add(innerPath, false);
+                    }
                 }
             }
-        }
-        else {
-            throw new IOException("addable path (" + path + ") is neither file nor directory");
+            else {
+                throw new IOException("addable path (" + path + ") is neither file nor directory");
+            }
         }
     }
 
