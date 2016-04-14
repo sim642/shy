@@ -3,7 +3,6 @@ package ee.shy.core.diff;
 import ee.shy.CollectionUtils;
 import ee.shy.core.Tree;
 import ee.shy.core.TreeItem;
-import ee.shy.io.Json;
 import ee.shy.storage.DataStorage;
 import org.apache.commons.io.input.ClosedInputStream;
 
@@ -67,8 +66,8 @@ public class TreeItemDiffer implements Differ<TreeItem> {
                 (name, originalItem, revisedItem) ->
                         treeDiffer.diff(
                                 name,
-                                Json.read(storage.get(originalItem.getHash()), Tree.class),
-                                Json.read(storage.get(revisedItem.getHash()), Tree.class))
+                                storage.get(originalItem.getHash(), Tree.class),
+                                storage.get(revisedItem.getHash(), Tree.class))
                 );
 
         itemCases.put(new ItemCase(TreeItem.Type.TREE, null),
@@ -76,7 +75,7 @@ public class TreeItemDiffer implements Differ<TreeItem> {
                         CollectionUtils.prependAll(
                                 treeDiffer.diff(
                                         name,
-                                        Json.read(storage.get(originalItem.getHash()), Tree.class),
+                                        storage.get(originalItem.getHash(), Tree.class),
                                         Tree.EMPTY),
                                 NAME_REMOVE + name, ""
                         ));
@@ -87,7 +86,7 @@ public class TreeItemDiffer implements Differ<TreeItem> {
                                 treeDiffer.diff(
                                         name,
                                         Tree.EMPTY,
-                                        Json.read(storage.get(revisedItem.getHash()), Tree.class)),
+                                        storage.get(revisedItem.getHash(), Tree.class)),
                                 NAME_ADD + name, ""
                 ));
 
