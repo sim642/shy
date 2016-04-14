@@ -33,10 +33,10 @@ public final class PathUtils {
 
     /**
      * Creates given path's parent directories.
-     * If path itself is a directory, it too will be created.
      * @param path path which's parent directories to create
      */
     public static void createParentDirectories(Path path) throws IOException {
-        Files.createDirectories(Files.isDirectory(path) ? path : path.getParent());
+        if (Files.notExists(path))
+            Files.createDirectories(path.getParent());
     }
 }

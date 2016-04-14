@@ -152,7 +152,7 @@ public class Repository {
                     Files.createDirectories does unintuitive things for paths ending in "..".
                     For example, "/tmp/foo/bar/.." will cause "/tmp/foo/bar/" to be created yet it's not in the normalized path.
                  */
-                Files.createDirectories(commitPath.getParent());
+                PathUtils.createParentDirectories(commitPath);
                 Files.copy(path, commitPath, StandardCopyOption.REPLACE_EXISTING);
             }
             else if (Files.isDirectory(path)) {
