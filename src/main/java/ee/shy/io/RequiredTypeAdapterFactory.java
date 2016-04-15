@@ -65,7 +65,7 @@ public class RequiredTypeAdapterFactory implements TypeAdapterFactory {
             for (Field requiredField : requiredFields) {
                 Object value = requiredField.get(object);
                 if (value == null)
-                    throw new JsonParseException("missing required field: " + requiredField.getName());
+                    throw new IllegalJsonException("missing required field: " + requiredField.getName());
             }
         }
         catch (IllegalAccessException e) {

@@ -15,7 +15,11 @@ import java.time.format.DateTimeFormatter;
 /**
  * Class providing general JSON serialization/deserialization via gson.
  */
-public class Json {
+public final class Json {
+    private Json() {
+
+    }
+
     /**
      * gson object used for all operations.
      */
@@ -63,6 +67,9 @@ public class Json {
     public static <T> T read(InputStream is, Class<T> classofT) throws IOException {
         try (Reader reader = new InputStreamReader(is, StandardCharsets.UTF_8)) {
             return gson.fromJson(reader, classofT);
+        }
+        catch (IllegalArgumentException | IllegalStateException e) {
+            throw new IllegalJsonException("illegal arguments", e);
         }
     }
 
