@@ -1,5 +1,6 @@
 package ee.shy.core;
 
+import ee.shy.io.CheckState;
 import ee.shy.io.Jsonable;
 import ee.shy.io.Required;
 import ee.shy.storage.Hash;
@@ -38,8 +39,6 @@ public class CurrentState implements Jsonable {
     }
 
     public Type getType() {
-        checkState();
-
         if (branch != null && tag == null)
             return Type.BRANCH;
         else if (branch == null && tag != null)
@@ -48,6 +47,7 @@ public class CurrentState implements Jsonable {
             return Type.COMMIT;
     }
 
+    @CheckState
     private void checkState() {
         if (commit == null)
             throw new IllegalStateException("current must have a commit");
