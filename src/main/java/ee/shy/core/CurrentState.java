@@ -22,20 +22,25 @@ public class CurrentState implements Jsonable {
         this.commit = commit;
         this.branch = branch;
         this.tag = tag;
-        // TODO: 15.04.16 check state
+        checkState();
     }
 
     public Type getType() {
-        if (commit == null)
-            throw new IllegalStateException("current must have a commit");
-        else if (branch != null && tag != null)
-            throw new IllegalStateException("current can't be a branch and a tag simultaneously");
-        else if (branch != null && tag == null)
+        checkState();
+
+        if (branch != null && tag == null)
             return Type.BRANCH;
         else if (branch == null && tag != null)
             return Type.TAG;
         else
             return Type.COMMIT;
+    }
+
+    private void checkState() {
+        if (commit == null)
+            throw new IllegalStateException("current must have a commit");
+        else if (branch != null && tag != null)
+            throw new IllegalStateException("current can't be a branch and a tag simultaneously");
     }
 
     public Hash getCommit() {
