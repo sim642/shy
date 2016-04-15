@@ -67,8 +67,8 @@ public class TreeItemDiffer implements Differ<TreeItem> {
                         treeDiffer.diff(
                                 name,
                                 storage.get(originalItem.getHash(), Tree.class),
-                                storage.get(revisedItem.getHash(), Tree.class))
-                );
+                                storage.get(revisedItem.getHash(), Tree.class)
+                        ));
 
         itemCases.put(new ItemCase(TreeItem.Type.TREE, null),
                 (name, originalItem, revisedItem) ->
@@ -88,7 +88,7 @@ public class TreeItemDiffer implements Differ<TreeItem> {
                                         Tree.EMPTY,
                                         storage.get(revisedItem.getHash(), Tree.class)),
                                 NAME_ADD + name, ""
-                ));
+                        ));
 
         Differ<TreeItem> treeFileCase = (name, originalItem, revisedItem) -> {
             List<String> treeFileDiff = new ArrayList<>();

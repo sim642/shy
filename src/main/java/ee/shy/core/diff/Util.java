@@ -25,7 +25,9 @@ public class Util {
     /**
      * This is necessary because Util class must not be initialized.
      */
-    private Util () {}
+    private Util() {
+
+    }
 
     /**
      * Take lines as parameter and output them with colors.
