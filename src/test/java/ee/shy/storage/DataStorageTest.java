@@ -2,6 +2,7 @@ package ee.shy.storage;
 
 import ee.shy.SecurityProviderRecoverer;
 import ee.shy.TemporaryDirectory;
+import ee.shy.io.TestJsonable;
 import org.apache.commons.io.IOUtils;
 import org.hamcrest.CoreMatchers;
 import org.junit.Before;
@@ -47,6 +48,13 @@ public abstract class DataStorageTest {
     }
 
     @Test
+    public void testRetrieveJson() throws Exception {
+        TestJsonable testJsonable = TestJsonable.newRandom();
+        Hash hash = storage.put(testJsonable);
+        assertEquals(testJsonable, storage.get(hash, TestJsonable.class));
+    }
+
+    @Test
     public void testNonExistent() throws Exception {
         assertNull(storage.get(Hash.ZERO));
     }
@@ -58,6 +66,15 @@ public abstract class DataStorageTest {
         expectedException.expect(RuntimeException.class);
         expectedException.expectCause(CoreMatchers.isA(NoSuchAlgorithmException.class));
         storage.put(IOUtils.toInputStream("Hello, World!"));
+    }
+
+    @Test
+    public void testPutJsonNoAlgorithm() throws Exception {
+        Security.removeProvider(hashProvider.getName());
+
+        expectedException.expect(RuntimeException.class);
+        expectedException.expectCause(CoreMatchers.isA(NoSuchAlgorithmException.class));
+        storage.put(TestJsonable.newRandom());
     }
 
     @Test
