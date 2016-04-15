@@ -1,5 +1,6 @@
 package ee.shy.core;
 
+import ee.shy.io.CheckState;
 import ee.shy.io.Jsonable;
 import ee.shy.io.Required;
 import ee.shy.storage.Hash;
@@ -51,6 +52,11 @@ public class Commit implements Jsonable {
         this.time = builder.time;
         this.message = builder.message;
 
+        checkState();
+    }
+
+    @CheckState
+    private void checkState() {
         if (this.tree == null)
             throw new IllegalStateException("Commit has no tree");
         else if (this.parents.isEmpty())

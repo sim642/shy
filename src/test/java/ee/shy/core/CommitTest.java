@@ -34,4 +34,9 @@ public class CommitTest {
     public void testReadIllegalParents() throws Exception {
         Json.read(getClass().getResourceAsStream("/commit2b.json"), Commit.class);
     }
+
+    @Test(expected = IllegalJsonException.class)
+    public void testReadIllegalParentsEmpty() throws Exception {
+        Json.read(getClass().getResourceAsStream("/commit2c.json"), Commit.class);
+    }
 }
