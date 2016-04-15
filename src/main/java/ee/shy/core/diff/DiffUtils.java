@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Util {
+public class DiffUtils {
     /**
      * Map containing character and its corresponding color.
      */
@@ -23,9 +23,9 @@ public class Util {
     }
 
     /**
-     * This is necessary because Util class must not be initialized.
+     * This is necessary because DiffUtils class must not be initialized.
      */
-    private Util() {
+    private DiffUtils() {
 
     }
 

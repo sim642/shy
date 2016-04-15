@@ -4,7 +4,7 @@ import ee.shy.cli.Command;
 import ee.shy.cli.HelptextBuilder;
 import ee.shy.core.Repository;
 import ee.shy.core.diff.InputStreamDiffer;
-import ee.shy.core.diff.Util;
+import ee.shy.core.diff.DiffUtils;
 import ee.shy.storage.Hash;
 
 import java.io.IOException;
@@ -25,10 +25,10 @@ public class DiffCommand implements Command {
                 Hash original = new Hash(args[0]);
                 Hash target = new Hash(args[1]);
                 Repository repository = Repository.newExisting();
-                Util.outputDiff(repository.getCommitDiff(original, target));
+                DiffUtils.outputDiff(repository.getCommitDiff(original, target));
             } catch (IllegalArgumentException e) {
                 // If no hashes given, try to open as file.
-                Util.outputDiff(new InputStreamDiffer().diff(
+                DiffUtils.outputDiff(new InputStreamDiffer().diff(
                         Files.newInputStream(Paths.get(args[0])),
                         Files.newInputStream(Paths.get(args[1]))
                 ));
