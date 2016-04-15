@@ -242,7 +242,11 @@ public class Repository {
         return branches;
     }
 
-    public void setCurrent(CurrentState current) throws IOException {
+    public CurrentState getCurrent() {
+        return current;
+    }
+
+    private void setCurrent(CurrentState current) throws IOException {
         this.current = current;
         current.write(getRepositoryPath().resolve("current"));
     }
