@@ -7,6 +7,8 @@ import ee.shy.storage.Hash;
 import java.io.*;
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -39,6 +41,18 @@ public class Json {
     }
 
     /**
+     * Writes an object to a file as JSON.
+     * @param path file to write to
+     * @param object object to write
+     * @throws IOException if there was a problem writing to the file
+     */
+    public static void write(Path path, Object object) throws IOException {
+        try (OutputStream os = Files.newOutputStream(path)) {
+            write(os, object);
+        }
+    }
+
+    /**
      * Reads an object from an input stream as JSON.
      * @param is input stream to read from
      * @param classofT class of object to read
@@ -49,6 +63,20 @@ public class Json {
     public static <T> T read(InputStream is, Class<T> classofT) throws IOException {
         try (Reader reader = new InputStreamReader(is, StandardCharsets.UTF_8)) {
             return gson.fromJson(reader, classofT);
+        }
+    }
+
+    /**
+     * Reads an object from a file as JSON.
+     * @param path file to read from
+     * @param classofT class of object to read
+     * @param <T> type of readable object
+     * @return object read
+     * @throws IOException if there was a problem reading from the file
+     */
+    public static <T> T read(Path path, Class<T> classofT) throws IOException {
+        try (InputStream is = Files.newInputStream(path)) {
+            return read(is, classofT);
         }
     }
 

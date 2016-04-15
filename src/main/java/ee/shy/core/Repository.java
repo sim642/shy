@@ -238,9 +238,7 @@ public class Repository {
      * @throws IOException if file '.shy/author' does not exist or reading fails
      */
     public Author getAuthor() throws IOException {
-        try (InputStream authorStream = Files.newInputStream(getAuthorPath())) {
-            return Json.read(authorStream, Author.class);
-        }
+        return Json.read(getAuthorPath(), Author.class);
     }
 
     /**
@@ -249,9 +247,7 @@ public class Repository {
      * @throws IOException if write fails
      */
     public void setAuthor(Author author) throws IOException {
-        try (OutputStream authorStream = Files.newOutputStream(getAuthorPath())) {
-            author.write(authorStream);
-        }
+        author.write(getAuthorPath());
     }
 
     public NamedObjectMap<Branch> getBranches() {

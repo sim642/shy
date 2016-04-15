@@ -39,9 +39,7 @@ public class DirectoryJsonMap<T extends Jsonable> implements NamedObjectMap<T> {
 
     @Override
     public void put(String key, T value) throws IOException {
-        try (OutputStream outputStream = Files.newOutputStream(directory.resolve(key))) {
-            value.write(outputStream);
-        }
+        value.write(directory.resolve(key));
     }
 
     @Override
@@ -59,8 +57,8 @@ public class DirectoryJsonMap<T extends Jsonable> implements NamedObjectMap<T> {
 
     @Override
     public T get(String key) throws IOException {
-        try (InputStream inputStream = Files.newInputStream(directory.resolve(key))) {
-            return Json.read(inputStream, classofT);
+        try {
+            return Json.read(directory.resolve(key), classofT);
         }
         catch (NoSuchFileException e) {
             return null;
