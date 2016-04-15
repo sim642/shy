@@ -4,51 +4,49 @@ import ee.shy.io.Jsonable;
 import ee.shy.io.Required;
 import ee.shy.storage.Hash;
 
-public class Current implements Jsonable {
-    public enum State {
-        BRANCH(true),
-        TAG(false),
-        COMMIT(false),
-        ;
-
-        private final boolean committable;
-
-        State(boolean committable) {
-            this.committable = committable;
-        }
-
-        public boolean isCommittable() {
-            return committable;
-        }
+public class CurrentState implements Jsonable {
+    public enum Type {
+        BRANCH,
+        TAG,
+        COMMIT,
     }
 
     @Required
     private final Hash commit;
 
     private final String branch;
+
     private final String tag;
 
-    public Current(Hash commit, String branch, String tag) {
+    public CurrentState(Hash commit, String branch, String tag) {
         this.commit = commit;
         this.branch = branch;
         this.tag = tag;
         // TODO: 15.04.16 check state
     }
 
-    public State getState() {
+    public Type getType() {
         if (commit == null)
             throw new IllegalStateException("current must have a commit");
         else if (branch != null && tag != null)
             throw new IllegalStateException("current can't be a branch and a tag simultaneously");
         else if (branch != null && tag == null)
-            return State.BRANCH;
+            return Type.BRANCH;
         else if (branch == null && tag != null)
-            return State.TAG;
+            return Type.TAG;
         else
-            return State.COMMIT;
+            return Type.COMMIT;
     }
 
-    public boolean isCommittable() {
-        return getState().isCommittable();
+    public Hash getCommit() {
+        return commit;
+    }
+
+    public String getBranch() {
+        return branch;
+    }
+
+    public String getTag() {
+        return tag;
     }
 }

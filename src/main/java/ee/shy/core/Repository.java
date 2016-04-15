@@ -5,12 +5,8 @@ import ee.shy.io.PathUtils;
 import ee.shy.map.DirectoryJsonMap;
 import ee.shy.map.NamedObjectMap;
 import ee.shy.storage.*;
-import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -28,6 +24,7 @@ public class Repository {
 
     private final DataStorage storage;
     private final NamedObjectMap<Branch> branches;
+    private CurrentState current;
 
     /**
      * Constructs a new repository class.
@@ -41,6 +38,7 @@ public class Repository {
                 ),
                 new PlainFileAccessor());
         branches = new DirectoryJsonMap<>(Branch.class, getRepositoryPath().resolve("branches"));
+        current = Json.read(getRepositoryPath().resolve("current"), CurrentState.class);
     }
 
     /**
@@ -74,15 +72,7 @@ public class Repository {
             Files.createDirectory(repositoryPath.resolve(subDirectory));
         }
 
-        String[] repositoryFiles = {"author", "current"};
-        for (String repositoryFile : repositoryFiles) {
-            Files.createFile(repositoryPath.resolve(repositoryFile));
-        }
-
-        // TODO: 6.04.16 move current commit handling into separate class
-        try (OutputStream currentStream = Files.newOutputStream(repositoryPath.resolve("current"))) {
-            IOUtils.write(Hash.ZERO.toString(), currentStream, StandardCharsets.UTF_8);
-        }
+        new CurrentState(Hash.ZERO, "master", null).write(repositoryPath.resolve("current"));
 
         Repository repository = new Repository(repositoryPath.getParent());
 
@@ -209,27 +199,25 @@ public class Repository {
      * @throws IOException if there was a problem storing the tree/commit or modifying ".shy/current"
      */
     public void commit(String message) throws IOException {
-        Hash tree = createCommitTree();
+        if (current.getType() == CurrentState.Type.BRANCH) {
+            Hash tree = createCommitTree();
 
-        Path currentPath = getRepositoryPath().resolve("current");
-        Hash parent;
-        try (InputStream currentStream = Files.newInputStream(currentPath)) {
-            parent = new Hash(IOUtils.toString(currentStream, StandardCharsets.UTF_8));
+            Commit commit = new Commit.Builder()
+                    .setTree(tree)
+                    .addParent(current.getCommit())
+                    .setAuthor(getAuthor())
+                    .setTimeCurrent()
+                    .setMessage(message)
+                    .create();
+            Hash hash = storage.put(commit);
+
+            CurrentState newCurrent = new CurrentState(hash, current.getBranch(), null);
+            setCurrent(newCurrent);
+
+            branches.put(newCurrent.getBranch(), new Branch(newCurrent.getCommit()));
         }
-
-        Commit commit = new Commit.Builder()
-                .setTree(tree)
-                .addParent(parent)
-                .setAuthor(getAuthor())
-                .setTimeCurrent()
-                .setMessage(message)
-                .create();
-        Hash hash = storage.put(commit);
-
-        branches.put("master", new Branch(hash)); // TODO: 26.03.16 update correct branch
-        try (OutputStream currentStream = Files.newOutputStream(currentPath)) {
-            IOUtils.write(hash.toString(), currentStream, StandardCharsets.UTF_8);
-        }
+        else
+            throw new RuntimeException("can't commit to " + current); // TODO: 15.04.16 create custom exception
     }
 
     /**
@@ -252,6 +240,11 @@ public class Repository {
 
     public NamedObjectMap<Branch> getBranches() {
         return branches;
+    }
+
+    public void setCurrent(CurrentState current) throws IOException {
+        this.current = current;
+        current.write(getRepositoryPath().resolve("current"));
     }
 
     /**
