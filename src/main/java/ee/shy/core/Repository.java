@@ -72,7 +72,7 @@ public class Repository {
             Files.createDirectory(repositoryPath.resolve(subDirectory));
         }
 
-        new CurrentState(Hash.ZERO, "master", null).write(repositoryPath.resolve("current"));
+        CurrentState.newBranch(Hash.ZERO, "master").write(repositoryPath.resolve("current"));
 
         Repository repository = new Repository(repositoryPath.getParent());
 
@@ -211,7 +211,7 @@ public class Repository {
                     .create();
             Hash hash = storage.put(commit);
 
-            CurrentState newCurrent = new CurrentState(hash, current.getBranch(), null);
+            CurrentState newCurrent = CurrentState.newBranch(hash, current.getBranch());
             setCurrent(newCurrent);
 
             branches.put(newCurrent.getBranch(), new Branch(newCurrent.getCommit()));

@@ -18,11 +18,23 @@ public class CurrentState implements Jsonable {
 
     private final String tag;
 
-    public CurrentState(Hash commit, String branch, String tag) {
+    private CurrentState(Hash commit, String branch, String tag) {
         this.commit = commit;
         this.branch = branch;
         this.tag = tag;
         checkState();
+    }
+
+    public static CurrentState newCommit(Hash commit) {
+        return new CurrentState(commit, null, null);
+    }
+
+    public static CurrentState newBranch(Hash commit, String branch) {
+        return new CurrentState(commit, branch, null);
+    }
+
+    public static CurrentState newTag(Hash commit, String tag) {
+        return new CurrentState(commit, null, tag);
     }
 
     public Type getType() {
