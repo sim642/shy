@@ -41,6 +41,13 @@ public class JsonTest {
         }
     }
 
+    @Test(expected = IllegalJsonException.class)
+    public void testIllegal() throws Exception {
+        try (InputStream is = getClass().getResourceAsStream("testIllegal.json")) {
+            Json.read(is, TestJsonable.class);
+        }
+    }
+
     @Test
     public void testRetrieve() throws Exception {
         TestJsonable testJsonable = TestJsonable.newRandom();
