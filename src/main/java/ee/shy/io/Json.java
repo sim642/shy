@@ -54,6 +54,9 @@ public final class Json {
         try (Reader reader = new InputStreamReader(is, StandardCharsets.UTF_8)) {
             return gson.fromJson(reader, classofT);
         }
+        catch (IllegalArgumentException | IllegalStateException e) {
+            throw new IllegalJsonException("illegal arguments", e);
+        }
     }
 
     /**

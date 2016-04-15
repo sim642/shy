@@ -1,6 +1,6 @@
 package ee.shy.core;
 
-import com.google.gson.JsonParseException;
+import ee.shy.io.IllegalJsonException;
 import ee.shy.io.Json;
 import ee.shy.storage.Hash;
 import org.apache.commons.io.output.NullOutputStream;
@@ -25,12 +25,12 @@ public class CommitTest {
         commit.write(new NullOutputStream());
     }
 
-    @Test(expected = JsonParseException.class)
+    @Test(expected = IllegalJsonException.class)
     public void testReadIllegalTree() throws Exception {
         Json.read(getClass().getResourceAsStream("/commit2a.json"), Commit.class);
     }
 
-    @Test(expected = JsonParseException.class)
+    @Test(expected = IllegalJsonException.class)
     public void testReadIllegalParents() throws Exception {
         Json.read(getClass().getResourceAsStream("/commit2b.json"), Commit.class);
     }

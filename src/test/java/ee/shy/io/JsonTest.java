@@ -1,6 +1,5 @@
 package ee.shy.io;
 
-import com.google.gson.JsonParseException;
 import com.google.gson.annotations.SerializedName;
 import ee.shy.TemporaryDirectory;
 import ee.shy.TestUtils;
@@ -43,7 +42,7 @@ public class JsonTest {
         }
     }
 
-    @Test(expected = JsonParseException.class)
+    @Test(expected = IllegalJsonException.class)
     public void testRequired() throws Exception {
         try (InputStream is = getClass().getResourceAsStream("testRequired.json")) {
             Json.read(is, TestJsonable.class);
