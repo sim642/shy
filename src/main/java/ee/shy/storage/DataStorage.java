@@ -118,11 +118,11 @@ public abstract class DataStorage implements UnkeyableSimpleMap<Hash, InputStrea
      * @param hash hash of object to get
      * @param classofT class of object to get
      * @param <T> type of obect to get
-     * @return object from JSON
+     * @return object from JSON if hash is not null, otherwise null
      * @throws IOException if JSON deserialization from underlying stream fails
      */
     public final <T> T get(Hash hash, Class<T> classofT) throws IOException {
-        return Json.read(get(hash), classofT);
+        return (hash.equals(Hash.ZERO)) ? null : Json.read(get(hash), classofT);
     }
 
     /**
