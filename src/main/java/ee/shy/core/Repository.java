@@ -246,6 +246,8 @@ public class Repository {
             Tree tree = storage.get(commit.getTree(), Tree.class);
 
             PathUtils.deleteRecursive(getCommitPath());
+            Files.createDirectory(getCommitPath());
+
             tree.toDirectory(getCommitPath(), storage);
             tree.toDirectory(getRootPath(), storage);
 
