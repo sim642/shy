@@ -1,0 +1,19 @@
+--- /bar.txt
++++ /bar.txt
+@@ -1,1 +1,2 @@
+ Hello, World!
++new line addition
+
+--- /foo.txt
++++ /foo.txt
+
+--- /foo.txt
+@@ -1,2 +1,0 @@
+-bar
+-baz
+
++++ /foo.txt
+
++++ /foo.txt/baz.txt
+@@ -1,0 +1,1 @@
++Tiit's personal secret hideout
