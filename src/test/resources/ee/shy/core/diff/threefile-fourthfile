@@ -1,4 +1,4 @@
---- /foo
+--- /foo/
 
 --- /foo/baz.txt
 @@ -1,3 +1,0 @@
@@ -6,9 +6,9 @@
 -one-toed foot has evolved
 -for maximum forward speed.
 
-+++ /pi
++++ /pi/
 
-+++ /pi/epsilon
++++ /pi/epsilon/
 
 +++ /pi/epsilon/foobar.txt
 @@ -1,0 +1,1 @@
@@ -18,7 +18,7 @@
 @@ -1,0 +1,1 @@
 +If you happen to be reading this, contact Tiit for free (imaginary) beer.
 
-+++ /pi/foo
++++ /pi/foo/
 
 +++ /pi/foo/baz.txt
 @@ -1,0 +1,3 @@

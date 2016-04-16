@@ -77,7 +77,7 @@ public class TreeItemDiffer implements Differ<TreeItem> {
                                         name,
                                         storage.get(originalItem.getHash(), Tree.class),
                                         Tree.EMPTY),
-                                NAME_REMOVE + name, ""
+                                NAME_REMOVE + name + "/", ""
                         ));
 
         itemCases.put(new ItemCase(null, TreeItem.Type.TREE),
@@ -87,7 +87,7 @@ public class TreeItemDiffer implements Differ<TreeItem> {
                                         name,
                                         Tree.EMPTY,
                                         storage.get(revisedItem.getHash(), Tree.class)),
-                                NAME_ADD + name, ""
+                                NAME_ADD + name + "/", ""
                         ));
 
         Differ<TreeItem> treeFileCase = (name, originalItem, revisedItem) -> {

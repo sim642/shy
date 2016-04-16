@@ -7,7 +7,7 @@
 --- /foo.txt
 +++ /foo.txt
 
---- /foo.txt
+--- /foo.txt/
 
 --- /foo.txt/baz.txt
 @@ -1,1 +1,0 @@

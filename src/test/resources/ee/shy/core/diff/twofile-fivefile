@@ -12,7 +12,7 @@
 -bar
 -baz
 
-+++ /foo.txt
++++ /foo.txt/
 
 +++ /foo.txt/baz.txt
 @@ -1,0 +1,1 @@

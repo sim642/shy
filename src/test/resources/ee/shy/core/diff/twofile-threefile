@@ -7,7 +7,7 @@
 -bar
 -baz
 
-+++ /foo
++++ /foo/
 
 +++ /foo/baz.txt
 @@ -1,0 +1,3 @@
