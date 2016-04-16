@@ -28,4 +28,10 @@ public class CheckoutCommand implements Command {
     public String getHelpBrief() {
         return "Checkouts to given commit.";
     }
+
+    @Override
+    public String[] getCompletion(String[] args) throws IOException {
+        Repository repository = Repository.newExisting();
+        return repository.getBranches().keySet().toArray(new String[0]);
+    }
 }
