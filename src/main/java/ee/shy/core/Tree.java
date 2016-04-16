@@ -39,15 +39,17 @@ public class Tree implements Jsonable {
      */
     public void toDirectory(Path path, DataStorage storage) throws IOException { // TODO: 16.04.16 Replace files in commit dir
         for (Map.Entry<String, TreeItem> entry : items.entrySet()) {
+            Path newPath = path.resolve(entry.getKey());
+
             switch (entry.getValue().getType()) {
                 case FILE:
-                    try (InputStream is = storage.get(entry.getValue().getHash()); OutputStream os = Files.newOutputStream(path.resolve(entry.getKey()))) {
+                    try (InputStream is = storage.get(entry.getValue().getHash()); OutputStream os = Files.newOutputStream(newPath)) {
                         IOUtils.copy(is, os);
                     }
                     break;
 
                 case TREE:
-                    Files.createDirectories(path.resolve(entry.getKey()));
+                    Files.createDirectories(newPath);
                     Tree tree = storage.get(entry.getValue().getHash(), Tree.class);
                     tree.toDirectory(path.resolve(entry.getKey()), storage);
                     break;

@@ -218,8 +218,10 @@ public class Repository {
         }
 
         if (commit != null) {
+            PathUtils.deleteRecursive(getCommitPath());
             Tree tree = storage.get(commit.getTree(), Tree.class);
             tree.toDirectory(getRootPath(), storage); // FIXME: 16.04.16 checkout to correct dir
+            tree.toDirectory(getCommitPath(), storage);
         }
     }
 
