@@ -4,9 +4,6 @@
  Hello, World!
 -new line addition
 
---- /foo.txt
-+++ /foo.txt
-
 --- /foo.txt/
 
 --- /foo.txt/baz.txt

@@ -5,9 +5,6 @@
 +new line addition
 
 --- /foo.txt
-+++ /foo.txt
-
---- /foo.txt
 @@ -1,2 +1,0 @@
 -bar
 -baz

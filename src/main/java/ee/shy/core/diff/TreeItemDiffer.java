@@ -95,7 +95,7 @@ public class TreeItemDiffer implements Differ<TreeItem> {
             treeFileDiff.addAll(itemCases.get(new ItemCase(originalItem.getType(), null)).diff(name, originalItem, revisedItem));
             treeFileDiff.add("");
             treeFileDiff.addAll(itemCases.get(new ItemCase(null, revisedItem.getType())).diff(name, originalItem, revisedItem));
-            return CollectionUtils.prependAll(treeFileDiff, NAME_REMOVE + name, NAME_ADD + name, "");
+            return treeFileDiff;
         };
 
         itemCases.put(new ItemCase(TreeItem.Type.TREE, TreeItem.Type.FILE), treeFileCase);
