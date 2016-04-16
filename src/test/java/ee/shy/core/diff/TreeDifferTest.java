@@ -17,6 +17,7 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -29,7 +30,7 @@ public class TreeDifferTest {
 
     @DataPoints("trees")
     public static String[] listTrees() throws URISyntaxException, IOException {
-        return Files.list(getResourcePath("")).map(path -> path.getFileName().toString()).toArray(String[]::new);
+        return Files.list(getResourcePath("")).filter(path -> Files.isDirectory(path)).map(path -> path.getFileName().toString()).toArray(String[]::new);
     }
 
     @Before
@@ -43,9 +44,15 @@ public class TreeDifferTest {
             @FromDataPoints("trees") String original,
             @FromDataPoints("trees") String revised
     ) throws Exception {
-        InputStream expectedStream = getClass().getResourceAsStream(original + "-" + revised);
-        assumeNotNull(expectedStream);
-        List<String> expectedLines = IOUtils.readLines(expectedStream);
+        List<String> expectedLines;
+        if (original.equals(revised)) {
+            expectedLines = Collections.emptyList();
+        }
+        else {
+            InputStream expectedStream = getClass().getResourceAsStream(original + "-" + revised);
+            assumeNotNull(expectedStream);
+            expectedLines = IOUtils.readLines(expectedStream);
+        }
 
         Tree originalTree = new Tree.Builder(storage).fromDirectory(getResourcePath(original)).create();
         Tree revisedTree = new Tree.Builder(storage).fromDirectory(getResourcePath(revised)).create();
