@@ -122,7 +122,8 @@ public abstract class DataStorage implements UnkeyableSimpleMap<Hash, InputStrea
      * @throws IOException if JSON deserialization from underlying stream fails
      */
     public final <T> T get(Hash hash, Class<T> classofT) throws IOException {
-        return (hash.equals(Hash.ZERO)) ? null : Json.read(get(hash), classofT);
+        InputStream is = get(hash);
+        return (is == null) ? null : Json.read(is, classofT);
     }
 
     /**
