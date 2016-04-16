@@ -6,34 +6,59 @@ import ee.shy.storage.DataStorage;
 import ee.shy.storage.MapStorage;
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
-import org.junit.Rule;
-import org.junit.experimental.theories.DataPoints;
-import org.junit.experimental.theories.FromDataPoints;
-import org.junit.experimental.theories.Theories;
-import org.junit.experimental.theories.Theory;
+import org.junit.ClassRule;
+import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assume.assumeNotNull;
+import static org.junit.runners.Parameterized.Parameters;
 
-@RunWith(Theories.class)
+@RunWith(Parameterized.class)
 public class TreeDifferTest {
-    @Rule
-    public ResourcePaths resourcePaths = new ResourcePaths(TreeDifferTest.class);
+    @ClassRule
+    public static ResourcePaths resourcePaths = new ResourcePaths(TreeDifferTest.class);
+
+    @Parameters(name = "{0}-{1}")
+    public static Collection<Object[]> parameters() throws IOException, URISyntaxException {
+        /*
+            Cannot use ClassRule in Parameters due to:
+            - https://github.com/junit-team/junit4/issues/671,
+            - https://github.com/junit-team/junit4/issues/527.
+         */
+        String[] trees = Files.list(ResourcePaths.getPath(TreeDifferTest.class, ""))
+                .filter(path -> Files.isDirectory(path))
+                .map(path -> path.getFileName().toString())
+                .toArray(String[]::new);
+
+        List<Object[]> parameters = new ArrayList<>();
+        for (String original : trees) {
+            for (String revised : trees) {
+                parameters.add(new Object[]{original, revised});
+            }
+        }
+        return parameters;
+    }
 
     private DataStorage storage;
     private TreeDiffer treeDiffer;
 
-    @DataPoints("trees")
-    public static String[] listTrees() throws URISyntaxException, IOException {
-        return Files.list(ResourcePaths.getPath(TreeDifferTest.class, "")).filter(path -> Files.isDirectory(path)).map(path -> path.getFileName().toString()).toArray(String[]::new);
+    private final String original;
+    private final String revised;
+
+    public TreeDifferTest(String original, String revised) {
+        this.original = original;
+        this.revised = revised;
     }
 
     @Before
@@ -42,12 +67,8 @@ public class TreeDifferTest {
         treeDiffer = new TreeDiffer(storage);
     }
 
-    @Theory
-    public void testDiff(
-            @FromDataPoints("trees") String original,
-            @FromDataPoints("trees") String revised
-    ) throws Exception {
-        System.out.println(original + "-" + revised);
+    @Test
+    public void testDiff() throws Exception {
         List<String> expectedLines;
         if (original.equals(revised)) {
             expectedLines = Collections.emptyList();
