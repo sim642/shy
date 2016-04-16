@@ -198,34 +198,6 @@ public class Repository {
     }
 
     /**
-     *  Checkouts a branch or commit
-     * @param arg a branch or a commit to checkout to
-     * @throws IOException
-     */
-    public void checkout(String arg) throws IOException {
-        Commit commit;
-
-        if (branches.containsKey(arg)) {
-            Hash commitHash = branches.get(arg).getHash();
-            commit = storage.get(commitHash, Commit.class);
-            CurrentState newCurrent = CurrentState.newBranch(commitHash, arg);
-            setCurrent(newCurrent);
-        } else {
-            Hash hash = new Hash(arg);
-            commit = storage.get(hash, Commit.class);
-            CurrentState newCurrent = CurrentState.newCommit(hash);
-            setCurrent(newCurrent);
-        }
-
-        if (commit != null) {
-            PathUtils.deleteRecursive(getCommitPath());
-            Tree tree = storage.get(commit.getTree(), Tree.class);
-            tree.toDirectory(getRootPath(), storage); // FIXME: 16.04.16 checkout to correct dir
-            tree.toDirectory(getCommitPath(), storage);
-        }
-    }
-
-    /**
      * Commits current commit with given message.
      * @param message commit message
      * @throws IOException if there was a problem storing the tree/commit or modifying ".shy/current"
@@ -250,6 +222,35 @@ public class Repository {
         }
         else
             throw new RuntimeException("can't commit to " + current); // TODO: 15.04.16 create custom exception
+    }
+
+    /**
+     * Checkouts a branch or commit
+     * @param arg a branch or a commit to checkout to
+     * @throws IOException
+     */
+    public void checkout(String arg) throws IOException {
+        Hash hash;
+        CurrentState newCurrent;
+        if (branches.containsKey(arg)) {
+            hash = branches.get(arg).getHash();
+            newCurrent = CurrentState.newBranch(hash, arg);
+        } else {
+            hash = new Hash(arg);
+            newCurrent = CurrentState.newCommit(hash);
+        }
+
+        Commit commit = storage.get(hash, Commit.class);
+
+        if (commit != null) {
+            Tree tree = storage.get(commit.getTree(), Tree.class);
+
+            PathUtils.deleteRecursive(getCommitPath());
+            tree.toDirectory(getCommitPath(), storage);
+            tree.toDirectory(getRootPath(), storage);
+
+            setCurrent(newCurrent);
+        }
     }
 
     /**
