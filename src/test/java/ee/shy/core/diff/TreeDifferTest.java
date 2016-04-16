@@ -74,9 +74,10 @@ public class TreeDifferTest {
             expectedLines = Collections.emptyList();
         }
         else {
-            InputStream expectedStream = getClass().getResourceAsStream(original + "-" + revised);
-            assumeNotNull(expectedStream);
-            expectedLines = IOUtils.readLines(expectedStream);
+            try (InputStream expectedStream = getClass().getResourceAsStream(original + "-" + revised)) {
+                assumeNotNull(expectedStream);
+                expectedLines = IOUtils.readLines(expectedStream);
+            }
         }
 
         Tree originalTree = new Tree.Builder(storage).fromDirectory(resourcePaths.get(original)).create();
