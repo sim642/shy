@@ -211,7 +211,10 @@ public class Repository {
             CurrentState newCurrent = CurrentState.newBranch(commitHash, arg);
             setCurrent(newCurrent);
         } else {
-            commit = storage.get(new Hash(arg), Commit.class);
+            Hash hash = new Hash(arg);
+            commit = storage.get(hash, Commit.class);
+            CurrentState newCurrent = CurrentState.newCommit(hash);
+            setCurrent(newCurrent);
         }
 
         if (commit != null) {
