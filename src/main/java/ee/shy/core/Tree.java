@@ -3,9 +3,10 @@ package ee.shy.core;
 import ee.shy.io.Jsonable;
 import ee.shy.storage.DataStorage;
 import ee.shy.storage.Hash;
+import org.apache.commons.io.IOUtils;
+import sun.nio.ch.IOUtil;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -27,6 +28,24 @@ public class Tree implements Jsonable {
      */
     public Tree(Builder builder) {
         this.items = new TreeMap<>(builder.items);
+    }
+
+    public void toDirectory(Path path, DataStorage storage) throws IOException {
+        for (Map.Entry<String, TreeItem> entry : items.entrySet()) {
+            switch (entry.getValue().getType()) {
+                case FILE:
+                    InputStream is = storage.get(entry.getValue().getHash());
+                    OutputStream os = Files.newOutputStream(path.resolve(entry.getKey()));
+                    IOUtils.copy(is, os);
+                    break;
+
+                case TREE:
+                    Files.createDirectory(path.resolve(entry.getKey()));
+                    Tree tree = storage.get(entry.getValue().getHash(), Tree.class);
+                    tree.toDirectory(path.resolve(entry.getKey()), storage);
+                    break;
+            }
+        }
     }
 
     /**

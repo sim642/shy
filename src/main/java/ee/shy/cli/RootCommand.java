@@ -32,6 +32,7 @@ public class RootCommand extends SuperCommand {
         add("commit", new CommitCommand());
         add("author", new AuthorCommand());
         add("branch", new BranchCommand());
+        add("checkout", new CheckoutCommand());
     }
 
     @Override

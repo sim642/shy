@@ -63,6 +63,10 @@ public class Commit implements Jsonable {
             throw new IllegalStateException("Commit has no parents");
     }
 
+    public Hash getTree() {
+        return tree;
+    }
+
     /**
      * Builder class for {@link Commit}.
      */

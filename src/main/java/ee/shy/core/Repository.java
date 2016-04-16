@@ -197,6 +197,12 @@ public class Repository {
         return storage.put(tree);
     }
 
+    public void checkout(Hash hash) throws IOException {
+        Commit commit = storage.get(hash, Commit.class);
+        Tree tree = storage.get(commit.getTree(), Tree.class);
+        tree.toDirectory(getRootPath(), storage); // FIXME: 16.04.16 checkout to correct dir
+    }
+
     /**
      * Commits current commit with given message.
      * @param message commit message
