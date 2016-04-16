@@ -24,6 +24,10 @@ public class Repository {
 
     private final DataStorage storage;
     private final NamedObjectMap<Branch> branches;
+
+    /**
+     * Repository's current checked out state.
+     */
     private CurrentState current;
 
     /**
@@ -242,10 +246,19 @@ public class Repository {
         return branches;
     }
 
+    /**
+     * Returns the current checked out state.
+     * @return current checked out state
+     */
     public CurrentState getCurrent() {
         return current;
     }
 
+    /**
+     * Sets the current checked out state.
+     * @param current state to set to
+     * @throws IOException if writing state to file failed
+     */
     private void setCurrent(CurrentState current) throws IOException {
         this.current = current;
         current.write(getRepositoryPath().resolve("current"));
