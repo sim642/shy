@@ -4,9 +4,10 @@ import ee.shy.io.Jsonable;
 import ee.shy.storage.DataStorage;
 import ee.shy.storage.Hash;
 import org.apache.commons.io.IOUtils;
-import sun.nio.ch.IOUtil;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -30,17 +31,23 @@ public class Tree implements Jsonable {
         this.items = new TreeMap<>(builder.items);
     }
 
-    public void toDirectory(Path path, DataStorage storage) throws IOException {
+    /**
+     * Extracts files and directories from a tree to root directory
+     * @param path path to extract to
+     * @param storage data storage
+     * @throws IOException if there was a problem with streams
+     */
+    public void toDirectory(Path path, DataStorage storage) throws IOException { // TODO: 16.04.16 Replace files in commit dir
         for (Map.Entry<String, TreeItem> entry : items.entrySet()) {
             switch (entry.getValue().getType()) {
                 case FILE:
-                    InputStream is = storage.get(entry.getValue().getHash());
-                    OutputStream os = Files.newOutputStream(path.resolve(entry.getKey()));
-                    IOUtils.copy(is, os);
+                    try (InputStream is = storage.get(entry.getValue().getHash()); OutputStream os = Files.newOutputStream(path.resolve(entry.getKey()))) {
+                        IOUtils.copy(is, os);
+                    }
                     break;
 
                 case TREE:
-                    Files.createDirectory(path.resolve(entry.getKey()));
+                    Files.createDirectories(path.resolve(entry.getKey()));
                     Tree tree = storage.get(entry.getValue().getHash(), Tree.class);
                     tree.toDirectory(path.resolve(entry.getKey()), storage);
                     break;

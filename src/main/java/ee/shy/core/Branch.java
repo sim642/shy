@@ -19,4 +19,8 @@ public class Branch implements Jsonable {
     public Branch(Hash commit) {
         this.commit = commit;
     }
+
+    public Hash getHash() {
+        return this.commit;
+    }
 }

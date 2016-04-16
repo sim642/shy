@@ -197,10 +197,27 @@ public class Repository {
         return storage.put(tree);
     }
 
-    public void checkout(Hash hash) throws IOException {
-        Commit commit = storage.get(hash, Commit.class);
-        Tree tree = storage.get(commit.getTree(), Tree.class);
-        tree.toDirectory(getRootPath(), storage); // FIXME: 16.04.16 checkout to correct dir
+    /**
+     *  Checkouts a branch or commit
+     * @param arg a branch or a commit to checkout to
+     * @throws IOException
+     */
+    public void checkout(String arg) throws IOException {
+        Commit commit;
+
+        if (branches.containsKey(arg)) {
+            Hash commitHash = branches.get(arg).getHash();
+            commit = storage.get(commitHash, Commit.class);
+            CurrentState newCurrent = CurrentState.newBranch(commitHash, arg);
+            setCurrent(newCurrent);
+        } else {
+            commit = storage.get(new Hash(arg), Commit.class);
+        }
+
+        if (commit != null) {
+            Tree tree = storage.get(commit.getTree(), Tree.class);
+            tree.toDirectory(getRootPath(), storage); // FIXME: 16.04.16 checkout to correct dir
+        }
     }
 
     /**
