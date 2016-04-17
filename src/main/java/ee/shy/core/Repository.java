@@ -230,7 +230,7 @@ public class Repository {
      * @throws IOException if getting commit hash from a branch fails or building fails
      */
     public void log() throws IOException {
-        buildLog(branches.get(current.getBranch()).getHash());
+        log(branches.get(current.getBranch()).getHash());
     }
 
     /**
@@ -240,10 +240,10 @@ public class Repository {
      */
     public void log(String toBuild) throws IOException {
         if(branches.containsKey(toBuild)) {
-            buildLog(branches.get(toBuild).getHash());
+            log(branches.get(toBuild).getHash());
         }
         else {
-            buildLog(new Hash(toBuild));
+            log(new Hash(toBuild));
         }
     }
 
@@ -252,7 +252,7 @@ public class Repository {
      * @param commitHash hash of a commit that's history log is wanted to be built
      * @throws IOException if getting the commit fails
      */
-    private void buildLog(Hash commitHash) throws IOException {
+    public void log(Hash commitHash) throws IOException {
         if (!commitHash.equals(Hash.ZERO)) {
             Commit commit = storage.get(commitHash, Commit.class);
 
@@ -267,7 +267,7 @@ public class Repository {
 
             List<Hash> parents = commit.getParents();
             for (Hash parent : parents) {
-                log(parent.toString());
+                log(parent);
             }
         }
     }
