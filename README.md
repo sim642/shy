@@ -1,6 +1,7 @@
 # shy
 
 [![Travis](https://img.shields.io/travis/sim642/shy.svg)](https://travis-ci.org/sim642/shy)
+[![Codecov](https://img.shields.io/codecov/c/github/sim642/shy.svg)](https://codecov.io/github/sim642/shy)
 
 Version Control System made as UT OOP course project.
 
