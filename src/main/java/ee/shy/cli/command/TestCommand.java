@@ -3,8 +3,12 @@ package ee.shy.cli.command;
 import ee.shy.cli.Command;
 import ee.shy.cli.HelptextBuilder;
 import ee.shy.core.Repository;
+import ee.shy.core.TreeFileVisitorAdapter;
+import ee.shy.core.TreeVisitor;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
 
 /**
  * A simple command for testing.
@@ -20,6 +24,12 @@ public class TestCommand implements Command {
     public void execute(String[] args) throws IOException {
         System.out.println(name);
         Repository repository = Repository.newExisting();
+        Files.walkFileTree(repository.getRootPath(), new TreeFileVisitorAdapter(repository.getRootPath(), new TreeVisitor() {
+            @Override
+            public void visitFile(String prefixPath, String name, InputStream is) throws IOException {
+                System.out.println(prefixPath + " -- " + name);
+            }
+        }));
     }
 
     @Override
