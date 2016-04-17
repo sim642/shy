@@ -18,12 +18,7 @@ public class LogCommand implements Command {
     @Override
     public void execute(String[] args) throws IOException {
         Repository repository = Repository.newExisting();
-        List<ImmutablePair<Hash, Commit>> commitList;
-
-        if (args.length == 0)
-            commitList = repository.log();
-        else
-            commitList = repository.log(args[0]);
+        List<ImmutablePair<Hash, Commit>> commitList = repository.log(args.length >= 1 ? args[0] : null);
         for (ImmutablePair<Hash, Commit> hashCommitImmutablePair : commitList) {
             String msg = hashCommitImmutablePair.getRight().getMessage();
             if (args.length < 2 || msg.contains(args[1])) {

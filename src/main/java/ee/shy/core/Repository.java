@@ -231,23 +231,32 @@ public class Repository {
     }
 
     /**
+     * Parses matching {@link CurrentState} object from given string argument.
+     * Used for uniform commit and branch argument handling.
+     * @param str string argument to parse
+     * @return current state object for argument
+     * @throws IOException
+     */
+    public CurrentState parseState(String str) throws IOException {
+        if (str == null || str.isEmpty())
+            return current;
+        if (branches.containsKey(str))
+            return CurrentState.newBranch(branches.get(str).getHash(), str);
+        else {
+            Hash hash = new Hash(str);
+            return CurrentState.newCommit(hash);
+        }
+    }
+
+    /**
      * Checkouts a branch or commit
      * @param arg a branch or a commit to checkout to
      * @throws IOException
      */
     public void checkout(String arg) throws IOException {
-        Hash hash;
-        CurrentState newCurrent;
-        if (branches.containsKey(arg)) {
-            hash = branches.get(arg).getHash();
-            newCurrent = CurrentState.newBranch(hash, arg);
-        } else {
-            hash = new Hash(arg);
-            newCurrent = CurrentState.newCommit(hash);
-        }
+        CurrentState newCurrent = parseState(arg);
 
-        Commit commit = storage.get(hash, Commit.class);
-
+        Commit commit = storage.get(newCurrent.getCommit(), Commit.class);
         if (commit != null) {
             Tree tree = storage.get(commit.getTree(), Tree.class);
 
@@ -262,25 +271,12 @@ public class Repository {
     }
 
     /**
-     *  A method that calls out log builder with current commit if no params are given
-     * @throws IOException if getting commit hash from a branch fails or building fails
-     */
-    public List<ImmutablePair<Hash, Commit>> log() throws IOException {
-        return log(branches.get(current.getBranch()).getHash());
-    }
-
-    /**
      * A method that calls out log builder of given commit
-     * @param toBuild string of branch name or commit hash
+     * @param arg string of branch name or commit hash
      * @throws IOException if building fails
      */
-    public List<ImmutablePair<Hash, Commit>> log(String toBuild) throws IOException {
-        if(branches.containsKey(toBuild)) {
-            return log(branches.get(toBuild).getHash());
-        }
-        else {
-            return log(new Hash(toBuild));
-        }
+    public List<ImmutablePair<Hash, Commit>> log(String arg) throws IOException {
+        return log(parseState(arg).getCommit());
     }
 
     /**
@@ -301,13 +297,22 @@ public class Repository {
         return loggedCommits;
     }
 
-    /*
+    /**
+     * Searches for given expression in a commit specified by argument.
+     * @param arg string referencing a commit
+     * @param expression regular expression string to search for
+     */
+    public void search(String arg, String expression) throws IOException {
+        commitSearch(parseState(arg).getCommit(), expression);
+    }
+
+    /**
      * Searches for given expression from given commit's tree
      * @param commitHash hash of the commit
      * @param expression string of the expression
      * @throws IOException if there was a problem walking the tree or getting input stream from storage
      */
-    public void commitSearch(Hash commitHash, String expression) throws IOException {
+    private void commitSearch(Hash commitHash, String expression) throws IOException {
         Commit commit = storage.get(commitHash, Commit.class);
         Tree tree = storage.get(commit.getTree(), Tree.class);
         Pattern pattern = Pattern.compile(expression);
@@ -424,6 +429,17 @@ public class Repository {
     }
 
     /**
+     * Differences two commits specified by arguments.
+     * @param arg1 string referencing original commit
+     * @param arg2 string referencing revised commit
+     * @return lines of diff output
+     * @throws IOException
+     */
+    public List<String> diff(String arg1, String arg2) throws IOException {
+        return getCommitDiff(parseState(arg1).getCommit(), parseState(arg2).getCommit());
+    }
+
+    /**
      * Takes two commit hashes as parameters and returns a list of Strings containing
      * the differences between given commits.
      * @param original Hash of the original commit
@@ -431,7 +447,7 @@ public class Repository {
      * @return Diff strings
      * @throws IOException
      */
-    public List<String> getCommitDiff(Hash original, Hash revised) throws IOException {
+    private List<String> getCommitDiff(Hash original, Hash revised) throws IOException {
         TreeDiffer treeDiffer = new TreeDiffer(storage);
         Commit originalCommit = storage.get(original, Commit.class);
         Commit revisedCommit = storage.get(revised, Commit.class);
