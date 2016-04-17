@@ -111,7 +111,7 @@ public class Repository {
             Path#toAbsolutePath does NOT normalize the path to an actual absolute path,
             but simply prepends the current working directory.
          */
-        return getCommitPath().resolve(rootPath.relativize(path.toRealPath()));
+        return getCommitPath().resolve(rootPath.relativize(path.toAbsolutePath().normalize()));
     }
 
     /**
