@@ -56,3 +56,6 @@ The same command can also be used to compare any two branches and commits entire
 ### Checking out
 Any branch and commit can be checked out using `shy checkout`.
 **NB! Any uncommited files may be overwritten.**
+
+### Searching content
+The `shy search` command can be used to recursively search content in a specific commit.
