@@ -78,10 +78,10 @@ public class Tree implements Jsonable {
      * @return instances found in directorys' files
      * @throws IOException when findInstance or storage.get() fails
      */
-    public List<String> walkTreeAndFindInstances(Matcher matcher, Path path, DataStorage storage) throws IOException {
+    public List<String> walkTreeAndFindInstances(Matcher matcher, String path, DataStorage storage) throws IOException {
         List<String> foundDirInstances = new ArrayList<>();
         for (Map.Entry<String, TreeItem> entry : items.entrySet()) {
-            Path newPath = path.resolve(entry.getKey());
+            String newPath = path + "/" + entry.getKey();
             switch (entry.getValue().getType()) {
                 case FILE:
                     List<String> foundFileInstances = findInstance(matcher, newPath, entry.getValue().getHash(), storage);
@@ -107,7 +107,7 @@ public class Tree implements Jsonable {
      * @return instances found in a file
      * @throws IOException if establishing streams fails
      */
-    private List<String> findInstance(Matcher matcher,Path path, Hash hash , DataStorage storage) throws IOException {
+    private List<String> findInstance(Matcher matcher, String path, Hash hash , DataStorage storage) throws IOException {
         List<String> foundInstances = new ArrayList<>();
         try (Reader reader = new InputStreamReader(storage.get(hash));
              LineNumberReader lineReader = new LineNumberReader(reader)) {

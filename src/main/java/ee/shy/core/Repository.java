@@ -236,7 +236,7 @@ public class Repository {
         Tree tree = storage.get(commit.getTree(), Tree.class);
         Pattern pattern = Pattern.compile(expression);
         Matcher matcher = pattern.matcher("");
-        List<String> instances = tree.walkTreeAndFindInstances(matcher, Paths.get("/"), storage);
+        List<String> instances = tree.walkTreeAndFindInstances(matcher, "", storage);
         for (String instance : instances) {
             System.out.println(instance);
         }
