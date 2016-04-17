@@ -1,8 +1,3 @@
---- /foo.txt
-@@ -1,2 +1,0 @@
--bar
--baz
-
 +++ /foo/
 
 +++ /foo/baz.txt
@@ -10,3 +5,8 @@
 +A horse is a mammal that with its
 +one-toed foot has evolved
 +for maximum forward speed.
+
+--- /foo.txt
+@@ -1,2 +1,0 @@
+-bar
+-baz

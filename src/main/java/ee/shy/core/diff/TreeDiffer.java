@@ -41,7 +41,7 @@ public class TreeDiffer implements Differ<Tree> {
         Map<String, TreeItem> originalItems = original.getItems();
         Map<String, TreeItem> revisedItems = revised.getItems();
 
-        Set<String> unionTreeKeySet = new HashSet<>();
+        Set<String> unionTreeKeySet = new TreeSet<>();
         unionTreeKeySet.addAll(originalItems.keySet());
         unionTreeKeySet.addAll(revisedItems.keySet());
 

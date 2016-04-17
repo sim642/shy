@@ -5,6 +5,11 @@
 
 +++ /pi/
 
++++ /pi/barbaz.txt
+@@ -1,0 +1,2 @@
++Here be sample text
++Lorem ipsum dolor sit amet and so on...
+
 +++ /pi/epsilon/
 
 +++ /pi/epsilon/foobar.txt
@@ -22,8 +27,3 @@
 +Valdis is a mammal that with its
 +multiple-toed foot has evolved
 +for maximum forward speed.
-
-+++ /pi/barbaz.txt
-@@ -1,0 +1,2 @@
-+Here be sample text
-+Lorem ipsum dolor sit amet and so on...
