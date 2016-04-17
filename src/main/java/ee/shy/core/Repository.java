@@ -12,6 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Class for creating and interacting with a repository.
@@ -222,6 +223,48 @@ public class Repository {
         }
         else
             throw new RuntimeException("can't commit to " + current); // TODO: 15.04.16 create custom exception
+    }
+
+    /**
+     *  A method that calls out log builder with current commit if no params are given
+     * @throws IOException if getting commit hash from a branch fails or building fails
+     */
+    public void log() throws IOException {
+        buildLog(branches.get(current.getBranch()).getHash());
+    }
+
+    /**
+     * A method that calls out log builder of given commit
+     * @param commitHash hash of a commit that's log is wanted to be built
+     * @throws IOException if building fails
+     */
+    public void log(Hash commitHash) throws IOException {
+        buildLog(commitHash);
+    }
+
+    /**
+     * Builds a history log of a commit and it's parents' commits
+     * @param commitHash hash of a commit that's history log is wanted to be built
+     * @throws IOException if getting the commit fails
+     */
+    private void buildLog(Hash commitHash) throws IOException {
+        if (!commitHash.equals(Hash.ZERO)) {
+            Commit commit = storage.get(commitHash, Commit.class);
+
+            System.out.println("Commit: " + commitHash.toString());
+
+            Author author = commit.getAuthor();
+            System.out.println("Author: " + author.getName() + "<" + author.getEmail() + ">");
+
+            System.out.println("Time: " + commit.getTime());
+
+            System.out.println("\n \t" + "Message: " + commit.getMessage() + "\n");
+
+            List<Hash> parents = commit.getParents();
+            for (Hash parent : parents) {
+                log(parent);
+            }
+        }
     }
 
     /**
