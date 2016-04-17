@@ -2,8 +2,8 @@ package ee.shy.cli;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * An abstract class that acts as a supercommand for multiple subcommands.
@@ -13,7 +13,7 @@ public abstract class SuperCommand implements Command {
     /**
      * Map to store subcommands with respective names.
      */
-    private final Map<String, Command> subCommands = new HashMap<>();
+    private final Map<String, Command> subCommands = new TreeMap<>();
 
     @Override
     public final void execute(String[] args) throws IOException {
