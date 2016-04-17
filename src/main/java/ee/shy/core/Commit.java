@@ -8,6 +8,7 @@ import ee.shy.storage.Hash;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -68,7 +69,7 @@ public class Commit implements Jsonable {
     }
 
     public List<Hash> getParents() {
-        return this.parents;
+        return Collections.unmodifiableList(this.parents);
     }
 
     public Author getAuthor() {
