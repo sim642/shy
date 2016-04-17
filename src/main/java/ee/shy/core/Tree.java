@@ -115,7 +115,7 @@ public class Tree implements Jsonable {
             while ((line = lineReader.readLine()) != null) {
                 matcher.reset(line);
                 if (matcher.find()) {
-                    String result = path.toString() + ":" + lineReader.getLineNumber() + ":" + matcher.pattern() +
+                    String result = path + ":" + lineReader.getLineNumber() + ":" + matcher.pattern() +
                             " (" + matcher.toMatchResult().start() + ", " + matcher.toMatchResult().end() + ")";
                     foundInstances.add(result);
                 }
