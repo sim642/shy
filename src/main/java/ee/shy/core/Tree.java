@@ -5,13 +5,13 @@ import ee.shy.storage.DataStorage;
 import ee.shy.storage.Hash;
 import org.apache.commons.io.IOUtils;
 
-import java.util.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -52,25 +52,57 @@ public class Tree implements Jsonable {
      * @throws IOException if there was a problem with streams
      */
     public void toDirectory(Path path, DataStorage storage) throws IOException {
-        for (Map.Entry<String, TreeItem> entry : items.entrySet()) {
-            Path newPath = path.resolve(entry.getKey());
+        walk(storage, new TreeVisitor() {
+            @Override
+            public void visitFile(String prefixPath, String name, InputStream is) throws IOException {
+                try (OutputStream os = Files.newOutputStream(toPath(prefixPath, name))) {
+                    IOUtils.copy(is, os);
+                }
+            }
 
+            @Override
+            public void preVisitTree(String prefixPath, String name) throws IOException {
+                if (prefixPath != null)
+                    Files.createDirectories(toPath(prefixPath, name));
+            }
+
+            @Override
+            public void postVisitTree(String prefixPath, String name) throws IOException {
+
+            }
+
+            private Path toPath(String prefixPath, String name) {
+                return path.resolve(prefixPath.substring(1)).resolve(name);
+            }
+        });
+    }
+
+    public void walk(DataStorage storage, TreeVisitor visitor) throws IOException {
+        walk(storage, visitor, null, "");
+    }
+
+    private void walk(DataStorage storage, TreeVisitor visitor, String prefixPath, String name) throws IOException {
+        visitor.preVisitTree(prefixPath, name);
+
+        String newPrefixPath = prefixPath != null ? prefixPath : "";
+        newPrefixPath += name + "/";
+
+        for (Map.Entry<String, TreeItem> entry : items.entrySet()) {
             switch (entry.getValue().getType()) {
                 case FILE:
-                    try (InputStream is = storage.get(entry.getValue().getHash());
-                         OutputStream os = Files.newOutputStream(newPath)) {
-
-                        IOUtils.copy(is, os);
+                    try (InputStream is = storage.get(entry.getValue().getHash())) {
+                        visitor.visitFile(newPrefixPath, entry.getKey(), is);
                     }
                     break;
 
                 case TREE:
-                    Files.createDirectories(newPath);
                     Tree tree = storage.get(entry.getValue().getHash(), Tree.class);
-                    tree.toDirectory(newPath, storage);
+                    tree.walk(storage, visitor, newPrefixPath, entry.getKey());
                     break;
             }
         }
+
+        visitor.postVisitTree(prefixPath, name);
     }
 
     /*
