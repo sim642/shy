@@ -16,7 +16,9 @@ public interface TreeVisitor {
      * @param name name of a tree
      * @throws IOException if an I/O error occurs
      */
-    void preVisitTree(String prefixPath, String name) throws IOException;
+    default void preVisitTree(String prefixPath, String name) throws IOException {
+
+    }
 
     /**
      * Invoked for each file in a tree.
@@ -25,7 +27,9 @@ public interface TreeVisitor {
      * @param is input stream of a file
      * @throws IOException if an I/O error occurs
      */
-    void visitFile(String prefixPath, String name, InputStream is) throws IOException;
+    default void visitFile(String prefixPath, String name, InputStream is) throws IOException {
+
+    }
 
     /**
      * Invoked after a tree's items are visited.
@@ -33,5 +37,7 @@ public interface TreeVisitor {
      * @param name name of a tree
      * @throws IOException if an I/O error occurs
      */
-    void postVisitTree(String prefixPath, String name) throws IOException;
+    default void postVisitTree(String prefixPath, String name) throws IOException {
+
+    }
 }
