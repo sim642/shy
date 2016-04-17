@@ -64,11 +64,6 @@ public class Tree implements Jsonable {
                     Files.delete(directory);
                 Files.createDirectories(directory);
             }
-
-            @Override
-            protected void postVisitTree(Path directory) throws IOException {
-
-            }
         });
     }
 

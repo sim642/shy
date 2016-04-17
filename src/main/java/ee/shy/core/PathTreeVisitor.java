@@ -26,7 +26,9 @@ public abstract class PathTreeVisitor implements TreeVisitor {
      * @param directory path corresponding to tree being visited
      * @throws IOException if an I/O error occurs
      */
-    protected abstract void preVisitTree(Path directory) throws IOException;
+    protected void preVisitTree(Path directory) throws IOException {
+
+    }
 
     @Override
     public void preVisitTree(String prefixPath, String name) throws IOException {
@@ -38,7 +40,9 @@ public abstract class PathTreeVisitor implements TreeVisitor {
      * @param file path corresponding to file being visited
      * @throws IOException if an I/O error occurs
      */
-    protected abstract void visitFile(Path file, InputStream is) throws IOException;
+    protected void visitFile(Path file, InputStream is) throws IOException {
+
+    }
 
     @Override
     public void visitFile(String prefixPath, String name, InputStream is) throws IOException {
@@ -50,7 +54,9 @@ public abstract class PathTreeVisitor implements TreeVisitor {
      * @param directory path corresponding to tree being visited
      * @throws IOException if an I/O error occurs
      */
-    protected abstract void postVisitTree(Path directory) throws IOException;
+    protected void postVisitTree(Path directory) throws IOException {
+
+    }
 
     @Override
     public void postVisitTree(String prefixPath, String name) throws IOException {

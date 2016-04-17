@@ -51,11 +51,6 @@ public class TreeTest {
                     assertTrue(IOUtils.contentEquals(is, fileIs));
                 }
             }
-
-            @Override
-            protected void postVisitTree(Path directory) throws IOException {
-
-            }
         });
     }
 
