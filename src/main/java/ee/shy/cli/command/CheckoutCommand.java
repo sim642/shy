@@ -13,8 +13,11 @@ import java.io.IOException;
 public class CheckoutCommand implements Command {
     @Override
     public void execute(String[] args) throws IOException {
-        Repository repository = Repository.newExisting();
-        repository.checkout(args[0]);
+        if (args.length >= 1) {
+            Repository repository = Repository.newExisting();
+            repository.checkout(args[0]);
+        } else
+            System.err.println("Not enough parameters. See 'shy help checkout'.");
     }
 
     @Override
