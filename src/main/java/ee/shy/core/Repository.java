@@ -7,8 +7,12 @@ import ee.shy.map.DirectoryJsonMap;
 import ee.shy.map.NamedObjectMap;
 import ee.shy.storage.*;
 
-import java.io.IOException;
-import java.nio.file.*;
+import java.io.*;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -236,10 +240,42 @@ public class Repository {
         Tree tree = storage.get(commit.getTree(), Tree.class);
         Pattern pattern = Pattern.compile(expression);
         Matcher matcher = pattern.matcher("");
-        List<String> instances = tree.walkTreeAndFindInstances(matcher, "", storage);
+
+        List<String> instances = new ArrayList<>();
+        tree.walk(storage, new TreeVisitor() {
+            @Override
+            public void visitFile(String prefixPath, String name, InputStream is) throws IOException {
+                instances.addAll(findInstance(prefixPath + name, is, matcher));
+            }
+        });
+
         for (String instance : instances) {
             System.out.println(instance);
         }
+    }
+
+    /**
+     * Searches for an expression from an input stream
+     * @param path path to file
+     * @param is input stream to read from
+     * @param matcher matcher to use for matching
+     * @return instances found in a file
+     * @throws IOException if establishing streams fails
+     */
+    private static List<String> findInstance(String path, InputStream is, Matcher matcher) throws IOException {
+        List<String> foundInstances = new ArrayList<>();
+        try (Reader reader = new InputStreamReader(is);
+             LineNumberReader lineReader = new LineNumberReader(reader)) {
+            String line;
+            while ((line = lineReader.readLine()) != null) {
+                matcher.reset(line);
+                if (matcher.find()) {
+                    foundInstances.add(String.format("%s:%d[%d,%d]:%s",
+                            path, lineReader.getLineNumber(), matcher.start(), matcher.end(), line));
+                }
+            }
+        }
+        return foundInstances;
     }
 
     /**

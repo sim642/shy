@@ -5,13 +5,15 @@ import ee.shy.io.PathUtils;
 import ee.shy.storage.DataStorage;
 import ee.shy.storage.Hash;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.*;
-import java.util.regex.Matcher;
+import java.util.Collections;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Class representing a directory tree.
@@ -93,59 +95,6 @@ public class Tree implements Jsonable {
         }
 
         visitor.postVisitTree(prefixPath, name);
-    }
-
-    /**
-     * Walks tree and tries to find matcher patterns from Tree files
-     * @param matcher matcher with a pattern
-     * @param path path to file
-     * @param storage data storage
-     * @return instances found in directory's files
-     * @throws IOException when findInstance or storage.get() fails
-     */
-    public List<String> walkTreeAndFindInstances(Matcher matcher, String path, DataStorage storage) throws IOException {
-        List<String> foundDirInstances = new ArrayList<>();
-        for (Map.Entry<String, TreeItem> entry : items.entrySet()) {
-            String newPath = path + "/" + entry.getKey();
-            switch (entry.getValue().getType()) {
-                case FILE:
-                    List<String> foundFileInstances = findInstance(matcher, newPath, entry.getValue().getHash(), storage);
-                    foundDirInstances.addAll(foundFileInstances);
-                    break;
-
-                case TREE:
-                    Tree tree = storage.get(entry.getValue().getHash(), Tree.class);
-                    List<String> foundBuffer = tree.walkTreeAndFindInstances(matcher, newPath, storage);
-                    foundDirInstances.addAll(foundBuffer);
-                    break;
-            }
-        }
-        return foundDirInstances;
-    }
-
-    /**
-     * Searches for an expression from file
-     * @param matcher matcher
-     * @param path path to file
-     * @param hash file's hash
-     * @param storage data storage
-     * @return instances found in a file
-     * @throws IOException if establishing streams fails
-     */
-    private List<String> findInstance(Matcher matcher, String path, Hash hash, DataStorage storage) throws IOException {
-        List<String> foundInstances = new ArrayList<>();
-        try (Reader reader = new InputStreamReader(storage.get(hash));
-             LineNumberReader lineReader = new LineNumberReader(reader)) {
-            String line;
-            while ((line = lineReader.readLine()) != null) {
-                matcher.reset(line);
-                if (matcher.find()) {
-                    foundInstances.add(String.format("%s:%d[%d,%d]:%s",
-                            path, lineReader.getLineNumber(), matcher.start(), matcher.end(), line));
-                }
-            }
-        }
-        return foundInstances;
     }
 
     /*
