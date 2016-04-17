@@ -1,6 +1,7 @@
 package ee.shy.cli.command.branch;
 
 import ee.shy.cli.Command;
+import ee.shy.cli.HelptextBuilder;
 import ee.shy.core.Repository;
 
 import java.io.IOException;
@@ -11,6 +12,7 @@ import java.io.IOException;
 public class RemoveCommand implements Command {
     @Override
     public void execute(String[] args) throws IOException {
+        // TODO: 18.04.16 Check that args is not empty before accessing args[0].
         Repository repository = Repository.newExisting();
         if (!args[0].equals(repository.getCurrent().getBranch()))
             repository.getBranches().remove(args[0]);
@@ -20,12 +22,15 @@ public class RemoveCommand implements Command {
 
     @Override
     public String getHelp() {
-        return null;
+        return new HelptextBuilder()
+                .addWithArgs("<branch name>", "Remove branch named <branch name>.")
+                .addDescription("Command to remove branches.")
+                .create();
     }
 
     @Override
     public String getHelpBrief() {
-        return null;
+        return "Remove an existing branch";
     }
 
     @Override

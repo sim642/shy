@@ -1,10 +1,14 @@
 package ee.shy.cli.command.tag;
 
 import ee.shy.cli.Command;
+import ee.shy.cli.HelptextBuilder;
 import ee.shy.core.Repository;
 
 import java.io.IOException;
 
+/**
+ * Command to remove an existing tag.
+ */
 public class RemoveCommand implements Command {
     @Override
     public void execute(String[] args) throws IOException {
@@ -17,12 +21,15 @@ public class RemoveCommand implements Command {
 
     @Override
     public String getHelp() {
-        return null;
+        return new HelptextBuilder()
+                .addWithArgs("<tag name>", "Remove tag named <tag name>.")
+                .addDescription("Command to remove tags.")
+                .create();
     }
 
     @Override
     public String getHelpBrief() {
-        return null;
+        return "Remove an existing tag";
     }
     // TODO: 18.04.16 Add completion command.
 }

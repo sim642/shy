@@ -17,11 +17,11 @@ public class BranchCommand extends SuperCommand {
 
     @Override
     public String getHelp() {
-        return null;
+        return "Command to remove/create/list branches.";
     }
 
     @Override
     public String getHelpBrief() {
-        return null;
+        return "Branch commands";
     }
 }

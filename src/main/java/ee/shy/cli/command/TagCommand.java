@@ -17,11 +17,11 @@ public class TagCommand extends SuperCommand {
 
     @Override
     public String getHelp() {
-        return null;
+        return "Commands for tag creation and modification";
     }
 
     @Override
     public String getHelpBrief() {
-        return "Commands for tag creation and modification";
+        return "Tag commands";
     }
 }

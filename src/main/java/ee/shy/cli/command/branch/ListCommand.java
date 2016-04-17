@@ -1,6 +1,7 @@
 package ee.shy.cli.command.branch;
 
 import ee.shy.cli.Command;
+import ee.shy.cli.HelptextBuilder;
 import ee.shy.core.Repository;
 
 import java.io.IOException;
@@ -16,11 +17,13 @@ public class ListCommand implements Command {
 
     @Override
     public String getHelp() {
-        return null;
+        return new HelptextBuilder()
+                .addWithoutArgs("Display all existing branches.")
+                .create();
     }
 
     @Override
     public String getHelpBrief() {
-        return null;
+        return "List all branches";
     }
 }

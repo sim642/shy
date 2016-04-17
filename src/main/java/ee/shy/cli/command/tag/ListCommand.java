@@ -1,10 +1,14 @@
 package ee.shy.cli.command.tag;
 
 import ee.shy.cli.Command;
+import ee.shy.cli.HelptextBuilder;
 import ee.shy.core.Repository;
 
 import java.io.IOException;
 
+/**
+ * Command to list all existing tags.
+ */
 public class ListCommand implements Command {
     @Override
     public void execute(String[] args) throws IOException {
@@ -14,11 +18,13 @@ public class ListCommand implements Command {
 
     @Override
     public String getHelp() {
-        return null;
+        return new HelptextBuilder()
+                .addWithoutArgs("Display each existing tag with its corresponding message.")
+                .create();
     }
 
     @Override
     public String getHelpBrief() {
-        return null;
+        return "List existing tags";
     }
 }

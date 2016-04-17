@@ -1,11 +1,15 @@
 package ee.shy.cli.command.tag;
 
 import ee.shy.cli.Command;
+import ee.shy.cli.HelptextBuilder;
 import ee.shy.core.Repository;
 import ee.shy.core.Tag;
 
 import java.io.IOException;
 
+/**
+ * Command to create a new tag.
+ */
 public class AddCommand implements Command {
     @Override
     public void execute(String[] args) throws IOException {
@@ -23,11 +27,15 @@ public class AddCommand implements Command {
 
     @Override
     public String getHelp() {
-        return null;
+        return new HelptextBuilder()
+                .addWithArgs("<tag name>, <message>", "Create a new tag named <tag name> and set <message> as tag's desciption")
+                .addDescription("Add a new tag.")
+                .addDescription("Both arguments are mandatory!")
+                .create();
     }
 
     @Override
     public String getHelpBrief() {
-        return null;
+        return "Add a new tag";
     }
 }

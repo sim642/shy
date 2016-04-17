@@ -1,6 +1,7 @@
 package ee.shy.cli.command.branch;
 
 import ee.shy.cli.Command;
+import ee.shy.cli.HelptextBuilder;
 import ee.shy.core.Branch;
 import ee.shy.core.Repository;
 
@@ -21,11 +22,14 @@ public class AddCommand implements Command {
 
     @Override
     public String getHelp() {
-        return null;
+        return new HelptextBuilder()
+                .addWithArgs("<branch name>", "Create a new branch and set its name to <branch name>.")
+                .addDescription("Add a new branch.")
+                .create();
     }
 
     @Override
     public String getHelpBrief() {
-        return null;
+        return "Create a branch";
     }
 }
