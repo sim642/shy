@@ -17,7 +17,7 @@ public class LogCommand implements Command {
         if (args.length == 0)
             repository.log();
         else
-            repository.log(new Hash(args[0]));
+            repository.log(args[0]);
     }
 
     @Override

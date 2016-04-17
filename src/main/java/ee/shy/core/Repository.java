@@ -235,11 +235,16 @@ public class Repository {
 
     /**
      * A method that calls out log builder of given commit
-     * @param commitHash hash of a commit that's log is wanted to be built
+     * @param toBuild string of branch name or commit hash
      * @throws IOException if building fails
      */
-    public void log(Hash commitHash) throws IOException {
-        buildLog(commitHash);
+    public void log(String toBuild) throws IOException {
+        if(branches.containsKey(toBuild)) {
+            buildLog(branches.get(toBuild).getHash());
+        }
+        else {
+            buildLog(new Hash(toBuild));
+        }
     }
 
     /**
@@ -262,7 +267,7 @@ public class Repository {
 
             List<Hash> parents = commit.getParents();
             for (Hash parent : parents) {
-                log(parent);
+                log(parent.toString());
             }
         }
     }
