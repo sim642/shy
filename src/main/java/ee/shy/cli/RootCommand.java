@@ -34,6 +34,7 @@ public class RootCommand extends SuperCommand {
         add("diff", new DiffCommand());
         add("branch", new BranchCommand());
         add("checkout", new CheckoutCommand());
+        add("tag", new TagCommand());
     }
 
     @Override
