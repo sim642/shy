@@ -5,6 +5,7 @@ import ee.shy.storage.DataStorage;
 import ee.shy.storage.Hash;
 import org.apache.commons.io.IOUtils;
 
+import java.util.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -19,9 +20,22 @@ import java.util.TreeMap;
  */
 public class Tree implements Jsonable {
     /**
+     * Empty tree constant.
+     */
+    public static final Tree EMPTY = new Tree(Collections.emptyMap());
+
+    /**
      * Mapping of names to {@link TreeItem}s.
      */
     private final Map<String, TreeItem> items;
+
+    /**
+     * Constructs a tree from given items.
+     * @param items map of items
+     */
+    public Tree(Map<String, TreeItem> items) {
+        this.items = new TreeMap<>(items);
+    }
 
     /**
      * Constructs a tree from its builder.
@@ -57,6 +71,14 @@ public class Tree implements Jsonable {
                     break;
             }
         }
+    }
+
+    /*
+     * Get Tree's items as an unmodifiable Map.
+     * @return tree's items
+     */
+    public Map<String, TreeItem> getItems() {
+        return Collections.unmodifiableMap(items);
     }
 
     /**

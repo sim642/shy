@@ -1,5 +1,6 @@
 package ee.shy.core;
 
+import ee.shy.core.diff.TreeDiffer;
 import ee.shy.io.Json;
 import ee.shy.io.PathUtils;
 import ee.shy.map.DirectoryJsonMap;
@@ -12,6 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Class for creating and interacting with a repository.
@@ -326,5 +328,14 @@ public class Repository {
      */
     private Path getAuthorPath() {
         return getRepositoryPath().resolve("author");
+    }
+
+    public List<String> getCommitDiff(Hash original, Hash revised) throws IOException {
+        TreeDiffer treeDiffer = new TreeDiffer(storage);
+        Commit originalCommit = storage.get(original, Commit.class);
+        Commit revisedCommit = storage.get(revised, Commit.class);
+        return treeDiffer.diff(
+                storage.get(originalCommit.getTree(), Tree.class),
+                storage.get(revisedCommit.getTree(), Tree.class));
     }
 }
