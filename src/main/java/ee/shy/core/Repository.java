@@ -230,7 +230,7 @@ public class Repository {
      * @throws IOException if getting commit hash from a branch fails or building fails
      */
     public void log() throws IOException {
-        log(branches.get(current.getBranch()).getHash());
+        log(branches.get(current.getBranch()).getHash(), "");
     }
 
     /**
@@ -240,10 +240,23 @@ public class Repository {
      */
     public void log(String toBuild) throws IOException {
         if(branches.containsKey(toBuild)) {
-            log(branches.get(toBuild).getHash());
+            log(branches.get(toBuild).getHash(), "");
         }
         else {
-            log(new Hash(toBuild));
+            log(new Hash(toBuild), "");
+        }
+    }
+
+    public void filteredLog(String filterKey) throws IOException {
+        log(branches.get(current.getBranch()).getHash(), filterKey);
+    }
+
+    public void filteredLog(String toBuild, String filterKey) throws IOException {
+        if(branches.containsKey(toBuild)) {
+            log(branches.get(toBuild).getHash(), filterKey);
+        }
+        else {
+            log(new Hash(toBuild), filterKey);
         }
     }
 
@@ -252,22 +265,23 @@ public class Repository {
      * @param commitHash hash of a commit that's history log is wanted to be built
      * @throws IOException if getting the commit fails
      */
-    public void log(Hash commitHash) throws IOException {
+    public void log(Hash commitHash, String filterKey) throws IOException {
         if (!commitHash.equals(Hash.ZERO)) {
             Commit commit = storage.get(commitHash, Commit.class);
+            String msg = commit.getMessage();
+            if(msg.contains(filterKey)) {
+                System.out.println("Commit: " + commitHash.toString());
 
-            System.out.println("Commit: " + commitHash.toString());
+                Author author = commit.getAuthor();
+                System.out.println("Author: " + author.getName() + "<" + author.getEmail() + ">");
 
-            Author author = commit.getAuthor();
-            System.out.println("Author: " + author.getName() + "<" + author.getEmail() + ">");
+                System.out.println("Time: " + commit.getTime());
 
-            System.out.println("Time: " + commit.getTime());
-
-            System.out.println("\n \t" + "Message: " + commit.getMessage() + "\n");
-
+                System.out.println("\n \t" + "Message: " + msg + "\n");
+            }
             List<Hash> parents = commit.getParents();
             for (Hash parent : parents) {
-                log(parent);
+                log(parent, filterKey);
             }
         }
     }
