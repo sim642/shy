@@ -12,11 +12,14 @@ import java.io.IOException;
 public class RemoveCommand implements Command {
     @Override
     public void execute(String[] args) throws IOException {
-        Repository repository = Repository.newExisting();
-        if (!args[0].equals(repository.getCurrent().getTag()))
-            repository.getTags().remove(args[0]);
-        else
-            System.err.println("Tag " + args[0] + " can't be removed because it's checked out");
+        if (args.length >= 1) {
+            Repository repository = Repository.newExisting();
+            if (!args[0].equals(repository.getCurrent().getTag()))
+                repository.getTags().remove(args[0]);
+            else
+                System.err.println("Tag '" + args[0] + "' can't be removed because it's checked out");
+        } else
+            System.err.println("Not enough parameters. See 'shy help tag'.");
     }
 
     @Override
