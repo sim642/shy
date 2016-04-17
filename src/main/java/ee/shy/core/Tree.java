@@ -3,9 +3,12 @@ package ee.shy.core;
 import ee.shy.io.Jsonable;
 import ee.shy.storage.DataStorage;
 import ee.shy.storage.Hash;
+import org.apache.commons.io.IOUtils;
 
+import java.util.*;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -17,9 +20,22 @@ import java.util.TreeMap;
  */
 public class Tree implements Jsonable {
     /**
+     * Empty tree constant.
+     */
+    public static final Tree EMPTY = new Tree(Collections.emptyMap());
+
+    /**
      * Mapping of names to {@link TreeItem}s.
      */
     private final Map<String, TreeItem> items;
+
+    /**
+     * Constructs a tree from given items.
+     * @param items map of items
+     */
+    public Tree(Map<String, TreeItem> items) {
+        this.items = new TreeMap<>(items);
+    }
 
     /**
      * Constructs a tree from its builder.
@@ -27,6 +43,42 @@ public class Tree implements Jsonable {
      */
     public Tree(Builder builder) {
         this.items = new TreeMap<>(builder.items);
+    }
+
+    /**
+     * Extracts files and directories from a tree to root directory
+     * @param path path to extract to
+     * @param storage data storage
+     * @throws IOException if there was a problem with streams
+     */
+    public void toDirectory(Path path, DataStorage storage) throws IOException {
+        for (Map.Entry<String, TreeItem> entry : items.entrySet()) {
+            Path newPath = path.resolve(entry.getKey());
+
+            switch (entry.getValue().getType()) {
+                case FILE:
+                    try (InputStream is = storage.get(entry.getValue().getHash());
+                         OutputStream os = Files.newOutputStream(newPath)) {
+
+                        IOUtils.copy(is, os);
+                    }
+                    break;
+
+                case TREE:
+                    Files.createDirectories(newPath);
+                    Tree tree = storage.get(entry.getValue().getHash(), Tree.class);
+                    tree.toDirectory(newPath, storage);
+                    break;
+            }
+        }
+    }
+
+    /*
+     * Get Tree's items as an unmodifiable Map.
+     * @return tree's items
+     */
+    public Map<String, TreeItem> getItems() {
+        return Collections.unmodifiableMap(items);
     }
 
     /**

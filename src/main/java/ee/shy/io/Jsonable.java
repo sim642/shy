@@ -1,6 +1,7 @@
 package ee.shy.io;
 
 import java.io.*;
+import java.nio.file.Path;
 
 /**
  * Interface that JSON writable classes should implement.
@@ -13,5 +14,14 @@ public interface Jsonable {
      */
     default void write(OutputStream os) throws IOException {
         Json.write(os, this);
+    }
+
+    /**
+     * Writes the JSON object to given file.
+     * @param path file to write to
+     * @throws IOException if there was a problem writing to the file
+     */
+    default void write(Path path) throws IOException {
+        Json.write(path, this);
     }
 }

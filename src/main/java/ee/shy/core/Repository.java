@@ -1,21 +1,19 @@
 package ee.shy.core;
 
+import ee.shy.core.diff.TreeDiffer;
 import ee.shy.io.Json;
 import ee.shy.io.PathUtils;
 import ee.shy.map.DirectoryJsonMap;
 import ee.shy.map.NamedObjectMap;
 import ee.shy.storage.*;
-import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Class for creating and interacting with a repository.
@@ -30,6 +28,11 @@ public class Repository {
     private final NamedObjectMap<Branch> branches;
 
     /**
+     * Repository's current checked out state.
+     */
+    private CurrentState current;
+
+    /**
      * Constructs a new repository class.
      * @param rootPath root directory for repository
      */
@@ -41,6 +44,7 @@ public class Repository {
                 ),
                 new PlainFileAccessor());
         branches = new DirectoryJsonMap<>(Branch.class, getRepositoryPath().resolve("branches"));
+        current = Json.read(getRepositoryPath().resolve("current"), CurrentState.class);
     }
 
     /**
@@ -74,15 +78,7 @@ public class Repository {
             Files.createDirectory(repositoryPath.resolve(subDirectory));
         }
 
-        String[] repositoryFiles = {"author", "current"};
-        for (String repositoryFile : repositoryFiles) {
-            Files.createFile(repositoryPath.resolve(repositoryFile));
-        }
-
-        // TODO: 6.04.16 move current commit handling into separate class
-        try (OutputStream currentStream = Files.newOutputStream(repositoryPath.resolve("current"))) {
-            IOUtils.write(Hash.ZERO.toString(), currentStream, StandardCharsets.UTF_8);
-        }
+        CurrentState.newBranch(Hash.ZERO, "master").write(repositoryPath.resolve("current"));
 
         Repository repository = new Repository(repositoryPath.getParent());
 
@@ -115,7 +111,7 @@ public class Repository {
             Path#toAbsolutePath does NOT normalize the path to an actual absolute path,
             but simply prepends the current working directory.
          */
-        return getCommitPath().resolve(rootPath.relativize(path.toRealPath()));
+        return getCommitPath().resolve(rootPath.relativize(path.toAbsolutePath().normalize()));
     }
 
     /**
@@ -209,26 +205,55 @@ public class Repository {
      * @throws IOException if there was a problem storing the tree/commit or modifying ".shy/current"
      */
     public void commit(String message) throws IOException {
-        Hash tree = createCommitTree();
+        if (current.getType() == CurrentState.Type.BRANCH) {
+            Hash tree = createCommitTree();
 
-        Path currentPath = getRepositoryPath().resolve("current");
-        Hash parent;
-        try (InputStream currentStream = Files.newInputStream(currentPath)) {
-            parent = new Hash(IOUtils.toString(currentStream, StandardCharsets.UTF_8));
+            Commit commit = new Commit.Builder()
+                    .setTree(tree)
+                    .addParent(current.getCommit())
+                    .setAuthor(getAuthor())
+                    .setTimeCurrent()
+                    .setMessage(message)
+                    .create();
+            Hash hash = storage.put(commit);
+
+            CurrentState newCurrent = CurrentState.newBranch(hash, current.getBranch());
+            setCurrent(newCurrent);
+
+            branches.put(newCurrent.getBranch(), new Branch(newCurrent.getCommit()));
+        }
+        else
+            throw new RuntimeException("can't commit to " + current); // TODO: 15.04.16 create custom exception
+    }
+
+    /**
+     * Checkouts a branch or commit
+     * @param arg a branch or a commit to checkout to
+     * @throws IOException
+     */
+    public void checkout(String arg) throws IOException {
+        Hash hash;
+        CurrentState newCurrent;
+        if (branches.containsKey(arg)) {
+            hash = branches.get(arg).getHash();
+            newCurrent = CurrentState.newBranch(hash, arg);
+        } else {
+            hash = new Hash(arg);
+            newCurrent = CurrentState.newCommit(hash);
         }
 
-        Commit commit = new Commit.Builder()
-                .setTree(tree)
-                .addParent(parent)
-                .setAuthor(getAuthor())
-                .setTimeCurrent()
-                .setMessage(message)
-                .create();
-        Hash hash = storage.put(commit);
+        Commit commit = storage.get(hash, Commit.class);
 
-        branches.put("master", new Branch(hash)); // TODO: 26.03.16 update correct branch
-        try (OutputStream currentStream = Files.newOutputStream(currentPath)) {
-            IOUtils.write(hash.toString(), currentStream, StandardCharsets.UTF_8);
+        if (commit != null) {
+            Tree tree = storage.get(commit.getTree(), Tree.class);
+
+            PathUtils.deleteRecursive(getCommitPath());
+            Files.createDirectory(getCommitPath());
+
+            tree.toDirectory(getCommitPath(), storage);
+            tree.toDirectory(getRootPath(), storage);
+
+            setCurrent(newCurrent);
         }
     }
 
@@ -238,9 +263,7 @@ public class Repository {
      * @throws IOException if file '.shy/author' does not exist or reading fails
      */
     public Author getAuthor() throws IOException {
-        try (InputStream authorStream = Files.newInputStream(getAuthorPath())) {
-            return Json.read(authorStream, Author.class);
-        }
+        return Json.read(getAuthorPath(), Author.class);
     }
 
     /**
@@ -249,13 +272,29 @@ public class Repository {
      * @throws IOException if write fails
      */
     public void setAuthor(Author author) throws IOException {
-        try (OutputStream authorStream = Files.newOutputStream(getAuthorPath())) {
-            author.write(authorStream);
-        }
+        author.write(getAuthorPath());
     }
 
     public NamedObjectMap<Branch> getBranches() {
         return branches;
+    }
+
+    /**
+     * Returns the current checked out state.
+     * @return current checked out state
+     */
+    public CurrentState getCurrent() {
+        return current;
+    }
+
+    /**
+     * Sets the current checked out state.
+     * @param current state to set to
+     * @throws IOException if writing state to file failed
+     */
+    private void setCurrent(CurrentState current) throws IOException {
+        this.current = current;
+        current.write(getRepositoryPath().resolve("current"));
     }
 
     /**
@@ -289,5 +328,14 @@ public class Repository {
      */
     private Path getAuthorPath() {
         return getRepositoryPath().resolve("author");
+    }
+
+    public List<String> getCommitDiff(Hash original, Hash revised) throws IOException {
+        TreeDiffer treeDiffer = new TreeDiffer(storage);
+        Commit originalCommit = storage.get(original, Commit.class);
+        Commit revisedCommit = storage.get(revised, Commit.class);
+        return treeDiffer.diff(
+                storage.get(originalCommit.getTree(), Tree.class),
+                storage.get(revisedCommit.getTree(), Tree.class));
     }
 }

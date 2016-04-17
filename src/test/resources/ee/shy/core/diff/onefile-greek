@@ -1,0 +1,29 @@
+--- /foo.txt
+@@ -1,2 +1,0 @@
+-bar
+-baz
+
++++ /pi/
+
++++ /pi/epsilon/
+
++++ /pi/epsilon/foobar.txt
+@@ -1,0 +1,1 @@
++Here be dragons
+
++++ /pi/epsilon/foobaz.txt
+@@ -1,0 +1,1 @@
++If you happen to be reading this, contact Tiit for free (imaginary) beer.
+
++++ /pi/foo/
+
++++ /pi/foo/baz.txt
+@@ -1,0 +1,3 @@
++Valdis is a mammal that with its
++multiple-toed foot has evolved
++for maximum forward speed.
+
++++ /pi/barbaz.txt
+@@ -1,0 +1,2 @@
++Here be sample text
++Lorem ipsum dolor sit amet and so on...

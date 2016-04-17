@@ -1,9 +1,8 @@
 package ee.shy.io;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
 
 /**
  * Utilities class for I/O-related methods.
@@ -38,5 +37,34 @@ public final class PathUtils {
     public static void createParentDirectories(Path path) throws IOException {
         if (Files.notExists(path))
             Files.createDirectories(path.getParent());
+    }
+
+    /**
+     * Recursively delete the given path
+     * @param path path to delete
+     * @throws IOException if the path can not be visited
+     */
+    public static void deleteRecursive(Path path) throws IOException {
+        Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
+            @Override
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException
+            {
+                Files.delete(file);
+                return FileVisitResult.CONTINUE;
+            }
+
+            @Override
+            public FileVisitResult postVisitDirectory(Path dir, IOException e) throws IOException
+            {
+                if (e == null) {
+                    Files.delete(dir);
+                    return FileVisitResult.CONTINUE;
+                }
+                else {
+                    // directory iteration failed
+                    throw e;
+                }
+            }
+        });
     }
 }

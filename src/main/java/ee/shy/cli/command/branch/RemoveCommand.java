@@ -11,7 +11,11 @@ import java.io.IOException;
 public class RemoveCommand implements Command {
     @Override
     public void execute(String[] args) throws IOException {
-        Repository.newExisting().getBranches().remove(args[0]);
+        Repository repository = Repository.newExisting();
+        if (!args[0].equals(repository.getCurrent().getBranch()))
+            repository.getBranches().remove(args[0]);
+        else
+            System.err.println("Branch " + args[0] + " can't be removed because it's checked out");
     }
 
     @Override
@@ -22,5 +26,11 @@ public class RemoveCommand implements Command {
     @Override
     public String getHelpBrief() {
         return null;
+    }
+
+    @Override
+    public String[] getCompletion(String[] args) throws IOException {
+        Repository repository = Repository.newExisting();
+        return repository.getBranches().keySet().toArray(new String[0]);
     }
 }
