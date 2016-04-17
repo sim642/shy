@@ -24,7 +24,6 @@ public class RootCommand extends SuperCommand {
 
     public RootCommand() {
         add("init", new InitCommand());
-        add("test1", new TestCommand("Test1"));
         add("help", new HelpCommand(this));
         add("completion", new CompletionCommand(this));
         add("add", new AddCommand());
