@@ -47,7 +47,8 @@ Run `shy branch add` to create a new branch at the latest commit. All branches c
 excess ones deleted with `shy branch remove`.
 
 ### Viewing history
-Use `shy log` to see the commit history for any branch or commit.
+Use `shy log` to see the commit history for any branch or commit. Optionally it's possible to give a second argument
+to filter out only some commits.
 
 ### Viewing differences
 It's possible to display the differences of any two files in the working directory using `shy diff`.

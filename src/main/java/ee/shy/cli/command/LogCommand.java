@@ -9,14 +9,12 @@ import ee.shy.storage.Hash;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * A command to display commit history log.
- * @throws IOException if flag is not found
  */
-public class LogCommand implements Command{
+public class LogCommand implements Command {
     @Override
     public void execute(String[] args) throws IOException {
         Repository repository = Repository.newExisting();
@@ -48,9 +46,12 @@ public class LogCommand implements Command{
     @Override
     public String getHelp() {
         return new HelptextBuilder()
-                .addWithArgs("<hash>", "(optional) Displays commit history log starting from given commit")
-                .addWithoutArgs("Displays commit history log of current branch starting from current commit")
-                .addDescription("Displays commit history log of current branch")
+                .addWithArgs("<branch>", "Displays commit history log of given branch")
+                .addWithArgs("<hash>", "Displays commit history log of given commit")
+                .addWithArgs("<branch> <filter>", "Displays commit history log of given branch, filtered by message")
+                .addWithArgs("<hash> <filter>", "Displays commit history log of given commit, filtered by message")
+                .addWithoutArgs("Displays commit history log of current branch")
+                .addDescription("Displays and filters commit history log of commits and branches")
                 .create();
     }
 
