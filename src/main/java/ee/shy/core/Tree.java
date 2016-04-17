@@ -88,7 +88,8 @@ public class Tree implements Jsonable {
                     break;
 
                 case TREE:
-                    walkTreeAndFindInstances(expression, storage);
+                    Tree tree = storage.get(entry.getValue().getHash(), Tree.class);
+                    tree.walkTreeAndFindInstances(expression, storage);
                     break;
             }
         }

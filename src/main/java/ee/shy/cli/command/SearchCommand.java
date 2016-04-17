@@ -1,12 +1,11 @@
 package ee.shy.cli.command;
 
-        import ee.shy.cli.Command;
-        import ee.shy.cli.HelptextBuilder;
-        import ee.shy.core.Repository;
-        import ee.shy.storage.Hash;
+import ee.shy.cli.Command;
+import ee.shy.cli.HelptextBuilder;
+import ee.shy.core.Repository;
+import ee.shy.storage.Hash;
 
-        import java.io.IOException;
-        import java.nio.file.Paths;
+import java.io.IOException;
 
 /**
  * A command to search given expression from given commit.
@@ -27,8 +26,8 @@ public class SearchCommand implements Command {
     @Override
     public String getHelp() {
         return new HelptextBuilder()
-                .addWithArgs("<filename>", "Add given filename to current commit")
-                .addDescription("This command adds <filename> to current commit.")
+                .addWithArgs("<commit> <expression>", "Search given expression from a commit")
+                .addDescription("This command searches for <expression> from <commit>.")
                 .create();
     }
 
