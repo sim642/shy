@@ -346,6 +346,14 @@ public class Repository {
         return getRepositoryPath().resolve("author");
     }
 
+    /**
+     * Takes two commit hashes as parameters and returns a list of Strings containing
+     * the differences between given commits.
+     * @param original Hash of the original commit
+     * @param revised Hash of the revised commit
+     * @return Diff strings
+     * @throws IOException
+     */
     public List<String> getCommitDiff(Hash original, Hash revised) throws IOException {
         TreeDiffer treeDiffer = new TreeDiffer(storage);
         Commit originalCommit = storage.get(original, Commit.class);

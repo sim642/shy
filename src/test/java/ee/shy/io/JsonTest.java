@@ -1,10 +1,8 @@
 package ee.shy.io;
 
-import com.google.gson.annotations.SerializedName;
 import ee.shy.TemporaryDirectory;
 import ee.shy.TestUtils;
 import ee.shy.storage.Hash;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -14,20 +12,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import java.util.Objects;
 
 import static org.junit.Assert.assertEquals;
 
 public class JsonTest {
     @Rule
     public final TemporaryDirectory temporaryDirectory = new TemporaryDirectory();
-
-    private TestJsonable testJsonable;
-
-    @Before
-    public void setUp() throws Exception {
-        testJsonable = new TestJsonable("foo", Hash.ZERO, OffsetDateTime.of(2016, 4, 15, 20, 19, 0, 0, ZoneOffset.ofHours(2)));
-    }
 
     @Test
     public void testUtilsClass() throws Exception {
@@ -36,6 +26,8 @@ public class JsonTest {
 
     @Test
     public void testRead() throws Exception {
+        TestJsonable testJsonable = new TestJsonable("foo", Hash.ZERO, OffsetDateTime.of(2016, 4, 15, 20, 19, 0, 0, ZoneOffset.ofHours(2)));
+
         try (InputStream is = getClass().getResourceAsStream("testRead.json")) {
             TestJsonable readJsonable = Json.read(is, TestJsonable.class);
             assertEquals(testJsonable, readJsonable);
@@ -49,8 +41,16 @@ public class JsonTest {
         }
     }
 
+    @Test(expected = IllegalJsonException.class)
+    public void testIllegal() throws Exception {
+        try (InputStream is = getClass().getResourceAsStream("testIllegal.json")) {
+            Json.read(is, TestJsonable.class);
+        }
+    }
+
     @Test
     public void testRetrieve() throws Exception {
+        TestJsonable testJsonable = TestJsonable.newRandom();
         Path file = temporaryDirectory.newFile();
 
         try (OutputStream os = Files.newOutputStream(file)) {
@@ -63,45 +63,4 @@ public class JsonTest {
         }
     }
 
-    private static class TestJsonable implements Jsonable {
-        private final String string;
-
-        @Required
-        private final Hash hash;
-
-        @SerializedName("time")
-        private final OffsetDateTime offsetDateTime;
-
-        public TestJsonable(String string, Hash hash, OffsetDateTime offsetDateTime) {
-            this.string = string;
-            this.hash = hash;
-            this.offsetDateTime = offsetDateTime;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o)
-                return true;
-            if (o == null || getClass() != o.getClass())
-                return false;
-            TestJsonable that = (TestJsonable) o;
-            return Objects.equals(string, that.string) &&
-                    Objects.equals(hash, that.hash) &&
-                    Objects.equals(offsetDateTime, that.offsetDateTime);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(string, hash, offsetDateTime);
-        }
-
-        @Override
-        public String toString() {
-            return "TestJsonable{" +
-                    "string='" + string + '\'' +
-                    ", hash=" + hash +
-                    ", offsetDateTime=" + offsetDateTime +
-                    '}';
-        }
-    }
 }
