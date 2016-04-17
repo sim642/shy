@@ -233,8 +233,7 @@ public class Repository {
      * @throws IOException if getting commit hash from a branch fails or building fails
      */
     public List<ImmutablePair<Hash, Commit>> log() throws IOException {
-        List<ImmutablePair<Hash, Commit>> commitLog = log(branches.get(current.getBranch()).getHash());
-        return commitLog;
+        return log(branches.get(current.getBranch()).getHash());
     }
 
     /**
