@@ -85,21 +85,17 @@ public class Tree implements Jsonable {
             switch (entry.getValue().getType()) {
                 case FILE:
                     List<String> foundFileInstances = findInstance(matcher, newPath, entry.getValue().getHash(), storage);
-                    for (String foundFileInstance : foundFileInstances) {
-                        foundDirInstances.add(foundFileInstance);
-                    }
+                        foundDirInstances.addAll(foundFileInstances);
                     break;
 
                 case TREE:
                     Tree tree = storage.get(entry.getValue().getHash(), Tree.class);
                     List<String>foundBuffer = tree.walkTreeAndFindInstances(matcher, newPath, storage);
-                    for (String s : foundBuffer) {
-                        foundDirInstances.add(s);
-                    }
+                    foundDirInstances.addAll(foundBuffer);
                     break;
             }
         }
-        return Collections.unmodifiableList(foundDirInstances);
+        return foundDirInstances;
     }
 
     /**
