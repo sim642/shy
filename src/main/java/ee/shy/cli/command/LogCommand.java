@@ -28,10 +28,7 @@ public class LogCommand implements Command{
             commitList = repository.log(args[0]);
         for (ImmutablePair<Hash, Commit> hashCommitImmutablePair : commitList) {
             String msg = hashCommitImmutablePair.getRight().getMessage();
-            if(args.length < 2) {
-                printLog(hashCommitImmutablePair.getRight(), msg, hashCommitImmutablePair.getLeft());
-            }
-            else if(msg.contains(args[2])) {
+            if (args.length < 2 || msg.contains(args[1])) {
                 printLog(hashCommitImmutablePair.getRight(), msg, hashCommitImmutablePair.getLeft());
             }
         }
