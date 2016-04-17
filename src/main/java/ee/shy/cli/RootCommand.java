@@ -35,6 +35,7 @@ public class RootCommand extends SuperCommand {
         add("checkout", new CheckoutCommand());
         add("log", new LogCommand());
         add("search", new SearchCommand());
+        add("tag", new TagCommand());
     }
 
     @Override

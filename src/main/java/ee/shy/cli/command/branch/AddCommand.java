@@ -13,11 +13,14 @@ import java.io.IOException;
 public class AddCommand implements Command {
     @Override
     public void execute(String[] args) throws IOException {
-        Repository repository = Repository.newExisting();
-        if (!repository.getBranches().containsKey(args[0]))
-            repository.getBranches().put(args[0], new Branch(repository.getCurrent().getCommit()));
-        else
-            System.err.println("Branch " + args[0] + " already exists");
+        if (args.length >= 1) {
+            Repository repository = Repository.newExisting();
+            if (!repository.getBranches().containsKey(args[0]))
+                repository.getBranches().put(args[0], new Branch(repository.getCurrent().getCommit()));
+            else
+                System.err.println("Branch " + args[0] + " already exists");
+        } else
+            System.err.println("Not enough parameters. See 'shy help branch'.");
     }
 
     @Override

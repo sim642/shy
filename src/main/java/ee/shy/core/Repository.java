@@ -30,6 +30,7 @@ public class Repository {
 
     private final DataStorage storage;
     private final NamedObjectMap<Branch> branches;
+    private final NamedObjectMap<Tag> tags;
 
     /**
      * Repository's current checked out state.
@@ -48,6 +49,7 @@ public class Repository {
                 ),
                 new PlainFileAccessor());
         branches = new DirectoryJsonMap<>(Branch.class, getRepositoryPath().resolve("branches"));
+        tags = new DirectoryJsonMap<>(Tag.class, getRepositoryPath().resolve("tags"));
         current = Json.read(getRepositoryPath().resolve("current"), CurrentState.class);
     }
 
@@ -64,7 +66,6 @@ public class Repository {
             }
             currentPath = currentPath.getParent();
         }
-
         throw new RepositoryNotFoundException();
     }
 
@@ -242,6 +243,8 @@ public class Repository {
             return current;
         if (branches.containsKey(str))
             return CurrentState.newBranch(branches.get(str).getHash(), str);
+        else if (tags.containsKey(str))
+            return CurrentState.newTag(tags.get(str).getHash(), str);
         else {
             Hash hash = new Hash(str);
             return CurrentState.newCommit(hash);
@@ -375,6 +378,10 @@ public class Repository {
 
     public NamedObjectMap<Branch> getBranches() {
         return branches;
+    }
+
+    public NamedObjectMap<Tag> getTags() {
+        return tags;
     }
 
     /**
