@@ -3,11 +3,9 @@ package ee.shy.core;
 import ee.shy.io.Jsonable;
 import ee.shy.storage.DataStorage;
 import ee.shy.storage.Hash;
-import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -52,27 +50,20 @@ public class Tree implements Jsonable {
      * @throws IOException if there was a problem with streams
      */
     public void toDirectory(Path path, DataStorage storage) throws IOException {
-        walk(storage, new TreeVisitor() {
+        walk(storage, new PathTreeVisitor(path) {
             @Override
-            public void visitFile(String prefixPath, String name, InputStream is) throws IOException {
-                try (OutputStream os = Files.newOutputStream(toPath(prefixPath, name))) {
-                    IOUtils.copy(is, os);
-                }
+            protected void visitFile(Path file, InputStream is) throws IOException {
+                Files.copy(is, file);
             }
 
             @Override
-            public void preVisitTree(String prefixPath, String name) throws IOException {
-                if (prefixPath != null)
-                    Files.createDirectories(toPath(prefixPath, name));
+            protected void preVisitTree(Path directory) throws IOException {
+                Files.createDirectories(directory);
             }
 
             @Override
-            public void postVisitTree(String prefixPath, String name) throws IOException {
+            protected void postVisitTree(Path directory) throws IOException {
 
-            }
-
-            private Path toPath(String prefixPath, String name) {
-                return path.resolve(prefixPath.substring(1)).resolve(name);
             }
         });
     }
