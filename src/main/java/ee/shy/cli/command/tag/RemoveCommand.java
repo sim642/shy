@@ -34,5 +34,10 @@ public class RemoveCommand implements Command {
     public String getHelpBrief() {
         return "Remove an existing tag";
     }
-    // TODO: 18.04.16 Add completion command.
+
+    @Override
+    public String[] getCompletion(String[] args) throws IOException {
+        Repository repository = Repository.newExisting();
+        return repository.getTags().keySet().toArray(new String[0]);
+    }
 }

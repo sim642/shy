@@ -3,6 +3,7 @@ package ee.shy.cli.command;
 import ee.shy.cli.Command;
 import ee.shy.cli.HelptextBuilder;
 import ee.shy.core.Repository;
+import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.IOException;
 
@@ -32,6 +33,9 @@ public class CheckoutCommand implements Command {
     @Override
     public String[] getCompletion(String[] args) throws IOException {
         Repository repository = Repository.newExisting();
-        return repository.getBranches().keySet().toArray(new String[0]);
+        return ArrayUtils.addAll(
+                    repository.getBranches().keySet().toArray(new String[0]),
+                    repository.getTags().keySet().toArray(new String[0])
+                );
     }
 }
