@@ -30,4 +30,8 @@ public class Tag implements Jsonable {
     public Hash getHash() {
         return this.commit;
     }
+
+    public String getMessage() {
+        return message;
+    }
 }

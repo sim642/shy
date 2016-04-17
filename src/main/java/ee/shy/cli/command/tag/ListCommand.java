@@ -3,6 +3,8 @@ package ee.shy.cli.command.tag;
 import ee.shy.cli.Command;
 import ee.shy.cli.HelptextBuilder;
 import ee.shy.core.Repository;
+import ee.shy.core.Tag;
+import ee.shy.map.NamedObjectMap;
 
 import java.io.IOException;
 
@@ -12,8 +14,10 @@ import java.io.IOException;
 public class ListCommand implements Command {
     @Override
     public void execute(String[] args) throws IOException {
-        Repository.newExisting().getTags().keySet().forEach(System.out::println);
-        // TODO: 18.04.16 Output tags with messages
+        NamedObjectMap<Tag> tags = Repository.newExisting().getTags();
+        for (String tagName : tags.keySet()) {
+            System.out.println(tagName + " - " + tags.get(tagName).getMessage());
+        }
     }
 
     @Override
