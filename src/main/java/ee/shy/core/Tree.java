@@ -1,6 +1,7 @@
 package ee.shy.core;
 
 import ee.shy.io.Jsonable;
+import ee.shy.io.PathUtils;
 import ee.shy.storage.DataStorage;
 import ee.shy.storage.Hash;
 
@@ -9,6 +10,7 @@ import java.io.InputStream;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
@@ -53,11 +55,15 @@ public class Tree implements Jsonable {
         walk(storage, new PathTreeVisitor(path) {
             @Override
             protected void visitFile(Path file, InputStream is) throws IOException {
-                Files.copy(is, file);
+                if (Files.isDirectory(file))
+                    PathUtils.deleteRecursive(file);
+                Files.copy(is, file, StandardCopyOption.REPLACE_EXISTING);
             }
 
             @Override
             protected void preVisitTree(Path directory) throws IOException {
+                if (Files.isRegularFile(directory))
+                    Files.delete(directory);
                 Files.createDirectories(directory);
             }
 
