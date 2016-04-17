@@ -5,15 +5,15 @@ import ee.shy.storage.DataStorage;
 import ee.shy.storage.Hash;
 import org.apache.commons.io.IOUtils;
 
+import java.io.*;
 import java.util.*;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Class representing a directory tree.
@@ -69,6 +69,49 @@ public class Tree implements Jsonable {
                     Tree tree = storage.get(entry.getValue().getHash(), Tree.class);
                     tree.toDirectory(newPath, storage);
                     break;
+            }
+        }
+    }
+
+    /**
+     * Walks Tree and calls findInstance method on every file object to find given expression
+     * @param expression expression that is wanted to be searched
+     * @param storage data storage
+     * @throws IOException if and exception occurred in findInstance method
+     */
+    public void walkTreeAndFindInstances(String expression, DataStorage storage) throws IOException {
+        for (Map.Entry<String, TreeItem> entry : items.entrySet()) {
+
+            switch (entry.getValue().getType()) {
+                case FILE:
+                    findInstance(expression, entry.getKey(), entry.getValue().getHash(), storage);
+                    break;
+
+                case TREE:
+                    walkTreeAndFindInstances(expression, storage);
+                    break;
+            }
+        }
+    }
+
+    /**
+     * Searches for given expression from given path using regex
+     * @param expression expression that is wanted to be searched
+     * @throws IOException if accessing the file fails
+     */
+    private void findInstance(String expression, String name, Hash hash , DataStorage storage) throws IOException {
+        Pattern pattern = Pattern.compile(Pattern.quote(expression));
+        Matcher matcher = pattern.matcher("");
+
+        try (Reader reader = new InputStreamReader(storage.get(hash));
+             LineNumberReader lineReader = new LineNumberReader(reader)) {
+            String line;
+            while ((line = lineReader.readLine()) != null) {
+                matcher.reset(line);
+                if (matcher.find()) {
+                    System.out.println("Found given instance in " + name + " on line " +
+                            lineReader.getLineNumber() + ".");
+                }
             }
         }
     }

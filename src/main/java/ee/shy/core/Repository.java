@@ -227,6 +227,18 @@ public class Repository {
     }
 
     /**
+     * Searches for given expression from given commit's tree
+     * @param commitHash hash of the commit
+     * @param expression string of the expression
+     * @throws IOException if there was a problem walking the tree or getting input stream from storage
+     */
+    public void commitSearch(Hash commitHash, String expression) throws IOException {
+        Commit commit = storage.get(commitHash, Commit.class);
+        Tree tree = storage.get(commit.getTree(), Tree.class);
+        tree.walkTreeAndFindInstances(expression, storage);
+    }
+
+    /**
      * Checkouts a branch or commit
      * @param arg a branch or a commit to checkout to
      * @throws IOException
