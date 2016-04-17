@@ -19,14 +19,15 @@ public class CheckoutCommand implements Command {
     @Override
     public String getHelp() {
         return new HelptextBuilder()
-                .addWithArgs("<String>", "Checkouts to given commit or branch")
-                .addDescription("This command checkouts to commit with hash of <string>.")
+                .addWithArgs("<hash>", "Check out given commit")
+                .addWithArgs("<branch>", "Check out given branch")
+                .addDescription("Checks out commits and branches.")
                 .create();
     }
 
     @Override
     public String getHelpBrief() {
-        return "Checkouts to given commit.";
+        return "Check out commits and branches";
     }
 
     @Override

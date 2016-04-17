@@ -1,6 +1,7 @@
 package ee.shy.cli.command.branch;
 
 import ee.shy.cli.Command;
+import ee.shy.cli.HelptextBuilder;
 import ee.shy.core.Repository;
 
 import java.io.IOException;
@@ -20,12 +21,14 @@ public class RemoveCommand implements Command {
 
     @Override
     public String getHelp() {
-        return null;
+        return new HelptextBuilder()
+                .addWithArgs("<branch>", "Remove the branch with given name")
+                .create();
     }
 
     @Override
     public String getHelpBrief() {
-        return null;
+        return "Remove branches";
     }
 
     @Override

@@ -30,14 +30,14 @@ public class HelpCommand implements Command {
     @Override
     public String getHelp() {
         return new HelptextBuilder()
-            .addWithArgs("<command>", "Show <command> help.")
+            .addWithArgs("<command>", "Show <command>'s help")
             .addDescription("Shows help about commands.")
             .create();
     }
 
     @Override
     public String getHelpBrief() {
-        return "Show help command's help";
+        return "Show help about commands";
     }
 
     @Override

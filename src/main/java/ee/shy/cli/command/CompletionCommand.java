@@ -44,6 +44,6 @@ public class CompletionCommand implements Command {
 
     @Override
     public String getHelpBrief() {
-        return "Generates completions list";
+        return "Generate completions list";
     }
 }

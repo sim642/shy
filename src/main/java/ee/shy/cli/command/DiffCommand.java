@@ -3,8 +3,8 @@ package ee.shy.cli.command;
 import ee.shy.cli.Command;
 import ee.shy.cli.HelptextBuilder;
 import ee.shy.core.Repository;
-import ee.shy.core.diff.InputStreamDiffer;
 import ee.shy.core.diff.DiffUtils;
+import ee.shy.core.diff.InputStreamDiffer;
 import ee.shy.storage.Hash;
 
 import java.io.IOException;
@@ -39,9 +39,9 @@ public class DiffCommand implements Command {
     @Override
     public String getHelp() {
         return new HelptextBuilder()
-                .addWithArgs("<hash1> <hash2>", "Show user-readable diff for two commits.")
-                .addWithArgs("<filename1> <filename2>", "Show user-readable colorized diff output.")
-                .addDescription("Shows the differences between two given items.")
+                .addWithArgs("<commit1> <commit1>", "Show user-readable diff between two commits")
+                .addWithArgs("<file1> <file2>", "Show user-readable diff between two files")
+                .addDescription("Shows differences between different items.")
                 .create();
     }
 

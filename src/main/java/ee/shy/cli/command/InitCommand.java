@@ -16,13 +16,12 @@ public class InitCommand implements Command {
     public String getHelp() {
         return new HelptextBuilder()
             .addWithoutArgs("Initialize a new repository")
-            .addDescription("Initialize a new empty repository or reinitialize an existing one.")
-            .addDescription("'.shy/' directory will be created with its subdirectories.")
+            .addDescription("Initializes a new empty repository.")
             .create();
     }
 
     @Override
     public String getHelpBrief() {
-        return "Initialize a empty repository";
+        return "Initialize a new repository";
     }
 }

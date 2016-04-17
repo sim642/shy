@@ -20,13 +20,13 @@ public class SearchCommand implements Command {
     @Override
     public String getHelp() {
         return new HelptextBuilder()
-                .addWithArgs("<commit> <expression>", "Search given expression from a commit")
-                .addDescription("This command searches for <expression> from <commit>.")
+                .addWithArgs("<commit> <regex>", "Search files matching given regular expression for specified commit")
+                .addDescription("Searches content of commits.")
                 .create();
     }
 
     @Override
     public String getHelpBrief() {
-        return "Add file to current commit";
+        return "Search content of commits";
     }
 }

@@ -1,8 +1,8 @@
 package ee.shy.cli.command;
 
 import ee.shy.cli.SuperCommand;
-import ee.shy.cli.command.branch.*;
 import ee.shy.cli.command.branch.AddCommand;
+import ee.shy.cli.command.branch.ListCommand;
 import ee.shy.cli.command.branch.RemoveCommand;
 
 /**
@@ -17,11 +17,11 @@ public class BranchCommand extends SuperCommand {
 
     @Override
     public String getHelp() {
-        return null;
+        return "Manipulates branches.";
     }
 
     @Override
     public String getHelpBrief() {
-        return null;
+        return "Manipulate branches";
     }
 }

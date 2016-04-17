@@ -23,12 +23,12 @@ public class CommitCommand implements Command {
     public String getHelp() {
         return new HelptextBuilder()
             .addWithArgs("<message>", "Commit changes with given message")
-            .addDescription("Create and store a snapshot of current commit with <message>.")
+            .addDescription("Creates and stores the current commit on current branch.")
             .create();
     }
 
     @Override
     public String getHelpBrief() {
-        return "Record changes to the repository";
+        return "Commit changes";
     }
 }

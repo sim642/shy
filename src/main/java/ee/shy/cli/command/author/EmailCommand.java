@@ -31,13 +31,14 @@ public class EmailCommand implements Command {
     @Override
     public String getHelp() {
         return new HelptextBuilder()
-            .addWithArgs("<email>", "set author's email.")
-            .addWithoutArgs("get author's email.").create();
+            .addWithArgs("<email>", "Set author's email")
+            .addWithoutArgs("Get author's email")
+            .create();
     }
 
     @Override
     public String getHelpBrief() {
-        return "View current or alter 'author' file's email field.";
+        return "Get and set author's email";
     }
 
     @Override

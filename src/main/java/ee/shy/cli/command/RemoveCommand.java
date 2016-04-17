@@ -23,13 +23,14 @@ public class RemoveCommand implements Command {
     @Override
     public String getHelp() {
         return new HelptextBuilder()
-            .addWithArgs("<filename>", "Remove given filename from current commit")
-            .addDescription("This command removes <filename> from current commit if present.")
+            .addWithArgs("<file>", "Remove given file from current commit")
+            .addWithArgs("<directory>", "Remove given directory with its contents from current commit")
+            .addDescription("Removes files and directories from current commit.")
             .create();
     }
 
     @Override
     public String getHelpBrief() {
-        return "Remove file from the current commit";
+        return "Remove files and directories from current commit";
     }
 }

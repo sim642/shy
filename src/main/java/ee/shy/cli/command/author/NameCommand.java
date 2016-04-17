@@ -31,14 +31,14 @@ public class NameCommand implements Command {
     @Override
     public String getHelp() {
         return new HelptextBuilder()
-            .addWithArgs("<name>", "set author's name.")
-            .addWithoutArgs("get author's name.")
+            .addWithArgs("<name>", "Set author's name")
+            .addWithoutArgs("Get author's name")
             .create();
     }
 
     @Override
     public String getHelpBrief() {
-        return "View current or alter 'author' file's name field.";
+        return "Get and set author's name";
     }
 
     @Override

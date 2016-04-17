@@ -46,17 +46,17 @@ public class LogCommand implements Command {
     @Override
     public String getHelp() {
         return new HelptextBuilder()
-                .addWithArgs("<branch>", "Displays commit history log of given branch")
-                .addWithArgs("<hash>", "Displays commit history log of given commit")
-                .addWithArgs("<branch> <filter>", "Displays commit history log of given branch, filtered by message")
-                .addWithArgs("<hash> <filter>", "Displays commit history log of given commit, filtered by message")
-                .addWithoutArgs("Displays commit history log of current branch")
-                .addDescription("Displays and filters commit history log of commits and branches")
+                .addWithArgs("<branch>", "Display commit history of given branch")
+                .addWithArgs("<hash>", "Display commit history of given commit")
+                .addWithArgs("<branch> <filter>", "Display commit history of given branch, filtered by message")
+                .addWithArgs("<hash> <filter>", "Display commit history of given commit, filtered by message")
+                .addWithoutArgs("Display commit history of current branch")
+                .addDescription("Displays and filters commit history of commits and branches.")
                 .create();
     }
 
     @Override
     public String getHelpBrief() {
-        return "Display commit history log";
+        return "Display commit history";
     }
 }

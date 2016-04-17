@@ -23,13 +23,14 @@ public class AddCommand implements Command {
     @Override
     public String getHelp() {
         return new HelptextBuilder()
-            .addWithArgs("<filename>", "Add given filename to current commit")
-            .addDescription("This command adds <filename> to current commit.")
+            .addWithArgs("<file>", "Add given file to current commit")
+            .addWithArgs("<directory>", "Add given directory with its contents to current commit")
+            .addDescription("Adds files and directories to current commit.")
             .create();
     }
 
     @Override
     public String getHelpBrief() {
-        return "Add file to current commit";
+        return "Add files and directories to current commit";
     }
 }
