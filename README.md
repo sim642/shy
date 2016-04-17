@@ -46,6 +46,10 @@ Once everything necessary is added, run `shy commit` with a suitable commit mess
 Run `shy branch add` to create a new branch at the latest commit. All branches can be listed with `shy branch list` and
 excess ones deleted with `shy branch remove`.
 
+### Tagging
+Run `shy tag add` to create a new tag at the latest commit with given message. All tags can be listed with `shy tag list` and
+excess ones deleted with `shy tag remove`.
+
 ### Viewing history
 Use `shy log` to see the commit history for any branch or commit. Optionally it's possible to give a second argument
 to filter out only some commits.
