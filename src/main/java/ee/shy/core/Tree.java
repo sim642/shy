@@ -75,7 +75,7 @@ public class Tree implements Jsonable {
      * @param matcher matcher with a pattern
      * @param path path to file
      * @param storage data storage
-     * @return instances found in directorys' files
+     * @return instances found in directory's files
      * @throws IOException when findInstance or storage.get() fails
      */
     public List<String> walkTreeAndFindInstances(Matcher matcher, String path, DataStorage storage) throws IOException {
@@ -85,12 +85,12 @@ public class Tree implements Jsonable {
             switch (entry.getValue().getType()) {
                 case FILE:
                     List<String> foundFileInstances = findInstance(matcher, newPath, entry.getValue().getHash(), storage);
-                        foundDirInstances.addAll(foundFileInstances);
+                    foundDirInstances.addAll(foundFileInstances);
                     break;
 
                 case TREE:
                     Tree tree = storage.get(entry.getValue().getHash(), Tree.class);
-                    List<String>foundBuffer = tree.walkTreeAndFindInstances(matcher, newPath, storage);
+                    List<String> foundBuffer = tree.walkTreeAndFindInstances(matcher, newPath, storage);
                     foundDirInstances.addAll(foundBuffer);
                     break;
             }
@@ -107,7 +107,7 @@ public class Tree implements Jsonable {
      * @return instances found in a file
      * @throws IOException if establishing streams fails
      */
-    private List<String> findInstance(Matcher matcher, String path, Hash hash , DataStorage storage) throws IOException {
+    private List<String> findInstance(Matcher matcher, String path, Hash hash, DataStorage storage) throws IOException {
         List<String> foundInstances = new ArrayList<>();
         try (Reader reader = new InputStreamReader(storage.get(hash));
              LineNumberReader lineReader = new LineNumberReader(reader)) {
@@ -115,9 +115,8 @@ public class Tree implements Jsonable {
             while ((line = lineReader.readLine()) != null) {
                 matcher.reset(line);
                 if (matcher.find()) {
-                    String result = path + ":" + lineReader.getLineNumber() + ":" + line +
-                            " (" + matcher.toMatchResult().start() + ", " + matcher.toMatchResult().end() + ")";
-                    foundInstances.add(result);
+                    foundInstances.add(String.format("%s:%d[%d,%d]:%s",
+                            path, lineReader.getLineNumber(), matcher.start(), matcher.end(), line));
                 }
             }
         }
