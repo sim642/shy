@@ -243,14 +243,12 @@ public class Repository {
      * @throws IOException if building fails
      */
     public List<ImmutablePair<Hash, Commit>> log(String toBuild) throws IOException {
-        List<ImmutablePair<Hash, Commit>> commitLog = new ArrayList<>();
         if(branches.containsKey(toBuild)) {
-            commitLog.addAll(log(branches.get(toBuild).getHash()));
+            return log(branches.get(toBuild).getHash());
         }
         else {
-            commitLog.addAll(log(new Hash(toBuild)));
+            return log(new Hash(toBuild));
         }
-        return commitLog;
     }
 
     /**
