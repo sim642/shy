@@ -4,8 +4,9 @@ import ee.shy.io.PathUtils;
 import org.junit.rules.ExternalResource;
 
 import java.io.IOException;
-import java.nio.file.*;
-import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /*
     JUnit may be great but TemporaryFolder isn't. It uses File but File is satan!
@@ -133,26 +134,6 @@ public class TemporaryDirectory extends ExternalResource {
     }
 
     protected void delete() throws IOException {
-        Files.walkFileTree(getRoot(), new SimpleFileVisitor<Path>() {
-            @Override
-            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException
-            {
-                Files.delete(file);
-                return FileVisitResult.CONTINUE;
-            }
-
-            @Override
-            public FileVisitResult postVisitDirectory(Path dir, IOException e) throws IOException
-            {
-                if (e == null) {
-                    Files.delete(dir);
-                    return FileVisitResult.CONTINUE;
-                }
-                else {
-                    // directory iteration failed
-                    throw e;
-                }
-            }
-        });
+        PathUtils.deleteRecursive(getRoot());
     }
 }

@@ -65,7 +65,7 @@ public class Commit implements Jsonable {
     }
 
     public Hash getTree() {
-        return tree;
+        return this.tree;
     }
 
     public List<Hash> getParents() {
@@ -76,7 +76,7 @@ public class Commit implements Jsonable {
         return this.author;
     }
 
-    public OffsetDateTime getTime () {
+    public OffsetDateTime getTime() {
         return this.time;
     }
 

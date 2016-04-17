@@ -1,5 +1,6 @@
 package ee.shy.core;
 
+import ee.shy.core.diff.TreeDiffer;
 import ee.shy.io.Json;
 import ee.shy.io.PathUtils;
 import ee.shy.map.DirectoryJsonMap;
@@ -7,15 +8,16 @@ import ee.shy.map.NamedObjectMap;
 import ee.shy.storage.*;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Class for creating and interacting with a repository.
@@ -113,7 +115,7 @@ public class Repository {
             Path#toAbsolutePath does NOT normalize the path to an actual absolute path,
             but simply prepends the current working directory.
          */
-        return getCommitPath().resolve(rootPath.relativize(path.toRealPath()));
+        return getCommitPath().resolve(rootPath.relativize(path.toAbsolutePath().normalize()));
     }
 
     /**
@@ -229,6 +231,37 @@ public class Repository {
     }
 
     /**
+     * Checkouts a branch or commit
+     * @param arg a branch or a commit to checkout to
+     * @throws IOException
+     */
+    public void checkout(String arg) throws IOException {
+        Hash hash;
+        CurrentState newCurrent;
+        if (branches.containsKey(arg)) {
+            hash = branches.get(arg).getHash();
+            newCurrent = CurrentState.newBranch(hash, arg);
+        } else {
+            hash = new Hash(arg);
+            newCurrent = CurrentState.newCommit(hash);
+        }
+
+        Commit commit = storage.get(hash, Commit.class);
+
+        if (commit != null) {
+            Tree tree = storage.get(commit.getTree(), Tree.class);
+
+            PathUtils.deleteRecursive(getCommitPath());
+            Files.createDirectory(getCommitPath());
+
+            tree.toDirectory(getCommitPath(), storage);
+            tree.toDirectory(getRootPath(), storage);
+
+            setCurrent(newCurrent);
+        }
+    }
+
+    /**
      *  A method that calls out log builder with current commit if no params are given
      * @throws IOException if getting commit hash from a branch fails or building fails
      */
@@ -255,7 +288,7 @@ public class Repository {
      * @param commitHash hash of a commit that's history log is wanted to be built
      * @throws IOException if getting the commit fails
      */
-    public List<ImmutablePair<Hash, Commit>> log(Hash commitHash) throws IOException {
+    private List<ImmutablePair<Hash, Commit>> log(Hash commitHash) throws IOException {
         List<ImmutablePair<Hash, Commit>> loggedCommits = new ArrayList<>();
         if (!commitHash.equals(Hash.ZERO)) {
             Commit commit = storage.get(commitHash, Commit.class);
@@ -266,6 +299,55 @@ public class Repository {
             }
         }
         return loggedCommits;
+    }
+
+    /*
+     * Searches for given expression from given commit's tree
+     * @param commitHash hash of the commit
+     * @param expression string of the expression
+     * @throws IOException if there was a problem walking the tree or getting input stream from storage
+     */
+    public void commitSearch(Hash commitHash, String expression) throws IOException {
+        Commit commit = storage.get(commitHash, Commit.class);
+        Tree tree = storage.get(commit.getTree(), Tree.class);
+        Pattern pattern = Pattern.compile(expression);
+        Matcher matcher = pattern.matcher("");
+
+        List<String> instances = new ArrayList<>();
+        tree.walk(storage, new TreeVisitor() {
+            @Override
+            public void visitFile(String prefixPath, String name, InputStream is) throws IOException {
+                instances.addAll(findInstance(prefixPath + name, is, matcher));
+            }
+        });
+
+        for (String instance : instances) {
+            System.out.println(instance);
+        }
+    }
+
+    /**
+     * Searches for an expression from an input stream
+     * @param path path to file
+     * @param is input stream to read from
+     * @param matcher matcher to use for matching
+     * @return instances found in a file
+     * @throws IOException if establishing streams fails
+     */
+    private static List<String> findInstance(String path, InputStream is, Matcher matcher) throws IOException {
+        List<String> foundInstances = new ArrayList<>();
+        try (Reader reader = new InputStreamReader(is);
+             LineNumberReader lineReader = new LineNumberReader(reader)) {
+            String line;
+            while ((line = lineReader.readLine()) != null) {
+                matcher.reset(line);
+                if (matcher.find()) {
+                    foundInstances.add(String.format("%s:%d[%d,%d]:%s",
+                            path, lineReader.getLineNumber(), matcher.start(), matcher.end(), line));
+                }
+            }
+        }
+        return foundInstances;
     }
 
     /**
@@ -339,5 +421,22 @@ public class Repository {
      */
     private Path getAuthorPath() {
         return getRepositoryPath().resolve("author");
+    }
+
+    /**
+     * Takes two commit hashes as parameters and returns a list of Strings containing
+     * the differences between given commits.
+     * @param original Hash of the original commit
+     * @param revised Hash of the revised commit
+     * @return Diff strings
+     * @throws IOException
+     */
+    public List<String> getCommitDiff(Hash original, Hash revised) throws IOException {
+        TreeDiffer treeDiffer = new TreeDiffer(storage);
+        Commit originalCommit = storage.get(original, Commit.class);
+        Commit revisedCommit = storage.get(revised, Commit.class);
+        return treeDiffer.diff(
+                storage.get(originalCommit.getTree(), Tree.class),
+                storage.get(revisedCommit.getTree(), Tree.class));
     }
 }

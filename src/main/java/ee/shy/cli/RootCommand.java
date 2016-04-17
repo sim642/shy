@@ -31,8 +31,11 @@ public class RootCommand extends SuperCommand {
         add("remove", new RemoveCommand());
         add("commit", new CommitCommand());
         add("author", new AuthorCommand());
+        add("diff", new DiffCommand());
         add("branch", new BranchCommand());
+        add("checkout", new CheckoutCommand());
         add("log", new LogCommand());
+        add("search", new SearchCommand());
     }
 
     @Override
