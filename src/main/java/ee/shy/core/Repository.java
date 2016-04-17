@@ -5,13 +5,16 @@ import ee.shy.io.PathUtils;
 import ee.shy.map.DirectoryJsonMap;
 import ee.shy.map.NamedObjectMap;
 import ee.shy.storage.*;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -229,8 +232,9 @@ public class Repository {
      *  A method that calls out log builder with current commit if no params are given
      * @throws IOException if getting commit hash from a branch fails or building fails
      */
-    public void log() throws IOException {
-        log(branches.get(current.getBranch()).getHash(), "");
+    public List<ImmutablePair<Hash, Commit>> log() throws IOException {
+        List<ImmutablePair<Hash, Commit>> commitLog = log(branches.get(current.getBranch()).getHash());
+        return commitLog;
     }
 
     /**
@@ -238,26 +242,15 @@ public class Repository {
      * @param toBuild string of branch name or commit hash
      * @throws IOException if building fails
      */
-    public void log(String toBuild) throws IOException {
+    public List<ImmutablePair<Hash, Commit>> log(String toBuild) throws IOException {
+        List<ImmutablePair<Hash, Commit>> commitLog = new ArrayList<>();
         if(branches.containsKey(toBuild)) {
-            log(branches.get(toBuild).getHash(), "");
+            commitLog.addAll(log(branches.get(toBuild).getHash()));
         }
         else {
-            log(new Hash(toBuild), "");
+            commitLog.addAll(log(new Hash(toBuild)));
         }
-    }
-
-    public void filteredLog(String filterKey) throws IOException {
-        log(branches.get(current.getBranch()).getHash(), filterKey);
-    }
-
-    public void filteredLog(String toBuild, String filterKey) throws IOException {
-        if(branches.containsKey(toBuild)) {
-            log(branches.get(toBuild).getHash(), filterKey);
-        }
-        else {
-            log(new Hash(toBuild), filterKey);
-        }
+        return commitLog;
     }
 
     /**
@@ -265,25 +258,17 @@ public class Repository {
      * @param commitHash hash of a commit that's history log is wanted to be built
      * @throws IOException if getting the commit fails
      */
-    public void log(Hash commitHash, String filterKey) throws IOException {
+    public List<ImmutablePair<Hash, Commit>> log(Hash commitHash) throws IOException {
+        List<ImmutablePair<Hash, Commit>> loggedCommits = new ArrayList<>();
         if (!commitHash.equals(Hash.ZERO)) {
             Commit commit = storage.get(commitHash, Commit.class);
-            String msg = commit.getMessage();
-            if(msg.contains(filterKey)) {
-                System.out.println("Commit: " + commitHash.toString());
-
-                Author author = commit.getAuthor();
-                System.out.println("Author: " + author.getName() + "<" + author.getEmail() + ">");
-
-                System.out.println("Time: " + commit.getTime());
-
-                System.out.println("\n \t" + "Message: " + msg + "\n");
-            }
+            loggedCommits.add(ImmutablePair.of(commitHash, commit));
             List<Hash> parents = commit.getParents();
             for (Hash parent : parents) {
-                log(parent, filterKey);
+                loggedCommits.addAll(log(parent));
             }
         }
+        return loggedCommits;
     }
 
     /**
