@@ -6,14 +6,11 @@ import ee.shy.storage.Hash;
 import org.apache.commons.io.IOUtils;
 
 import java.io.*;
-import java.util.*;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Class representing a directory tree.
@@ -74,47 +71,61 @@ public class Tree implements Jsonable {
     }
 
     /**
-     * Walks Tree and calls findInstance method on every file object to find given expression
-     * @param expression expression that is wanted to be searched
+     * Walks tree and tries to find matcher patterns from Tree files
+     * @param matcher matcher with a pattern
+     * @param path path to file
      * @param storage data storage
-     * @throws IOException if and exception occurred in findInstance method
+     * @return instances found in directorys' files
+     * @throws IOException when findInstance or storage.get() fails
      */
-    public void walkTreeAndFindInstances(String expression, DataStorage storage) throws IOException {
+    public List<String> walkTreeAndFindInstances(Matcher matcher, Path path, DataStorage storage) throws IOException {
+        List<String> foundDirInstances = new ArrayList<>();
         for (Map.Entry<String, TreeItem> entry : items.entrySet()) {
-
+            Path newPath = path.resolve(entry.getKey());
             switch (entry.getValue().getType()) {
                 case FILE:
-                    findInstance(expression, entry.getKey(), entry.getValue().getHash(), storage);
+                    List<String> foundFileInstances = findInstance(matcher, newPath, entry.getValue().getHash(), storage);
+                    for (String foundFileInstance : foundFileInstances) {
+                        foundDirInstances.add(foundFileInstance);
+                    }
                     break;
 
                 case TREE:
                     Tree tree = storage.get(entry.getValue().getHash(), Tree.class);
-                    tree.walkTreeAndFindInstances(expression, storage);
+                    List<String>foundBuffer = tree.walkTreeAndFindInstances(matcher, newPath, storage);
+                    for (String s : foundBuffer) {
+                        foundDirInstances.add(s);
+                    }
                     break;
             }
         }
+        return Collections.unmodifiableList(foundDirInstances);
     }
 
     /**
-     * Searches for given expression from given path using regex
-     * @param expression expression that is wanted to be searched
-     * @throws IOException if accessing the file fails
+     * Searches for an expression from file
+     * @param matcher matcher
+     * @param path path to file
+     * @param hash file's hash
+     * @param storage data storage
+     * @return instances found in a file
+     * @throws IOException if establishing streams fails
      */
-    private void findInstance(String expression, String name, Hash hash , DataStorage storage) throws IOException {
-        Pattern pattern = Pattern.compile(Pattern.quote(expression));
-        Matcher matcher = pattern.matcher("");
-
+    private List<String> findInstance(Matcher matcher,Path path, Hash hash , DataStorage storage) throws IOException {
+        List<String> foundInstances = new ArrayList<>();
         try (Reader reader = new InputStreamReader(storage.get(hash));
              LineNumberReader lineReader = new LineNumberReader(reader)) {
             String line;
             while ((line = lineReader.readLine()) != null) {
                 matcher.reset(line);
                 if (matcher.find()) {
-                    System.out.println("Found given instance in " + name + " on line " +
-                            lineReader.getLineNumber() + ".");
+                    String result = path.toString() + ":" + lineReader.getLineNumber() + ":" + matcher.pattern() +
+                            " (" + matcher.toMatchResult().start() + ", " + matcher.toMatchResult().end() + ")";
+                    foundInstances.add(result);
                 }
             }
         }
+        return foundInstances;
     }
 
     /*

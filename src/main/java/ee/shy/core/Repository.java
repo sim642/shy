@@ -8,12 +8,11 @@ import ee.shy.map.NamedObjectMap;
 import ee.shy.storage.*;
 
 import java.io.IOException;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
+import java.nio.file.*;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Class for creating and interacting with a repository.
@@ -235,7 +234,12 @@ public class Repository {
     public void commitSearch(Hash commitHash, String expression) throws IOException {
         Commit commit = storage.get(commitHash, Commit.class);
         Tree tree = storage.get(commit.getTree(), Tree.class);
-        tree.walkTreeAndFindInstances(expression, storage);
+        Pattern pattern = Pattern.compile(expression);
+        Matcher matcher = pattern.matcher("");
+        List<String> instances = tree.walkTreeAndFindInstances(matcher, Paths.get("/"), storage);
+        for (String instance : instances) {
+            System.out.println(instance);
+        }
     }
 
     /**

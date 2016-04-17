@@ -14,13 +14,7 @@ public class SearchCommand implements Command {
     @Override
     public void execute(String[] args) throws IOException {
         Repository repository = Repository.newExisting();
-        String expression = "";
-        for (int i = 1; i < args.length ; i++) {
-            expression += args[i] + " ";
-        }
-        expression = expression.trim();
-
-        repository.commitSearch(new Hash(args[0]), expression);
+        repository.commitSearch(new Hash(args[0]), args[1]);
     }
 
     @Override
