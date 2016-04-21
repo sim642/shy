@@ -1,5 +1,8 @@
 package ee.shy.core;
 
+import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.agentproxy.AgentProxyException;
+import com.pastdev.jsch.DefaultSessionFactory;
 import ee.shy.core.diff.TreeDiffer;
 import ee.shy.io.Json;
 import ee.shy.io.PathUtils;
@@ -9,13 +12,11 @@ import ee.shy.storage.*;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import java.io.*;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.file.*;
+import java.nio.file.FileSystem;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -95,6 +96,20 @@ public class Repository {
 
         System.out.println("Initialized a shy repository in " + repository.getRootPath());
         return repository;
+    }
+
+    public static Repository newRemote() throws IOException, JSchException, URISyntaxException, AgentProxyException {
+        DefaultSessionFactory sessionFactory = new DefaultSessionFactory("shy", "localhost", 22);
+        Map<String, Object> environment = new HashMap<>();
+        environment.put("defaultSessionFactory", sessionFactory);
+
+        // TODO: 21.04.16 allow password user input and keyboard-interactive
+
+        URI uri = new URI("ssh.unix://" + sessionFactory.getUsername() + "@" + sessionFactory.getHostname() + ":" + sessionFactory.getPort() + "/home/shy/test");
+        try (FileSystem sshFs = FileSystems.newFileSystem(uri, environment)) {
+            Files.list(sshFs.getPath(".")).forEach(System.out::println);
+            return new Repository(sshFs.getPath(""));
+        }
     }
 
     /**

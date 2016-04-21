@@ -45,6 +45,12 @@
         </dependency>
 
         <dependency>
+            <groupId>com.pastdev</groupId>
+            <artifactId>jsch-nio</artifactId>
+            <version>1.0.2</version>
+        </dependency>
+
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.12</version>

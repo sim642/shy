@@ -21,6 +21,14 @@ public final class PathUtils {
     }
 
     /**
+     * Returns user home directory as path.
+     * @return user home directory
+     */
+    public static Path getUserHomePath() {
+        return Paths.get(System.getProperty("user.home"));
+    }
+
+    /**
      * Adds given extension to file path.
      * @param path file path to extend
      * @param extension extension to add

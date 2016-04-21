@@ -1,25 +1,37 @@
 package ee.shy.cli.command;
 
+import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.agentproxy.AgentProxyException;
 import ee.shy.cli.Command;
 import ee.shy.cli.HelptextBuilder;
 import ee.shy.core.Repository;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 /**
  * A simple command for testing.
  */
 public class TestCommand implements Command {
-    private final String name;
-
-    public TestCommand(String name) {
-        this.name = name;
+    public TestCommand() {
     }
+
 
     @Override
     public void execute(String[] args) throws IOException {
-        System.out.println(name);
-        Repository repository = Repository.newExisting();
+        try {
+            Repository repository = Repository.newRemote();
+            System.out.println(repository.getBranches().keySet());
+        }
+        catch (JSchException e) {
+            e.printStackTrace();
+        }
+        catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+        catch (AgentProxyException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
