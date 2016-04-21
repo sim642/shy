@@ -19,7 +19,7 @@ public abstract class FileLocator {
      * @param root root directory to use
      */
     public FileLocator(Path root) throws IOException {
-        if (!Files.isDirectory(root)) // sshfs workaround
+        //if (!Files.isDirectory(root)) // sshfs workaround
             Files.createDirectories(root);
         this.root = root;
     }

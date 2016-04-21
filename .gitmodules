@@ -1,0 +1,4 @@
+[submodule "jsch-nio"]
+	path = jsch-nio
+	url = https://github.com/sim642/jsch-nio.git
+	ignore = dirty
