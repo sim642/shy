@@ -1,10 +1,9 @@
 package ee.shy.cli.command;
 
 import com.jcraft.jsch.JSchException;
-import com.jcraft.jsch.agentproxy.AgentProxyException;
 import ee.shy.cli.Command;
 import ee.shy.cli.HelptextBuilder;
-import ee.shy.core.Repository;
+import ee.shy.core.SshRepository;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -16,20 +15,15 @@ public class TestCommand implements Command {
     public TestCommand() {
     }
 
-
     @Override
     public void execute(String[] args) throws IOException {
-        try {
-            Repository repository = Repository.newRemote();
+        try (SshRepository repository = SshRepository.newRemote()) {
             System.out.println(repository.getBranches().keySet());
         }
         catch (JSchException e) {
             e.printStackTrace();
         }
         catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-        catch (AgentProxyException e) {
             e.printStackTrace();
         }
     }

@@ -1,8 +1,5 @@
 package ee.shy.core;
 
-import com.jcraft.jsch.JSchException;
-import com.jcraft.jsch.agentproxy.AgentProxyException;
-import com.pastdev.jsch.DefaultSessionFactory;
 import ee.shy.core.diff.TreeDiffer;
 import ee.shy.io.Json;
 import ee.shy.io.PathUtils;
@@ -12,18 +9,20 @@ import ee.shy.storage.*;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import java.io.*;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.nio.file.*;
-import java.nio.file.FileSystem;
-import java.util.*;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
  * Class for creating and interacting with a repository.
  */
-public class Repository {
+public class Repository implements AutoCloseable {
     /**
      * Repository root directory path.
      */
@@ -42,7 +41,7 @@ public class Repository {
      * Constructs a new repository class.
      * @param rootPath root directory for repository
      */
-    private Repository(Path rootPath) throws IOException {
+    protected Repository(Path rootPath) throws IOException {
         this.rootPath = rootPath;
         this.storage = new FileStorage(
                 Arrays.asList(
@@ -52,64 +51,6 @@ public class Repository {
         branches = new DirectoryJsonMap<>(Branch.class, getRepositoryPath().resolve("branches"));
         tags = new DirectoryJsonMap<>(Tag.class, getRepositoryPath().resolve("tags"));
         current = Json.read(getRepositoryPath().resolve("current"), CurrentState.class);
-    }
-
-    /**
-     * Tries to find an existing repository in the directory shy was executed or its parent directories.
-     * @return repository object if existing repository was found, null otherwise
-     */
-    public static Repository newExisting() throws RepositoryNotFoundException, IOException {
-        Path currentPath = PathUtils.getCurrentPath();
-        while (currentPath != null) {
-            Path repositoryPath = getRepositoryPath(currentPath);
-            if (Files.isDirectory(repositoryPath)) {
-                return new Repository(currentPath);
-            }
-            currentPath = currentPath.getParent();
-        }
-        throw new RepositoryNotFoundException();
-    }
-
-    /**
-     * Creates a new repository in the directory where shy was executed.
-     * @return a Repository object if repository creation was successful
-     * @throws IOException if repository hierarchy generation fails
-     */
-    public static Repository newEmpty() throws IOException {
-        Path repositoryPath = getRepositoryPath(PathUtils.getCurrentPath());
-        Files.createDirectory(repositoryPath);
-
-        String[] subDirectories = {"commit", "branches", "tags", "storage"};
-        for (String subDirectory : subDirectories) {
-            Files.createDirectory(repositoryPath.resolve(subDirectory));
-        }
-
-        CurrentState.newBranch(Hash.ZERO, "master").write(repositoryPath.resolve("current"));
-
-        Repository repository = new Repository(repositoryPath.getParent());
-
-        // TODO: 26.03.16 Create a config file to home directory upon installation to get author's details from.
-        Author author = new Author(null, null);
-        repository.setAuthor(author);
-
-        repository.getBranches().put("master", new Branch(Hash.ZERO));
-
-        System.out.println("Initialized a shy repository in " + repository.getRootPath());
-        return repository;
-    }
-
-    public static Repository newRemote() throws IOException, JSchException, URISyntaxException, AgentProxyException {
-        DefaultSessionFactory sessionFactory = new DefaultSessionFactory("shy", "localhost", 22);
-        Map<String, Object> environment = new HashMap<>();
-        environment.put("defaultSessionFactory", sessionFactory);
-
-        // TODO: 21.04.16 allow password user input and keyboard-interactive
-
-        URI uri = new URI("ssh.unix://" + sessionFactory.getUsername() + "@" + sessionFactory.getHostname() + ":" + sessionFactory.getPort() + "/home/shy/test");
-        try (FileSystem sshFs = FileSystems.newFileSystem(uri, environment)) {
-            Files.list(sshFs.getPath(".")).forEach(System.out::println);
-            return new Repository(sshFs.getPath(""));
-        }
     }
 
     /**
@@ -430,7 +371,7 @@ public class Repository {
      * @param rootPath root directory of repository
      * @return repository directory path
      */
-    private static Path getRepositoryPath(Path rootPath) {
+    protected static Path getRepositoryPath(Path rootPath) {
         return rootPath.resolve(".shy");
     }
 
@@ -476,5 +417,10 @@ public class Repository {
         return treeDiffer.diff(
                 storage.get(originalCommit.getTree(), Tree.class),
                 storage.get(revisedCommit.getTree(), Tree.class));
+    }
+
+    @Override
+    public void close() throws Exception {
+
     }
 }

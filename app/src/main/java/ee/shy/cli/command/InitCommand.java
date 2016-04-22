@@ -2,14 +2,14 @@ package ee.shy.cli.command;
 
 import ee.shy.cli.Command;
 import ee.shy.cli.HelptextBuilder;
-import ee.shy.core.Repository;
+import ee.shy.core.LocalRepository;
 
 import java.io.IOException;
 
 public class InitCommand implements Command {
     @Override
     public void execute(String[] args) throws IOException {
-        Repository.newEmpty();
+        LocalRepository.newEmpty();
     }
 
     @Override

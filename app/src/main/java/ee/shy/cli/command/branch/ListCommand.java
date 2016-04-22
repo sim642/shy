@@ -2,7 +2,7 @@ package ee.shy.cli.command.branch;
 
 import ee.shy.cli.Command;
 import ee.shy.cli.HelptextBuilder;
-import ee.shy.core.Repository;
+import ee.shy.core.LocalRepository;
 
 import java.io.IOException;
 
@@ -12,7 +12,7 @@ import java.io.IOException;
 public class ListCommand implements Command {
     @Override
     public void execute(String[] args) throws IOException {
-        Repository.newExisting().getBranches().keySet().forEach(System.out::println);
+        LocalRepository.newExisting().getBranches().keySet().forEach(System.out::println);
     }
 
     @Override

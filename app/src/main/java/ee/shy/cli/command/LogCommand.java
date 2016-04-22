@@ -4,6 +4,7 @@ import ee.shy.cli.Command;
 import ee.shy.cli.HelptextBuilder;
 import ee.shy.core.Author;
 import ee.shy.core.Commit;
+import ee.shy.core.LocalRepository;
 import ee.shy.core.Repository;
 import ee.shy.storage.Hash;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -17,7 +18,7 @@ import java.util.List;
 public class LogCommand implements Command {
     @Override
     public void execute(String[] args) throws IOException {
-        Repository repository = Repository.newExisting();
+        Repository repository = LocalRepository.newExisting();
         List<ImmutablePair<Hash, Commit>> commitList = repository.log(args.length >= 1 ? args[0] : null);
         for (ImmutablePair<Hash, Commit> hashCommitImmutablePair : commitList) {
             String msg = hashCommitImmutablePair.getRight().getMessage();

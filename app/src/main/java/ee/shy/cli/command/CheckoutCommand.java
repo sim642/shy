@@ -2,6 +2,7 @@ package ee.shy.cli.command;
 
 import ee.shy.cli.Command;
 import ee.shy.cli.HelptextBuilder;
+import ee.shy.core.LocalRepository;
 import ee.shy.core.Repository;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -14,7 +15,7 @@ public class CheckoutCommand implements Command {
     @Override
     public void execute(String[] args) throws IOException {
         if (args.length >= 1) {
-            Repository repository = Repository.newExisting();
+            Repository repository = LocalRepository.newExisting();
             repository.checkout(args[0]);
         } else
             System.err.println("Not enough parameters. See 'shy help checkout'.");
@@ -36,7 +37,7 @@ public class CheckoutCommand implements Command {
 
     @Override
     public String[] getCompletion(String[] args) throws IOException {
-        Repository repository = Repository.newExisting();
+        Repository repository = LocalRepository.newExisting();
         return ArrayUtils.addAll(
                     repository.getBranches().keySet().toArray(new String[0]),
                     repository.getTags().keySet().toArray(new String[0])

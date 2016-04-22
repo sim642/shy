@@ -3,6 +3,7 @@ package ee.shy.cli.command.author;
 import ee.shy.cli.Command;
 import ee.shy.cli.HelptextBuilder;
 import ee.shy.core.Author;
+import ee.shy.core.LocalRepository;
 import ee.shy.core.Repository;
 
 import java.io.IOException;
@@ -13,7 +14,7 @@ import java.io.IOException;
 public class NameCommand implements Command {
     @Override
     public void execute(String[] args) throws IOException {
-        Repository repository = Repository.newExisting();
+        Repository repository = LocalRepository.newExisting();
         Author author = repository.getAuthor();
 
         if (args.length == 0) {
@@ -43,7 +44,7 @@ public class NameCommand implements Command {
 
     @Override
     public String[] getCompletion(String[] args) throws IOException {
-        Repository repository = Repository.newExisting();
+        Repository repository = LocalRepository.newExisting();
         Author author = repository.getAuthor();
         return new String[]{author.getName()};
     }

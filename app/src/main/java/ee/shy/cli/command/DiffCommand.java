@@ -2,6 +2,7 @@ package ee.shy.cli.command;
 
 import ee.shy.cli.Command;
 import ee.shy.cli.HelptextBuilder;
+import ee.shy.core.LocalRepository;
 import ee.shy.core.Repository;
 import ee.shy.core.diff.DiffUtils;
 import ee.shy.core.diff.InputStreamDiffer;
@@ -21,7 +22,7 @@ public class DiffCommand implements Command {
             System.err.println("Not enough parameters for diff command. See shy help diff.");
         } else {
             try {
-                Repository repository = Repository.newExisting();
+                Repository repository = LocalRepository.newExisting();
                 DiffUtils.outputDiff(repository.diff(args[0], args[1]));
             } catch (IllegalArgumentException e) {
                 // If no hashes given, try to open as file.

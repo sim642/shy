@@ -3,6 +3,7 @@ package ee.shy.cli.command.branch;
 import ee.shy.cli.Command;
 import ee.shy.cli.HelptextBuilder;
 import ee.shy.core.Branch;
+import ee.shy.core.LocalRepository;
 import ee.shy.core.Repository;
 
 import java.io.IOException;
@@ -14,7 +15,7 @@ public class AddCommand implements Command {
     @Override
     public void execute(String[] args) throws IOException {
         if (args.length >= 1) {
-            Repository repository = Repository.newExisting();
+            Repository repository = LocalRepository.newExisting();
             if (!repository.getBranches().containsKey(args[0]))
                 repository.getBranches().put(args[0], new Branch(repository.getCurrent().getCommit()));
             else
