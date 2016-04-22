@@ -6,6 +6,7 @@ import ee.shy.cli.HelptextBuilder;
 import ee.shy.core.SshRepository;
 
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
 
 /**
@@ -17,7 +18,7 @@ public class TestCommand implements Command {
 
     @Override
     public void execute(String[] args) throws IOException {
-        try (SshRepository repository = SshRepository.newRemote()) {
+        try (SshRepository repository = SshRepository.newRemote(URI.create(args[0]))) {
             System.out.println(repository.getBranches().keySet());
         }
         catch (JSchException e) {
