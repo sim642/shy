@@ -39,18 +39,12 @@ public class SshRepository extends Repository {
             throw new RuntimeException("URI must have 'ssh' scheme"); // TODO: 22.04.16 throw better exception
 
         DefaultSessionFactory sessionFactory = new DefaultSessionFactory();
-        if (remoteUri.getUserInfo() != null)
-            sessionFactory.setUsername(remoteUri.getUserInfo());
-        if (remoteUri.getHost() != null)
-            sessionFactory.setHostname(remoteUri.getHost());
-        if (remoteUri.getPort() != -1)
-            sessionFactory.setPort(remoteUri.getPort());
 
         Map<String, Object> environment = Collections.singletonMap("defaultSessionFactory", sessionFactory);
 
         // TODO: 21.04.16 allow password user input and keyboard-interactive
 
-        URI uri = new URI("ssh.unix", sessionFactory.getUsername(), sessionFactory.getHostname(), sessionFactory.getPort(), remoteUri.getPath(), null, null);
+        URI uri = new URI("ssh.unix", remoteUri.getUserInfo(), remoteUri.getHost(), remoteUri.getPort(), remoteUri.getPath(), remoteUri.getQuery(), remoteUri.getFragment());
         return new SshRepository(FileSystems.newFileSystem(uri, environment));
     }
 
