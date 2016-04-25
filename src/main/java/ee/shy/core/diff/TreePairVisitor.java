@@ -3,6 +3,7 @@ package ee.shy.core.diff;
 import ee.shy.core.Tree;
 import ee.shy.core.TreeItem;
 import ee.shy.storage.DataStorage;
+import org.apache.commons.io.input.ClosedInputStream;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.ObjectUtils.Null;
 
@@ -41,11 +42,11 @@ public abstract class TreePairVisitor {
     }
 
     public void visitPair(String prefixPath, String name, Null lhs, InputStream rhs) throws IOException {
-
+        visitPair(prefixPath, name, ClosedInputStream.CLOSED_INPUT_STREAM, rhs);
     }
 
     public void visitPair(String prefixPath, String name, InputStream lhs, Null rhs) throws IOException {
-
+        visitPair(prefixPath, name, lhs, ClosedInputStream.CLOSED_INPUT_STREAM);
     }
 
     public final void visitPair(String prefixPath, String name, Tree lhs, Tree rhs) throws IOException {

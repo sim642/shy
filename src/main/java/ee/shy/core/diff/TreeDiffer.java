@@ -2,6 +2,7 @@ package ee.shy.core.diff;
 
 import ee.shy.core.Tree;
 import ee.shy.storage.DataStorage;
+import org.apache.commons.io.input.ClosedInputStream;
 import org.apache.commons.lang3.ObjectUtils;
 
 import java.io.IOException;
@@ -9,8 +10,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import static org.apache.commons.io.input.ClosedInputStream.CLOSED_INPUT_STREAM;
 
 /**
  * Class to get the differences between two tree objects.
@@ -69,27 +68,27 @@ public class TreeDiffer implements Differ<Tree> {
             @Override
             public void visitPair(String prefixPath, String name, ObjectUtils.Null lhs, InputStream rhs) throws IOException {
                 diffLines.add(NAME_ADD + prefixPath + name);
-                diffLines.addAll(inputStreamDiffer.diff(CLOSED_INPUT_STREAM, rhs));
+                diffLines.addAll(inputStreamDiffer.diff(ClosedInputStream.CLOSED_INPUT_STREAM, rhs));
             }
 
             @Override
             public void visitPair(String prefixPath, String name, InputStream lhs, ObjectUtils.Null rhs) throws IOException {
                 diffLines.add(NAME_REMOVE + prefixPath + name);
-                diffLines.addAll(inputStreamDiffer.diff(lhs, CLOSED_INPUT_STREAM));
+                diffLines.addAll(inputStreamDiffer.diff(lhs, ClosedInputStream.CLOSED_INPUT_STREAM));
             }
 
             @Override
             public void visitPair(String prefixPath, String name, ObjectUtils.Null lhs, Tree rhs) throws IOException {
                 diffLines.add(NAME_ADD + prefixPath + name + "/");
                 diffLines.add("");
-                visitPair(prefixPath, name, Tree.EMPTY, rhs);
+                super.visitPair(prefixPath, name, lhs, rhs);
             }
 
             @Override
             public void visitPair(String prefixPath, String name, Tree lhs, ObjectUtils.Null rhs) throws IOException {
                 diffLines.add(NAME_REMOVE + prefixPath + name + "/");
                 diffLines.add("");
-                visitPair(prefixPath, name, lhs, Tree.EMPTY);
+                super.visitPair(prefixPath, name, lhs, rhs);
             }
 
             @Override
