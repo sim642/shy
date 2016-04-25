@@ -20,6 +20,22 @@ public abstract class TreePairVisitor {
         this.storage = storage;
     }
 
+    public void preVisitItem(String prefixPath, String name) throws IOException {
+
+    }
+
+    public void postVisitItem(String prefixPath, String name) throws IOException {
+
+    }
+
+    public void preVisitTree(String prefixPath, String name) throws IOException {
+
+    }
+
+    public void postVisitTree(String prefixPath, String name) throws IOException {
+
+    }
+
     public void visitPair(String prefixPath, String name, InputStream lhs, InputStream rhs) throws IOException {
 
     }
@@ -32,7 +48,7 @@ public abstract class TreePairVisitor {
 
     }
 
-    public void visitPair(String prefixPath, String name, Tree lhs, Tree rhs) throws IOException {
+    public final void visitPair(String prefixPath, String name, Tree lhs, Tree rhs) throws IOException {
         Map<String, TreeItem> lhsItems = lhs.getItems();
         Map<String, TreeItem> rhsItems = rhs.getItems();
 
@@ -43,19 +59,23 @@ public abstract class TreePairVisitor {
         subNameSet.addAll(lhsItems.keySet());
         subNameSet.addAll(rhsItems.keySet());
 
+        preVisitTree(prefixPath, name);
         for (String subName : subNameSet) {
-            Object lhsArg = getArg(lhsItems.get(subName));
-            Object rhsArg = getArg(rhsItems.get(subName));
+            TreeItem lhsItem = lhsItems.get(subName);
+            TreeItem rhsItem = rhsItems.get(subName);
 
             try {
+                preVisitItem(newPrefixPath, subName);
                 getClass()
-                        .getMethod("visitPair", String.class, String.class, lhsArg.getClass(), rhsArg.getClass())
-                        .invoke(this, newPrefixPath, subName, lhsArg, rhsArg);
+                        .getMethod("visitPair", String.class, String.class, getArgClass(lhsItem), getArgClass(rhsItem))
+                        .invoke(this, newPrefixPath, subName, getArgValue(lhsItem), getArgValue(rhsItem));
+                postVisitItem(newPrefixPath, subName);
             }
             catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                 throw new RuntimeException(e);
             }
         }
+        postVisitTree(prefixPath, name);
     }
 
     public void visitPair(String prefixPath, String name, Null lhs, Tree rhs) throws IOException {
@@ -78,7 +98,22 @@ public abstract class TreePairVisitor {
         visitPair(null, "", lhs, rhs);
     }
 
-    private Object getArg(TreeItem item) throws IOException {
+    private Class<?> getArgClass(TreeItem item) {
+        if (item == null)
+            return Null.class;
+        switch (item.getType()) {
+            case FILE:
+                return InputStream.class;
+
+            case TREE:
+                return Tree.class;
+
+            default:
+                return null;
+        }
+    }
+
+    private Object getArgValue(TreeItem item) throws IOException {
         if (item == null)
             return ObjectUtils.NULL;
         switch (item.getType()) {

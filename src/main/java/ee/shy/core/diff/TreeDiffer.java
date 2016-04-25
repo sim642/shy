@@ -1,25 +1,30 @@
 package ee.shy.core.diff;
 
 import ee.shy.core.Tree;
-import ee.shy.core.TreeItem;
 import ee.shy.storage.DataStorage;
+import org.apache.commons.lang3.ObjectUtils;
 
 import java.io.IOException;
-import java.util.*;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.apache.commons.io.input.ClosedInputStream.CLOSED_INPUT_STREAM;
 
 /**
  * Class to get the differences between two tree objects.
  */
 public class TreeDiffer implements Differ<Tree> {
+    private static final String NAME_ADD = "+++ ";
+    private static final String NAME_REMOVE = "--- ";
+
     /**
      * Storage object to get stored items according to their hash values.
      */
     private final DataStorage storage;
 
-    /**
-     * Differ used for individual Tree items.
-     */
-    private final TreeItemDiffer treeItemDiffer;
+    private static final InputStreamDiffer inputStreamDiffer = new InputStreamDiffer();
 
     /**
      * Construct a new {@link TreeDiffer} with given {@link DataStorage} object.
@@ -27,40 +32,81 @@ public class TreeDiffer implements Differ<Tree> {
      */
     public TreeDiffer(DataStorage storage) {
         this.storage = storage;
-        treeItemDiffer = new TreeItemDiffer(this);
     }
 
     @Override
     public List<String> diff(Tree original, Tree revised) throws IOException {
-        return diff("", original, revised);
-    }
+        List<String> diffLines = new ArrayList<>();
 
-    @Override
-    public List<String> diff(String prefixPath, Tree original, Tree revised) throws IOException {
-        List<String> diffStrings = new ArrayList<>();
-        Map<String, TreeItem> originalItems = original.getItems();
-        Map<String, TreeItem> revisedItems = revised.getItems();
+        new TreePairVisitor(storage) {
+            private int linesBeforeItem;
 
-        Set<String> unionTreeKeySet = new TreeSet<>();
-        unionTreeKeySet.addAll(originalItems.keySet());
-        unionTreeKeySet.addAll(revisedItems.keySet());
+            @Override
+            public void preVisitItem(String prefixPath, String name) throws IOException {
+                linesBeforeItem = diffLines.size();
+            }
 
-        for (String name : unionTreeKeySet) {
-            TreeItem originalItem = originalItems.get(name);
-            TreeItem revisedItem = revisedItems.get(name);
+            @Override
+            public void postVisitItem(String prefixPath, String name) throws IOException {
+                if (diffLines.size() != linesBeforeItem)
+                    diffLines.add("");
+            }
 
-            List<String> currentDiffStrings = treeItemDiffer.diff(prefixPath + "/" + name, originalItem, revisedItem);
+            @Override
+            public void postVisitTree(String prefixPath, String name) throws IOException {
+                while (diffLines.size() > 0 && diffLines.get(diffLines.size() - 1).isEmpty())
+                    diffLines.remove(diffLines.size() - 1);
+            }
 
-            diffStrings.addAll(currentDiffStrings);
-            if (!currentDiffStrings.isEmpty())
-                diffStrings.add("");
-        }
-        if (!diffStrings.isEmpty())
-            diffStrings.remove(diffStrings.size() - 1);
-        return diffStrings;
-    }
+            @Override
+            public void visitPair(String prefixPath, String name, InputStream lhs, InputStream rhs) throws IOException {
+                List<String> diff = inputStreamDiffer.diff(lhs, rhs);
+                if (!diff.isEmpty())
+                    diffLines.addAll(Arrays.asList(NAME_REMOVE + prefixPath + name, NAME_ADD + prefixPath + name));
+                diffLines.addAll(diff);
+            }
 
-    public DataStorage getStorage() {
-        return storage;
+            @Override
+            public void visitPair(String prefixPath, String name, ObjectUtils.Null lhs, InputStream rhs) throws IOException {
+                diffLines.add(NAME_ADD + prefixPath + name);
+                diffLines.addAll(inputStreamDiffer.diff(CLOSED_INPUT_STREAM, rhs));
+            }
+
+            @Override
+            public void visitPair(String prefixPath, String name, InputStream lhs, ObjectUtils.Null rhs) throws IOException {
+                diffLines.add(NAME_REMOVE + prefixPath + name);
+                diffLines.addAll(inputStreamDiffer.diff(lhs, CLOSED_INPUT_STREAM));
+            }
+
+            @Override
+            public void visitPair(String prefixPath, String name, ObjectUtils.Null lhs, Tree rhs) throws IOException {
+                diffLines.add(NAME_ADD + prefixPath + name + "/");
+                diffLines.add("");
+                visitPair(prefixPath, name, Tree.EMPTY, rhs);
+            }
+
+            @Override
+            public void visitPair(String prefixPath, String name, Tree lhs, ObjectUtils.Null rhs) throws IOException {
+                diffLines.add(NAME_REMOVE + prefixPath + name + "/");
+                diffLines.add("");
+                visitPair(prefixPath, name, lhs, Tree.EMPTY);
+            }
+
+            @Override
+            public void visitPair(String prefixPath, String name, InputStream lhs, Tree rhs) throws IOException {
+                visitPair(prefixPath, name, lhs, ObjectUtils.NULL);
+                diffLines.add("");
+                visitPair(prefixPath, name, ObjectUtils.NULL, rhs);
+            }
+
+            @Override
+            public void visitPair(String prefixPath, String name, Tree lhs, InputStream rhs) throws IOException {
+                visitPair(prefixPath, name, lhs, ObjectUtils.NULL);
+                diffLines.add("");
+                visitPair(prefixPath, name, ObjectUtils.NULL, rhs);
+            }
+        }.walk(original, revised);
+
+        return diffLines;
     }
 }
