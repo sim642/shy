@@ -71,8 +71,18 @@ public abstract class TreePairVisitor {
                         .invoke(this, newPrefixPath, subName, getArgValue(lhsItem), getArgValue(rhsItem));
                 postVisitItem(newPrefixPath, subName);
             }
-            catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                throw new RuntimeException(e);
+            catch (InvocationTargetException e) {
+                Throwable cause = e.getCause();
+                if (cause instanceof IOException)
+                    throw (IOException) cause;
+                else
+                    throw new RuntimeException(e);
+            }
+            catch (NoSuchMethodException e) {
+                throw new AssertionError("visitPair method for " + lhsItem.getType() + "-" + rhsItem.getType() + " not found");
+            }
+            catch (IllegalAccessException e) {
+                throw new RuntimeException("illegal access to visitPair", e);
             }
         }
         postVisitTree(prefixPath, name);
