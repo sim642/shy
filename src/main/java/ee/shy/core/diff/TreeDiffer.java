@@ -19,11 +19,14 @@ public class TreeDiffer implements Differ<Tree> {
     private static final String NAME_REMOVE = "--- ";
 
     /**
+     * Differ to use for diffing two input streams.
+     */
+    private static final InputStreamDiffer inputStreamDiffer = new InputStreamDiffer();
+
+    /**
      * Storage object to get stored items according to their hash values.
      */
     private final DataStorage storage;
-
-    private static final InputStreamDiffer inputStreamDiffer = new InputStreamDiffer();
 
     /**
      * Construct a new {@link TreeDiffer} with given {@link DataStorage} object.

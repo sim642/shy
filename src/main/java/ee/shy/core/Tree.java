@@ -69,10 +69,24 @@ public class Tree implements Jsonable {
         });
     }
 
+    /**
+     * Walks the tree from root using given visitor.
+     * @param storage data storage to use for getting items
+     * @param visitor visitor to visit with
+     * @throws IOException if an I/O error occurs
+     */
     public void walk(DataStorage storage, TreeVisitor visitor) throws IOException {
         walk(storage, visitor, null, "");
     }
 
+    /**
+     * Walks the tree from root using given visitor.
+     * @param storage data storage to use for getting items
+     * @param visitor visitor to visit with
+     * @param prefixPath path in which the tree is contained
+     * @param name name of the tree
+     * @throws IOException if an I/O error occurs
+     */
     private void walk(DataStorage storage, TreeVisitor visitor, String prefixPath, String name) throws IOException {
         visitor.preVisitTree(prefixPath, name);
 
