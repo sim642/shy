@@ -137,7 +137,6 @@ public abstract class TreePairVisitor {
                 getClass()
                         .getMethod("visitPair", String.class, String.class, getArgClass(lhsItem), getArgClass(rhsItem))
                         .invoke(this, newPrefixPath, subName, getArgValue(lhsItem), getArgValue(rhsItem));
-                postVisitItem(newPrefixPath, subName); // TODO: 26.04.16 guarantee symmetric call
             }
             catch (InvocationTargetException e) {
                 Throwable cause = e.getCause();
@@ -151,6 +150,9 @@ public abstract class TreePairVisitor {
             }
             catch (IllegalAccessException e) {
                 throw new RuntimeException("illegal access to visitPair", e);
+            }
+            finally {
+                postVisitItem(newPrefixPath, subName);
             }
         }
         postVisitTree(prefixPath, name);
