@@ -26,7 +26,7 @@ public class FileStorageTest extends DataStorageTest {
 
     @Test
     public void testDataChange() throws Exception {
-        Hash hash = storage.put(getClass().getResourceAsStream("/fox.txt"));
+        Hash hash = storage.put(getClass().getResourceAsStream("fox.txt"));
 
         GitFileLocator gitFileLocator = new GitFileLocator(storageDirectory);
         GzipFileAccessor gzipFileAccessor = new GzipFileAccessor();

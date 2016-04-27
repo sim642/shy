@@ -21,22 +21,22 @@ public class CommitTest {
 
     @Test
     public void testReadWrite() throws IOException {
-        Commit commit = Json.read(getClass().getResourceAsStream("/commit1.json"), Commit.class);
+        Commit commit = Json.read(getClass().getResourceAsStream("commit.json"), Commit.class);
         commit.write(new NullOutputStream());
     }
 
     @Test(expected = IllegalJsonException.class)
     public void testReadIllegalTree() throws Exception {
-        Json.read(getClass().getResourceAsStream("/commit2a.json"), Commit.class);
+        Json.read(getClass().getResourceAsStream("commit-illegal-tree.json"), Commit.class);
     }
 
     @Test(expected = IllegalJsonException.class)
     public void testReadIllegalParents() throws Exception {
-        Json.read(getClass().getResourceAsStream("/commit2b.json"), Commit.class);
+        Json.read(getClass().getResourceAsStream("commit-illegal-parents.json"), Commit.class);
     }
 
     @Test(expected = IllegalJsonException.class)
     public void testReadIllegalParentsEmpty() throws Exception {
-        Json.read(getClass().getResourceAsStream("/commit2c.json"), Commit.class);
+        Json.read(getClass().getResourceAsStream("commit-illegal-empty-parents.json"), Commit.class);
     }
 }

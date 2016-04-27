@@ -28,7 +28,7 @@ public class JsonTest {
     public void testRead() throws Exception {
         TestJsonable testJsonable = new TestJsonable("foo", Hash.ZERO, OffsetDateTime.of(2016, 4, 15, 20, 19, 0, 0, ZoneOffset.ofHours(2)));
 
-        try (InputStream is = getClass().getResourceAsStream("testRead.json")) {
+        try (InputStream is = getClass().getResourceAsStream("testjsonable.json")) {
             TestJsonable readJsonable = Json.read(is, TestJsonable.class);
             assertEquals(testJsonable, readJsonable);
         }
@@ -36,14 +36,14 @@ public class JsonTest {
 
     @Test(expected = IllegalJsonException.class)
     public void testRequired() throws Exception {
-        try (InputStream is = getClass().getResourceAsStream("testRequired.json")) {
+        try (InputStream is = getClass().getResourceAsStream("testjsonable-required.json")) {
             Json.read(is, TestJsonable.class);
         }
     }
 
     @Test(expected = IllegalJsonException.class)
     public void testIllegal() throws Exception {
-        try (InputStream is = getClass().getResourceAsStream("testIllegal.json")) {
+        try (InputStream is = getClass().getResourceAsStream("testjsonable-illegal.json")) {
             Json.read(is, TestJsonable.class);
         }
     }
