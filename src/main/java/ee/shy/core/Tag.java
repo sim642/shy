@@ -1,6 +1,7 @@
 package ee.shy.core;
 
 import ee.shy.io.Jsonable;
+import ee.shy.io.Required;
 import ee.shy.storage.Hash;
 
 /**
@@ -10,6 +11,7 @@ public class Tag implements Jsonable {
     /**
      * Tags's commit hash.
      */
+    @Required
     private final Hash commit;
 
     /**
@@ -23,6 +25,9 @@ public class Tag implements Jsonable {
      * @param message message for tag
      */
     public Tag(Hash commit, String message) {
+        if (commit == null)
+            throw new IllegalArgumentException("Tag has no commit");
+
         this.commit = commit;
         this.message = message;
     }

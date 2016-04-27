@@ -1,6 +1,7 @@
 package ee.shy.core;
 
 import ee.shy.io.Jsonable;
+import ee.shy.io.Required;
 import ee.shy.storage.Hash;
 
 /**
@@ -10,6 +11,7 @@ public class Branch implements Jsonable {
     /**
      * Branch's commit hash.
      */
+    @Required
     private final Hash commit;
 
     /**
@@ -17,6 +19,9 @@ public class Branch implements Jsonable {
      * @param commit commit hash for branch
      */
     public Branch(Hash commit) {
+        if (commit == null)
+            throw new IllegalArgumentException("Branch has no commit");
+
         this.commit = commit;
     }
 
