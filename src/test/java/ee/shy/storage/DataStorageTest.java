@@ -60,6 +60,11 @@ public abstract class DataStorageTest {
     }
 
     @Test
+    public void testNonExistentJson() throws Exception {
+        assertNull(storage.get(Hash.ZERO, TestJsonable.class));
+    }
+
+    @Test
     public void testPutNoAlgorithm() throws Exception {
         Security.removeProvider(hashProvider.getName());
 
