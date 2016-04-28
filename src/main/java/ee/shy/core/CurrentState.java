@@ -102,4 +102,21 @@ public class CurrentState implements Jsonable {
     public String getTag() {
         return tag;
     }
+
+    @Override
+    public String toString() {
+        switch (getType()) {
+            case BRANCH:
+                return "branch " + branch + " (" + commit + ")";
+
+            case TAG:
+                return "tag " + tag + " (" + commit + ")";
+
+            case COMMIT:
+                return "commit " + commit;
+
+            default:
+                throw new IllegalStateException("current is of unknown type");
+        }
+    }
 }

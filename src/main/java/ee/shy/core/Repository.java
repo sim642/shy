@@ -228,7 +228,7 @@ public class Repository {
             branches.put(newCurrent.getBranch(), new Branch(newCurrent.getCommit()));
         }
         else
-            throw new RuntimeException("can't commit to " + current); // TODO: 15.04.16 create custom exception
+            throw new CommitException(current);
     }
 
     /**
