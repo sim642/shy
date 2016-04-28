@@ -4,6 +4,7 @@ import ee.shy.cli.Command;
 import ee.shy.cli.HelptextBuilder;
 import ee.shy.core.Repository;
 import ee.shy.core.Tag;
+import ee.shy.map.Named;
 import ee.shy.map.NamedObjectMap;
 
 import java.io.IOException;
@@ -15,8 +16,8 @@ public class ListCommand implements Command {
     @Override
     public void execute(String[] args) throws IOException {
         NamedObjectMap<Tag> tags = Repository.newExisting().getTags();
-        for (String tagName : tags.keySet()) {
-            System.out.println(tagName + " - " + tags.get(tagName).getMessage());
+        for (Named<Tag> namedTag : tags.entrySet()) {
+            System.out.println(namedTag.getName() + " - " + namedTag.getValue().getMessage());
         }
     }
 

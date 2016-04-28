@@ -4,8 +4,6 @@ import ee.shy.io.Json;
 import ee.shy.io.Jsonable;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
@@ -53,6 +51,29 @@ public class DirectoryJsonMap<T extends Jsonable> implements NamedObjectMap<T> {
                 .map(Path::getFileName)
                 .map(Path::toString)
                 .collect(Collectors.toSet());
+    }
+
+    @Override
+    public Set<Named<T>> entrySet() throws IOException {
+        try {
+            return Files.list(directory)
+                    .map(path -> {
+                        try {
+                            return new Named<T>(path.getFileName().toString(), Json.read(path, classofT));
+                        }
+                        catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    })
+                    .collect(Collectors.toSet());
+        }
+        catch (RuntimeException e) {
+            Throwable cause = e.getCause();
+            if (cause instanceof IOException)
+                throw (IOException) cause;
+            else
+                throw e;
+        }
     }
 
     @Override
