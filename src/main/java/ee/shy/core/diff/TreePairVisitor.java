@@ -5,7 +5,6 @@ import ee.shy.core.TreeItem;
 import ee.shy.storage.DataStorage;
 import org.apache.commons.io.input.ClosedInputStream;
 import org.apache.commons.lang3.ObjectUtils;
-import org.apache.commons.lang3.ObjectUtils.Null;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -92,7 +91,7 @@ public abstract class TreePairVisitor {
      * @param rhs input stream of right file
      * @throws IOException if an I/O error occurs
      */
-    public void visitPair(String prefixPath, String name, Null lhs, InputStream rhs) throws IOException {
+    public void visitPair(String prefixPath, String name, ObjectUtils.Null lhs, InputStream rhs) throws IOException {
         visitPair(prefixPath, name, ClosedInputStream.CLOSED_INPUT_STREAM, rhs);
     }
 
@@ -104,7 +103,7 @@ public abstract class TreePairVisitor {
      * @param rhs placeholder argument
      * @throws IOException if an I/O error occurs
      */
-    public void visitPair(String prefixPath, String name, InputStream lhs, Null rhs) throws IOException {
+    public void visitPair(String prefixPath, String name, InputStream lhs, ObjectUtils.Null rhs) throws IOException {
         visitPair(prefixPath, name, lhs, ClosedInputStream.CLOSED_INPUT_STREAM);
     }
 
@@ -149,7 +148,7 @@ public abstract class TreePairVisitor {
                 throw new AssertionError("visitPair method for " + lhsItem.getType() + "-" + rhsItem.getType() + " not found");
             }
             catch (IllegalAccessException e) {
-                throw new RuntimeException("illegal access to visitPair", e);
+                throw new AssertionError("illegal access to visitPair", e);
             }
             finally {
                 postVisitItem(newPrefixPath, subName);
@@ -166,7 +165,7 @@ public abstract class TreePairVisitor {
      * @param rhs right tree
      * @throws IOException if an I/O error occurs
      */
-    public void visitPair(String prefixPath, String name, Null lhs, Tree rhs) throws IOException {
+    public void visitPair(String prefixPath, String name, ObjectUtils.Null lhs, Tree rhs) throws IOException {
         visitPair(prefixPath, name, Tree.EMPTY, rhs);
     }
 
@@ -178,7 +177,7 @@ public abstract class TreePairVisitor {
      * @param rhs placeholder argument
      * @throws IOException if an I/O error occurs
      */
-    public void visitPair(String prefixPath, String name, Tree lhs, Null rhs) throws IOException {
+    public void visitPair(String prefixPath, String name, Tree lhs, ObjectUtils.Null rhs) throws IOException {
         visitPair(prefixPath, name, lhs, Tree.EMPTY);
     }
 
@@ -221,9 +220,9 @@ public abstract class TreePairVisitor {
      * @param item tree item
      * @return class of tree item's value
      */
-    private Class<?> getArgClass(TreeItem item) {
+    private static Class<?> getArgClass(TreeItem item) {
         if (item == null)
-            return Null.class;
+            return ObjectUtils.Null.class;
         switch (item.getType()) {
             case FILE:
                 return InputStream.class;
