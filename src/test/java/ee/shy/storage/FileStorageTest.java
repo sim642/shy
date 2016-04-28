@@ -1,5 +1,10 @@
 package ee.shy.storage;
 
+import ee.shy.storage.accessor.AggregateFileAccessor;
+import ee.shy.storage.accessor.GzipFileAccessor;
+import ee.shy.storage.accessor.PlainFileAccessor;
+import ee.shy.storage.locator.FlatFileLocator;
+import ee.shy.storage.locator.GitFileLocator;
 import org.apache.commons.io.IOUtils;
 import org.hamcrest.CustomTypeSafeMatcher;
 import org.junit.Before;

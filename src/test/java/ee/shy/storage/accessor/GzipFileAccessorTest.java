@@ -1,6 +1,7 @@
-package ee.shy.storage;
+package ee.shy.storage.accessor;
 
 import ee.shy.io.PathUtils;
+import ee.shy.storage.FileAccessorTest;
 import org.junit.Before;
 
 import java.nio.file.Files;

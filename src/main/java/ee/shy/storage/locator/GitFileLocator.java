@@ -1,4 +1,4 @@
-package ee.shy.storage;
+package ee.shy.storage.locator;
 
 import java.io.IOException;
 import java.nio.file.Path;

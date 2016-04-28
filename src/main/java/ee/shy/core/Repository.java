@@ -5,7 +5,12 @@ import ee.shy.io.Json;
 import ee.shy.io.PathUtils;
 import ee.shy.map.DirectoryJsonMap;
 import ee.shy.map.NamedObjectMap;
-import ee.shy.storage.*;
+import ee.shy.storage.DataStorage;
+import ee.shy.storage.FileStorage;
+import ee.shy.storage.Hash;
+import ee.shy.storage.Hashed;
+import ee.shy.storage.accessor.PlainFileAccessor;
+import ee.shy.storage.locator.FlatFileLocator;
 
 import java.io.*;
 import java.nio.file.DirectoryStream;

@@ -1,4 +1,6 @@
-package ee.shy.storage;
+package ee.shy.storage.accessor;
+
+import ee.shy.storage.FileAccessor;
 
 import java.io.IOException;
 import java.io.InputStream;

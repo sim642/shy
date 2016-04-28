@@ -1,6 +1,9 @@
 package ee.shy.storage;
 
 import ee.shy.TemporaryDirectory;
+import ee.shy.storage.locator.FlatFileLocator;
+import ee.shy.storage.locator.GitFileLocator;
+import ee.shy.storage.locator.NestedFileLocator;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;

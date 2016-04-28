@@ -1,6 +1,8 @@
-package ee.shy.storage;
+package ee.shy.storage.locator;
 
 import ee.shy.io.PathUtils;
+import ee.shy.storage.FileLocator;
+import ee.shy.storage.Hash;
 
 import java.io.IOException;
 import java.nio.file.Path;
