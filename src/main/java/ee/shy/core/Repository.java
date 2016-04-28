@@ -6,7 +6,6 @@ import ee.shy.io.PathUtils;
 import ee.shy.map.DirectoryJsonMap;
 import ee.shy.map.NamedObjectMap;
 import ee.shy.storage.*;
-import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import java.io.*;
 import java.nio.file.DirectoryStream;
@@ -278,7 +277,7 @@ public class Repository {
      * @param arg string of branch name or commit hash
      * @throws IOException if building fails
      */
-    public List<ImmutablePair<Hash, Commit>> log(String arg) throws IOException {
+    public List<Hashed<Commit>> log(String arg) throws IOException {
         return log(parseState(arg).getCommit());
     }
 
@@ -287,11 +286,11 @@ public class Repository {
      * @param commitHash hash of a commit that's history log is wanted to be built
      * @throws IOException if getting the commit fails
      */
-    private List<ImmutablePair<Hash, Commit>> log(Hash commitHash) throws IOException {
-        List<ImmutablePair<Hash, Commit>> loggedCommits = new ArrayList<>();
+    private List<Hashed<Commit>> log(Hash commitHash) throws IOException {
+        List<Hashed<Commit>> loggedCommits = new ArrayList<>();
         if (!commitHash.equals(Hash.ZERO)) {
             Commit commit = storage.get(commitHash, Commit.class);
-            loggedCommits.add(ImmutablePair.of(commitHash, commit));
+            loggedCommits.add(new Hashed(commitHash, commit));
             List<Hash> parents = commit.getParents();
             for (Hash parent : parents) {
                 loggedCommits.addAll(log(parent));
