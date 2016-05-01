@@ -36,13 +36,14 @@ public class LocalRepository extends Repository {
     }
 
     /**
-     * Creates a new repository in the directory where shy was executed.
+     * Creates a new repository into given directory.
+     * @param rootPath directory to initialize in
      * @return a Repository object if repository creation was successful
      * @throws IOException if repository hierarchy generation fails
      */
-    public static Repository newEmpty() throws IOException {
-        Path repositoryPath = getRepositoryPath(PathUtils.getCurrentPath());
-        Files.createDirectory(repositoryPath);
+    public static Repository newEmpty(Path rootPath) throws IOException {
+        Path repositoryPath = getRepositoryPath(rootPath);
+        Files.createDirectories(repositoryPath);
 
         String[] subDirectories = {"commit", "branches", "tags", "storage"};
         for (String subDirectory : subDirectories) {
@@ -51,7 +52,7 @@ public class LocalRepository extends Repository {
 
         CurrentState.newBranch(Hash.ZERO, DEFAULT_BRANCH).write(repositoryPath.resolve("current"));
 
-        Repository repository = new LocalRepository(repositoryPath.getParent());
+        Repository repository = new LocalRepository(rootPath);
 
         // TODO: 26.03.16 Create a config file to home directory upon installation to get author's details from.
         Author author = new Author(null, null);
@@ -59,7 +60,6 @@ public class LocalRepository extends Repository {
 
         repository.getBranches().put(DEFAULT_BRANCH, new Branch(Hash.ZERO));
 
-        System.out.println("Initialized a shy repository in " + repository.getRootPath());
         return repository;
     }
 }
