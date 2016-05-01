@@ -74,7 +74,7 @@ public class Tree implements Jsonable {
     }
 
     private void walk(DataStorage storage, TreeVisitor visitor, String prefixPath, String name) throws IOException {
-        visitor.preVisitTree(prefixPath, name);
+        visitor.preVisitTree(prefixPath, name, this);
 
         String newPrefixPath = prefixPath != null ? prefixPath : "";
         newPrefixPath += name + "/";
@@ -94,7 +94,7 @@ public class Tree implements Jsonable {
             }
         }
 
-        visitor.postVisitTree(prefixPath, name);
+        visitor.postVisitTree(prefixPath, name, this);
     }
 
     /*

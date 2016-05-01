@@ -36,6 +36,7 @@ public class RootCommand extends SuperCommand {
         add("log", new LogCommand());
         add("search", new SearchCommand());
         add("tag", new TagCommand());
+        add("clone", new CloneCommand());
 
         add("test", new TestCommand());
     }

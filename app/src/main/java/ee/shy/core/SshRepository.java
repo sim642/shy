@@ -1,6 +1,5 @@
 package ee.shy.core;
 
-import com.jcraft.jsch.JSchException;
 import com.pastdev.jsch.DefaultSessionFactory;
 
 import java.io.IOException;
@@ -31,10 +30,9 @@ public class SshRepository extends Repository {
      * @param remoteUri URI to SSH repository
      * @return a Repository object if remote repository was found
      * @throws IOException
-     * @throws JSchException
      * @throws URISyntaxException
      */
-    public static SshRepository newRemote(URI remoteUri) throws IOException, JSchException, URISyntaxException {
+    public static SshRepository newRemote(URI remoteUri) throws IOException, URISyntaxException {
         if (!"ssh".equals(remoteUri.getScheme()))
             throw new RuntimeException("URI must have 'ssh' scheme"); // TODO: 22.04.16 throw better exception
 

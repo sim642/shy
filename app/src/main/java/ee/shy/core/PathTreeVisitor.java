@@ -31,7 +31,7 @@ public abstract class PathTreeVisitor implements TreeVisitor {
     }
 
     @Override
-    public void preVisitTree(String prefixPath, String name) throws IOException {
+    public void preVisitTree(String prefixPath, String name, Tree tree) throws IOException {
         preVisitTree(toPath(prefixPath, name));
     }
 
@@ -59,7 +59,7 @@ public abstract class PathTreeVisitor implements TreeVisitor {
     }
 
     @Override
-    public void postVisitTree(String prefixPath, String name) throws IOException {
+    public void postVisitTree(String prefixPath, String name, Tree tree) throws IOException {
         postVisitTree(toPath(prefixPath, name));
     }
 

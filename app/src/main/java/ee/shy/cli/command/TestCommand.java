@@ -1,6 +1,5 @@
 package ee.shy.cli.command;
 
-import com.jcraft.jsch.JSchException;
 import ee.shy.cli.Command;
 import ee.shy.cli.HelptextBuilder;
 import ee.shy.core.SshRepository;
@@ -20,9 +19,6 @@ public class TestCommand implements Command {
     public void execute(String[] args) throws IOException {
         try (SshRepository repository = SshRepository.newRemote(URI.create(args[0]))) {
             System.out.println(repository.getBranches().keySet());
-        }
-        catch (JSchException e) {
-            e.printStackTrace();
         }
         catch (URISyntaxException e) {
             e.printStackTrace();

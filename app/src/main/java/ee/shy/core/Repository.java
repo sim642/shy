@@ -23,6 +23,7 @@ import java.util.regex.Pattern;
  * Class for creating and interacting with a repository.
  */
 public class Repository implements AutoCloseable {
+    public static final String DEFAULT_BRANCH = "master";
     /**
      * Repository root directory path.
      */
@@ -419,8 +420,59 @@ public class Repository implements AutoCloseable {
                 storage.get(revisedCommit.getTree(), Tree.class));
     }
 
+    /**
+     * Clones a tree by its hash.
+     * @param remoteRepository repository to clone from
+     * @param hash hash of tree to clone
+     * @throws IOException
+     */
+    private void cloneTree(Repository remoteRepository, Hash hash) throws IOException {
+        Tree tree = remoteRepository.storage.get(hash, Tree.class);
+        tree.walk(remoteRepository.storage, new TreeVisitor() {
+            @Override
+            public void preVisitTree(String prefixPath, String name, Tree tree) throws IOException {
+                storage.put(tree);
+            }
+
+            @Override
+            public void visitFile(String prefixPath, String name, InputStream is) throws IOException {
+                storage.put(is);
+            }
+        });
+    }
+
+    /**
+     * Clones a commit with its descendants recursively by its hash.
+     * @param remoteRepository repository to clone from
+     * @param hash hash of commit to clone
+     * @throws IOException
+     */
+    private void cloneCommitRecursive(Repository remoteRepository, Hash hash) throws IOException {
+        Commit commit = remoteRepository.storage.get(hash, Commit.class);
+        storage.put(commit);
+        cloneTree(remoteRepository, commit.getTree());
+
+        for (Hash parentHash : commit.getParents()) { // TODO: 1.05.16 parents should filter out ZERO?
+            if (!parentHash.equals(Hash.ZERO))
+                cloneCommitRecursive(remoteRepository, parentHash);
+        }
+    }
+
+    /**
+     * Clones a branch by its name.
+     * @param remoteRepository repository to clone from
+     * @param branchName name of branch to clone
+     * @throws IOException
+     */
+    public void cloneBranch(Repository remoteRepository, String branchName) throws IOException {
+        Branch branch = remoteRepository.branches.get(branchName);
+        branches.put(branchName, branch);
+        cloneCommitRecursive(remoteRepository, branch.getHash());
+        checkout(branchName);
+    }
+
     @Override
-    public void close() throws Exception {
+    public void close() throws IOException {
 
     }
 }

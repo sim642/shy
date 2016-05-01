@@ -16,7 +16,7 @@ public interface TreeVisitor {
      * @param name name of a tree
      * @throws IOException if an I/O error occurs
      */
-    default void preVisitTree(String prefixPath, String name) throws IOException {
+    default void preVisitTree(String prefixPath, String name, Tree tree) throws IOException {
 
     }
 
@@ -37,7 +37,7 @@ public interface TreeVisitor {
      * @param name name of a tree
      * @throws IOException if an I/O error occurs
      */
-    default void postVisitTree(String prefixPath, String name) throws IOException {
+    default void postVisitTree(String prefixPath, String name, Tree tree) throws IOException {
 
     }
 }
