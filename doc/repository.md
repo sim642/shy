@@ -4,6 +4,7 @@
     * [`branches/`](#branches)
     * [`tags/`](#tags)
     * [`commit/`](#commit)
+    * [`remotes/`](#remotes)
     * [`author`](#author)
     * [`current`](#current)
         
@@ -34,6 +35,19 @@ JSON:
 {
     "commit": "###",
     "message": "aaa"
+}
+```
+
+### remotes/
+* `remotes/`
+    * `origin`
+    * `upstream`
+    * ...
+
+JSON:
+```json
+{
+    "uri": "ssh://john@example.com/home/john/foo"
 }
 ```
 
