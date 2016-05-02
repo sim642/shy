@@ -420,59 +420,73 @@ public class Repository implements AutoCloseable {
                 storage.get(revisedCommit.getTree(), Tree.class));
     }
 
-    /**
-     * Clones a tree by its hash.
-     * @param remoteRepository repository to clone from
-     * @param hash hash of tree to clone
-     * @throws IOException
-     */
-    private void cloneTree(Repository remoteRepository, Hash hash) throws IOException {
-        Tree tree = remoteRepository.storage.get(hash, Tree.class);
-        tree.walk(remoteRepository.storage, new TreeVisitor() {
-            @Override
-            public void preVisitTree(String prefixPath, String name, Tree tree) throws IOException {
-                storage.put(tree);
-            }
-
-            @Override
-            public void visitFile(String prefixPath, String name, InputStream is) throws IOException {
-                storage.put(is);
-            }
-        });
-    }
-
-    /**
-     * Clones a commit with its descendants recursively by its hash.
-     * @param remoteRepository repository to clone from
-     * @param hash hash of commit to clone
-     * @throws IOException
-     */
-    private void cloneCommitRecursive(Repository remoteRepository, Hash hash) throws IOException {
-        Commit commit = remoteRepository.storage.get(hash, Commit.class);
-        storage.put(commit);
-        cloneTree(remoteRepository, commit.getTree());
-
-        for (Hash parentHash : commit.getParents()) { // TODO: 1.05.16 parents should filter out ZERO?
-            if (!parentHash.equals(Hash.ZERO))
-                cloneCommitRecursive(remoteRepository, parentHash);
-        }
-    }
-
-    /**
-     * Clones a branch by its name.
-     * @param remoteRepository repository to clone from
-     * @param branchName name of branch to clone
-     * @throws IOException
-     */
-    public void cloneBranch(Repository remoteRepository, String branchName) throws IOException {
-        Branch branch = remoteRepository.branches.get(branchName);
-        branches.put(branchName, branch);
-        cloneCommitRecursive(remoteRepository, branch.getHash());
-        checkout(branchName);
-    }
-
     @Override
     public void close() throws IOException {
 
+    }
+
+    /**
+     * Class for fetching data from a remote repository to a local repository.
+     */
+    public static class Fetcher {
+        private final Repository localRepository;
+        private final Repository remoteRepository;
+
+        /**
+         * Constructs a new repository fetcher.
+         * @param localRepository local repository to fetch to
+         * @param remoteRepository remote repository to fetch from
+         */
+        public Fetcher(Repository localRepository, Repository remoteRepository) {
+            this.localRepository = localRepository;
+            this.remoteRepository = remoteRepository;
+        }
+
+        /**
+         * Fetches a tree by its hash.
+         * @param hash hash of tree to clone
+         * @throws IOException
+         */
+        private void fetchTree(Hash hash) throws IOException {
+            Tree tree = remoteRepository.storage.get(hash, Tree.class);
+            tree.walk(remoteRepository.storage, new TreeVisitor() {
+                @Override
+                public void preVisitTree(String prefixPath, String name, Tree tree) throws IOException {
+                    localRepository.storage.put(tree);
+                }
+
+                @Override
+                public void visitFile(String prefixPath, String name, InputStream is) throws IOException {
+                    localRepository.storage.put(is);
+                }
+            });
+        }
+
+        /**
+         * Fetches a commit with its descendants recursively by its hash.
+         * @param hash hash of commit to clone
+         * @throws IOException
+         */
+        private void fetchCommitRecursive(Hash hash) throws IOException {
+            Commit commit = remoteRepository.storage.get(hash, Commit.class);
+            localRepository.storage.put(commit);
+            fetchTree(commit.getTree());
+
+            for (Hash parentHash : commit.getParents()) { // TODO: 1.05.16 parents should filter out ZERO?
+                if (!parentHash.equals(Hash.ZERO))
+                    fetchCommitRecursive(parentHash);
+            }
+        }
+
+        /**
+         * Fetches a branch by its name.
+         * @param branchName name of branch to clone
+         * @throws IOException
+         */
+        public void fetchBranch(String branchName) throws IOException {
+            Branch branch = remoteRepository.branches.get(branchName);
+            localRepository.branches.put(branchName, branch);
+            fetchCommitRecursive(branch.getHash());
+        }
     }
 }

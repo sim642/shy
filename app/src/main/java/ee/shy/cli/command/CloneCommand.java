@@ -30,8 +30,11 @@ public class CloneCommand implements Command {
             Path localPath = PathUtils.getCurrentPath().resolve(repositoryName);
             try (Repository localRepository = LocalRepository.newEmpty(localPath);
                  Repository remoteRepository = SshRepository.newRemote(remoteUri)) {
+
+                Repository.Fetcher fetcher = new Repository.Fetcher(localRepository, remoteRepository);
                 System.out.println("Cloning " + remoteUri + " into " + localRepository.getRootPath());
-                localRepository.cloneBranch(remoteRepository, Repository.DEFAULT_BRANCH);
+                fetcher.fetchBranch(Repository.DEFAULT_BRANCH);
+                localRepository.checkout(Repository.DEFAULT_BRANCH);
             }
         }
         catch (URISyntaxException e) {
