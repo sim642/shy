@@ -479,14 +479,26 @@ public class Repository implements AutoCloseable {
         }
 
         /**
-         * Fetches a branch by its name.
-         * @param branchName name of branch to clone
+         * Fetches a current state by its argument.
+         * @param arg parsable current state name
          * @throws IOException
          */
-        public void fetchBranch(String branchName) throws IOException {
-            Branch branch = remoteRepository.branches.get(branchName);
-            localRepository.branches.put(branchName, branch);
-            fetchCommitRecursive(branch.getHash());
+        public void fetch(String arg) throws IOException {
+            CurrentState fetchCurrent = remoteRepository.parseState(arg);
+
+            switch (fetchCurrent.getType()) {
+                case BRANCH:
+                    Branch branch = remoteRepository.branches.get(fetchCurrent.getBranch());
+                    localRepository.branches.put(fetchCurrent.getBranch(), branch);
+                    break;
+
+                case TAG:
+                    Tag tag = remoteRepository.tags.get(fetchCurrent.getTag());
+                    localRepository.tags.put(fetchCurrent.getTag(), tag);
+                    break;
+            }
+
+            fetchCommitRecursive(fetchCurrent.getCommit());
         }
     }
 }

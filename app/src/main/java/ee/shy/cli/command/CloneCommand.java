@@ -7,6 +7,7 @@ import ee.shy.core.Repository;
 import ee.shy.core.SshRepository;
 import ee.shy.io.PathUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.ObjectUtils;
 
 import java.io.IOException;
 import java.net.URI;
@@ -33,8 +34,9 @@ public class CloneCommand implements Command {
 
                 Repository.Fetcher fetcher = new Repository.Fetcher(localRepository, remoteRepository);
                 System.out.println("Cloning " + remoteUri + " into " + localRepository.getRootPath());
-                fetcher.fetchBranch(Repository.DEFAULT_BRANCH);
-                localRepository.checkout(Repository.DEFAULT_BRANCH);
+                String currentArg = ObjectUtils.defaultIfNull(remoteUri.getFragment(), Repository.DEFAULT_BRANCH);
+                fetcher.fetch(currentArg);
+                localRepository.checkout(currentArg);
             }
         }
         catch (URISyntaxException e) {
