@@ -1,25 +1,32 @@
 package ee.shy.cli.command;
 
+import difflib.PatchFailedException;
 import ee.shy.cli.Command;
 import ee.shy.cli.HelptextBuilder;
-import ee.shy.core.Repository;
+import ee.shy.core.merge.Merge;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.List;
 
 /**
  * A simple command for testing.
  */
 public class TestCommand implements Command {
-    private final String name;
 
-    public TestCommand(String name) {
-        this.name = name;
-    }
-
-    @Override
     public void execute(String[] args) throws IOException {
-        System.out.println(name);
-        Repository repository = Repository.newExisting();
+        List<String> strings;
+        try {
+            strings = Merge.applyPatch(Files.newInputStream(Paths.get(args[2])), Merge.generatePatch(
+                    Files.newInputStream(Paths.get(args[0])),
+                    Files.newInputStream(Paths.get(args[1]))
+            ));
+        } catch (PatchFailedException e) {
+            throw new RuntimeException(e);
+            // TODO: 3.05.16 Make an user-presentable exception for merge failure
+        }
+        strings.forEach(System.out::println);
     }
 
     @Override
