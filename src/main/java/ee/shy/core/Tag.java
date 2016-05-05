@@ -1,17 +1,18 @@
 package ee.shy.core;
 
 import ee.shy.io.Jsonable;
-import ee.shy.io.Required;
+import ee.shy.io.Validated;
 import ee.shy.storage.Hash;
+
+import java.util.Objects;
 
 /**
  * Class representing a tag.
  */
-public class Tag implements Jsonable {
+public class Tag implements Jsonable, Validated {
     /**
      * Tags's commit hash.
      */
-    @Required
     private final Hash commit;
 
     /**
@@ -25,11 +26,9 @@ public class Tag implements Jsonable {
      * @param message message for tag
      */
     public Tag(Hash commit, String message) {
-        if (commit == null)
-            throw new IllegalArgumentException("Tag has no commit");
-
         this.commit = commit;
         this.message = message;
+        assertValid();
     }
 
     public Hash getHash() {
@@ -38,5 +37,10 @@ public class Tag implements Jsonable {
 
     public String getMessage() {
         return message;
+    }
+
+    @Override
+    public void assertValid() {
+        Objects.requireNonNull(commit, "tag has no commit");
     }
 }

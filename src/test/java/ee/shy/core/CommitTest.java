@@ -9,7 +9,7 @@ import org.junit.Test;
 import java.io.IOException;
 
 public class CommitTest {
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = NullPointerException.class)
     public void testConstructorIllegalTree() {
         new Commit.Builder().addParent(Hash.ZERO).create();
     }

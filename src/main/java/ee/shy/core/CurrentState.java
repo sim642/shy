@@ -1,14 +1,15 @@
 package ee.shy.core;
 
-import ee.shy.io.CheckState;
 import ee.shy.io.Jsonable;
-import ee.shy.io.Required;
+import ee.shy.io.Validated;
 import ee.shy.storage.Hash;
+
+import java.util.Objects;
 
 /**
  * Class representing repository's current checked out state.
  */
-public class CurrentState implements Jsonable {
+public class CurrentState implements Jsonable, Validated {
     /**
      * Enum of checked out state types.
      */
@@ -21,7 +22,6 @@ public class CurrentState implements Jsonable {
     /**
      * Hash of currently checked out commit.
      */
-    @Required
     private final Hash commit;
 
     /**
@@ -38,7 +38,8 @@ public class CurrentState implements Jsonable {
         this.commit = commit;
         this.branch = branch;
         this.tag = tag;
-        checkState();
+
+        assertValid();
     }
 
     /**
@@ -83,14 +84,6 @@ public class CurrentState implements Jsonable {
             return Type.COMMIT;
     }
 
-    @CheckState
-    private void checkState() {
-        if (commit == null)
-            throw new IllegalStateException("current must have a commit");
-        else if (branch != null && tag != null)
-            throw new IllegalStateException("current can't be a branch and a tag simultaneously");
-    }
-
     public Hash getCommit() {
         return commit;
     }
@@ -118,5 +111,12 @@ public class CurrentState implements Jsonable {
             default:
                 throw new IllegalStateException("current is of unknown type");
         }
+    }
+
+    @Override
+    public void assertValid() {
+        Objects.requireNonNull(commit, "current has no commit");
+        if (branch != null && tag != null)
+            throw new IllegalStateException("current is branch and tag simultaneously");
     }
 }
