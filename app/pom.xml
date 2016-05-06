@@ -51,7 +51,7 @@
         <dependency>
             <groupId>com.pastdev</groupId>
             <artifactId>jsch-nio</artifactId>
-            <version>1.0.3-SNAPSHOT</version>
+            <version>1.0.3-2</version>
         </dependency>
 
         <dependency>
