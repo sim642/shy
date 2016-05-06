@@ -12,6 +12,7 @@
 
     <modules>
         <module>app</module>
+        <module>jsch-extension</module>
         <module>jsch-nio</module>
     </modules>
 </project>

@@ -1,3 +1,7 @@
+[submodule "jsch-extension"]
+	path = jsch-extension
+	url = https://github.com/sim642/jsch-extension.git
+	ignore = dirty
 [submodule "jsch-nio"]
 	path = jsch-nio
 	url = https://github.com/sim642/jsch-nio.git
