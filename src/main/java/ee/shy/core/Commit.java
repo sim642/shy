@@ -1,8 +1,7 @@
 package ee.shy.core;
 
-import ee.shy.io.CheckState;
 import ee.shy.io.Jsonable;
-import ee.shy.io.Required;
+import ee.shy.io.Validated;
 import ee.shy.storage.Hash;
 
 import java.time.OffsetDateTime;
@@ -10,21 +9,20 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Class representing a commit.
  */
-public class Commit implements Jsonable {
+public class Commit implements Jsonable, Validated {
     /**
      * Commit's tree hash.
      */
-    @Required
     private final Hash tree;
 
     /**
      * Commit's parent hashes.
      */
-    @Required
     private final List<Hash> parents;
 
     /**
@@ -53,15 +51,7 @@ public class Commit implements Jsonable {
         this.time = builder.time;
         this.message = builder.message;
 
-        checkState();
-    }
-
-    @CheckState
-    private void checkState() {
-        if (this.tree == null)
-            throw new IllegalStateException("Commit has no tree");
-        else if (this.parents.isEmpty())
-            throw new IllegalStateException("Commit has no parents");
+        assertValid();
     }
 
     public Hash getTree() {
@@ -82,6 +72,14 @@ public class Commit implements Jsonable {
 
     public String getMessage() {
         return this.message;
+    }
+
+    @Override
+    public void assertValid() {
+        Objects.requireNonNull(tree, "commit has no tree");
+        Objects.requireNonNull(parents, "commit has no parents list");
+        if (parents.isEmpty())
+            throw new IllegalStateException("commit has no parents");
     }
 
     /**

@@ -7,10 +7,9 @@ import org.apache.commons.lang3.RandomStringUtils;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
-public class TestJsonable implements Jsonable {
+public class TestJsonable implements Jsonable, Validated {
     private final String string;
 
-    @Required
     private final Hash hash;
 
     @SerializedName("time")
@@ -54,5 +53,10 @@ public class TestJsonable implements Jsonable {
                 ", hash=" + hash +
                 ", offsetDateTime=" + offsetDateTime +
                 '}';
+    }
+
+    @Override
+    public void assertValid() {
+        Objects.requireNonNull(hash);
     }
 }
