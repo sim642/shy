@@ -9,6 +9,9 @@ import com.google.gson.stream.JsonWriter;
 
 import java.io.IOException;
 
+/**
+ * Gson type adapter factory for asserting validity of {@link Validated} classes.
+ */
 public class ValidatedTypeAdapterFactory implements TypeAdapterFactory {
     @Override
     public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
