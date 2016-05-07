@@ -43,7 +43,6 @@ public class SshRepository extends Repository {
 
         Map<String, Object> environment = Collections.singletonMap("defaultSessionFactory", sessionFactory);
 
-        // TODO: 21.04.16 allow password user input and keyboard-interactive
         sessionFactory.setUserInfo(new ConsoleUserInfo());
         sessionFactory.setConfig("server_host_key", "ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,ssh-rsa,ssh-dss"); // OpenSSH algorithm order for better known_hosts compatibility
         sessionFactory.setConfig("HashKnownHosts", "yes"); // only applies to adding hosts
@@ -75,9 +74,7 @@ public class SshRepository extends Repository {
 
         @Override
         public boolean promptPassword(String message) {
-            System.out.println(message + ": ");
-
-            char[] password = console.readPassword();
+            char[] password = console.readPassword(message + ": ");
             if (password == null)
                 return false;
 
@@ -87,9 +84,7 @@ public class SshRepository extends Repository {
 
         @Override
         public boolean promptPassphrase(String message) {
-            System.out.println(message + ": ");
-
-            char[] passphrase = console.readPassword();
+            char[] passphrase = console.readPassword(message + ": ");
             if (passphrase == null)
                 return false;
 
@@ -99,31 +94,29 @@ public class SshRepository extends Repository {
 
         @Override
         public boolean promptYesNo(String message) {
-            System.out.println(message + ": ");
-            return console.readLine().trim().toLowerCase().startsWith("y"); // y or yes
+            String choice = console.readLine(message + ": ");
+            return choice != null && choice.trim().toLowerCase().startsWith("y"); // y or yes
         }
 
         @Override
         public void showMessage(String message) {
-            System.out.println(message);
+            console.printf(message);
         }
 
         @Override
         public String[] promptKeyboardInteractive(String destination, String name, String instruction, String[] prompt, boolean[] echo) {
-            System.out.println(instruction);
+            console.printf(instruction);
 
             String[] answers = new String[prompt.length];
             for (int i = 0; i < prompt.length; i++) {
-                System.out.println(prompt[i] + ": ");
-
                 String answer;
                 if (echo[i]) {
-                    answer = console.readLine();
+                    answer = console.readLine(prompt[i] + ": ");
                     if (answer == null)
                         return null;
                 }
                 else {
-                    char[] answerChars = console.readPassword();
+                    char[] answerChars = console.readPassword(prompt[i] + ": ");
                     if (answerChars == null)
                         return null;
                     answer = new String(answerChars);
