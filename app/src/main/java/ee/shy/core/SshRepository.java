@@ -45,7 +45,8 @@ public class SshRepository extends Repository {
 
         // TODO: 21.04.16 allow password user input and keyboard-interactive
         sessionFactory.setUserInfo(new ConsoleUserInfo());
-        //sessionFactory.setConfig("HashKnownHosts", "yes"); // useless because jsch only uses this for writing new hosts, not checking existing ones
+        sessionFactory.setConfig("server_host_key", "ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,ssh-rsa,ssh-dss"); // OpenSSH algorithm order for better known_hosts compatibility
+        sessionFactory.setConfig("HashKnownHosts", "yes"); // only applies to adding hosts
 
         URI uri = new URI("ssh.unix", remoteUri.getUserInfo(), remoteUri.getHost(), remoteUri.getPort(), remoteUri.getPath(), remoteUri.getQuery(), remoteUri.getFragment());
         return new SshRepository(FileSystems.newFileSystem(uri, environment));
