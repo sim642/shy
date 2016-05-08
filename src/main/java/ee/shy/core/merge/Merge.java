@@ -10,15 +10,11 @@ import java.io.InputStream;
 import java.util.List;
 
 public class Merge {
-    public static Patch generatePatch(InputStream original, InputStream revised) throws IOException, PatchFailedException {
+    public static Patch<String> generatePatch(InputStream original, InputStream revised) throws IOException, PatchFailedException {
         return DiffUtils.diff(IOUtils.readLines(original), IOUtils.readLines(revised));
     }
 
-    public static List<String> applyPatch (InputStream patchable, Patch patch) throws IOException, PatchFailedException {
-        List<?> patchableStrings = IOUtils.readLines(patchable);
-        patchableStrings = patch.applyTo(patchableStrings);
-
-        // FIXME: 3.05.16 Make own fork to support generic types or migrate to https://github.com/KengoTODA/java-diff-utils/
-        return (List<String>) patchableStrings;
+    public static List<String> applyPatch (InputStream patchable, Patch<String> patch) throws IOException, PatchFailedException {
+        return patch.applyTo(IOUtils.readLines(patchable));
     }
 }
