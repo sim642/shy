@@ -448,6 +448,9 @@ public class Repository implements AutoCloseable {
          * @throws IOException
          */
         private void fetchTree(Hash hash) throws IOException {
+            if (localRepository.storage.containsKey(hash))
+                return;
+
             Tree tree = remoteRepository.storage.get(hash, Tree.class);
             tree.walk(remoteRepository.storage, new TreeVisitor() {
                 @Override
@@ -468,6 +471,9 @@ public class Repository implements AutoCloseable {
          * @throws IOException
          */
         private void fetchCommitRecursive(Hash hash) throws IOException {
+            if (localRepository.storage.containsKey(hash))
+                return;
+
             Commit commit = remoteRepository.storage.get(hash, Commit.class);
             localRepository.storage.put(commit);
             fetchTree(commit.getTree());
