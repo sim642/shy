@@ -28,4 +28,20 @@ public class Author implements Jsonable {
     public String getName() {
         return name;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+
+        if (name != null)
+            sb.append(name);
+
+        if (name != null && email != null)
+            sb.append(" ");
+
+        if (email != null)
+            sb.append("<").append(email).append(">");
+
+        return sb.toString();
+    }
 }

@@ -30,10 +30,7 @@ public class LogCommand implements Command {
         Commit commit = hashedCommit.getValue();
 
         System.out.println("Commit: " + hashedCommit.getHash());
-
-        Author author = commit.getAuthor();
-        System.out.println("Author: " + author.getName() + " <" + author.getEmail() + ">");
-
+        System.out.println("Author: " + commit.getAuthor());
         System.out.println("Time: " + commit.getTime());
 
         System.out.println("\n \t" + commit.getMessage() + "\n");
