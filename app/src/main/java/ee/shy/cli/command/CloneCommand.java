@@ -34,9 +34,17 @@ public class CloneCommand implements Command {
 
                 Repository.Fetcher fetcher = new Repository.Fetcher(localRepository, remoteRepository);
                 System.out.println("Cloning " + remoteUri + " into " + localRepository.getRootPath());
-                String currentArg = ObjectUtils.defaultIfNull(remoteUri.getFragment(), Repository.DEFAULT_BRANCH);
-                fetcher.fetch(currentArg);
-                localRepository.checkout(currentArg);
+
+                if (remoteUri.getFragment() == null) {
+                    fetcher.fetchBranches();
+                    fetcher.fetchTags();
+                    localRepository.checkout(Repository.DEFAULT_BRANCH);
+                }
+                else {
+                    String currentArg = remoteUri.getFragment(); // TODO: 11.05.16 check if arg exists
+                    fetcher.fetch(currentArg);
+                    localRepository.checkout(currentArg);
+                }
             }
         }
         catch (URISyntaxException e) {

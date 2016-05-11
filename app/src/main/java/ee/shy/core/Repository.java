@@ -506,5 +506,25 @@ public class Repository implements AutoCloseable {
 
             fetchCommitRecursive(fetchCurrent.getCommit());
         }
+
+        /**
+         * Fetches all branches.
+         * @throws IOException
+         */
+        public void fetchBranches() throws IOException {
+            for (String branch : remoteRepository.branches.keySet()) {
+                fetch(branch);
+            }
+        }
+
+        /**
+         * Fetches all branches.
+         * @throws IOException
+         */
+        public void fetchTags() throws IOException {
+            for (String tag : remoteRepository.tags.keySet()) {
+                fetch(tag);
+            }
+        }
     }
 }
