@@ -11,19 +11,23 @@ Version Control System made as UT OOP course project.
 * Gromet Spaal
 
 ## Usage
+### Downloading
+* `git clone --recursive https://github.com/sim642/shy.git`  
+  Clones git repository with its submodules.
+
+### Building
+* `mvn package`  
+  Builds and packages shy into a single `.jar` file with all of its dependencies.
+
 ### Setup
 #### Linux
-1. `mvn package`  
-   Builds and packages shy into a single `.jar` file with all of its dependencies.
-2. `sudo ./shy-setup.sh`  
-   Creates a symlink into `/usr/local/bin/` to make `shy` command globally accessible.
-   Creates a symlink into `/etc/bash_completion.d/` to provide bash tab-completion for `shy`.
+* `sudo ./shy-setup.sh`  
+  Creates a symlink into `/usr/local/bin/` to make `shy` command globally accessible.
+  Creates a symlink into `/etc/bash_completion.d/` to provide bash tab-completion for `shy`.
 
 #### Windows
-1. `mvn package`  
-   Builds and packages shy into a single `.jar` file with all of its dependencies.
-2. `shy-setup` in "Command Prompt (Run as Administrator)"  
-   Adds the directory to `PATH` to make `shy` command globally accessible.
+* `shy-setup` in "Command Prompt (Run as Administrator)"  
+  Adds the directory to `PATH` to make `shy` command globally accessible.
 
 ### Getting help
 shy has extensive help available directly from the command line. Simply run `shy help` followed by the subcommand name
@@ -31,7 +35,14 @@ for which the help should be shown, e.g. `shy help add`. If a command has subcom
 and their help can also be viewed, e.g. `shy help author name`.
 
 ### Initialization
+#### New repository
 Run `shy init` in any directory to initialize a shy repository in that directory.
+
+#### Existing repository
+Run `shy clone` with a supported URI argument to clone a shy repository.
+Currently only SSH URIs are supported, e.g. `ssh://shy@example.com/home/shy/test`.
+
+
 All of the following commands can be run in that directory or any of its subdirectories.
 
 It is highly recommended to set up your information (name, email) with `shy author` as that will be shown as the author
