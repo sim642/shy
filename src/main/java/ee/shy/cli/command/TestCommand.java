@@ -3,12 +3,14 @@ package ee.shy.cli.command;
 import difflib.PatchFailedException;
 import ee.shy.cli.Command;
 import ee.shy.cli.HelptextBuilder;
-import ee.shy.core.merge.Merge;
+import ee.shy.core.merge.InputStreamMerger;
+import ee.shy.core.merge.Merger;
+import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.List;
 
 /**
  * A simple command for testing.
@@ -16,17 +18,17 @@ import java.util.List;
 public class TestCommand implements Command {
 
     public void execute(String[] args) throws IOException {
-        List<String> strings;
+        Merger<InputStream> merger = new InputStreamMerger();
         try {
-            strings = Merge.applyPatch(Files.newInputStream(Paths.get(args[2])), Merge.generatePatch(
-                    Files.newInputStream(Paths.get(args[0])),
-                    Files.newInputStream(Paths.get(args[1]))
-            ));
+            InputStream is = merger.merge(Files.newInputStream(Paths.get(args[0])),
+                    Files.newInputStream(Paths.get(args[1])),
+                    Files.newInputStream(Paths.get(args[2])));
+            IOUtils.copy(is, System.out);
         } catch (PatchFailedException e) {
+            System.err.println("Merge failed");
+            // TODO: 9.05.16 Present error to the user in a polite manner
             throw new RuntimeException(e);
-            // TODO: 3.05.16 Make an user-presentable exception for merge failure
         }
-        strings.forEach(System.out::println);
     }
 
     @Override
