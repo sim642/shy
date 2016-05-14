@@ -36,6 +36,7 @@ public class Repository implements AutoCloseable {
     private final DataStorage storage;
     private final NamedObjectMap<Branch> branches;
     private final NamedObjectMap<Tag> tags;
+    private final NamedObjectMap<Remote> remotes;
 
     /**
      * Repository's current checked out state.
@@ -56,6 +57,7 @@ public class Repository implements AutoCloseable {
         branches = new DirectoryJsonMap<>(Branch.class, getRepositoryPath().resolve("branches"));
         tags = new DirectoryJsonMap<>(Tag.class, getRepositoryPath().resolve("tags"));
         current = Json.read(getRepositoryPath().resolve("current"), CurrentState.class);
+        remotes = new DirectoryJsonMap<>(Remote.class, getRepositoryPath().resolve("remotes"));
     }
 
     /**
