@@ -1,50 +1,42 @@
 package ee.shy.core;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class TreePath implements Comparable<TreePath> {
-    private final List<String> pathStrings = new ArrayList<>();
+    private final String[] pathStrings;
 
-    TreePath(String stringPath) {
-        for(String s : stringPath.split("/"))
-            pathStrings.add(s);
+    public TreePath(String stringPath) {
+        pathStrings = stringPath.split("/");
     }
 
-    public void resolve(String str) {
-        new TreePath(this.toString() + str);
+    public TreePath(String[] treePath) {
+        this.pathStrings = treePath;
     }
 
-    List<String> getPathStrings() {
-        return pathStrings;
+    public TreePath resolve(String str) {
+        return new TreePath(ArrayUtils.addAll(pathStrings, str.split("/")));
     }
 
     public String toString() {
-        String stringPath = "";
-        for (String s : pathStrings) {
-            stringPath += "/" + s;
-        }
-        return stringPath;
+        return String.join("/", pathStrings);
     }
 
     @Override
     public int compareTo(TreePath o) {
-        List<String> oStringList = o.getPathStrings();
-        if(oStringList.size() < pathStrings.size()) {
-            return 1;
-        }
-        else if(oStringList.size() > pathStrings.size()) {
-            return -1;
-        }
+        String[] oStringList = o.pathStrings;
 
-        int iterCount = Math.min(pathStrings.size(), oStringList.size());
+        int iterCount = Math.min(pathStrings.length, oStringList.length);
         
-        for(int i = 0; i < iterCount; i++) {
-            int strCompareResult = oStringList.get(i).compareTo(pathStrings.get(i));
+        for (int i = 0; i < iterCount; i++) {
+            int strCompareResult = oStringList[i].compareTo(pathStrings[i]);
             if(strCompareResult != 0) {
                 return strCompareResult;
             }
         }
-        return 0;
+
+        return oStringList.length - pathStrings.length;
     }
 }
