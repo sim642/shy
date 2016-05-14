@@ -2,7 +2,10 @@ package ee.shy.cli.command;
 
 import ee.shy.cli.Command;
 import ee.shy.cli.HelptextBuilder;
-import ee.shy.core.*;
+import ee.shy.core.LocalRepository;
+import ee.shy.core.Remote;
+import ee.shy.core.Repository;
+import ee.shy.core.SshRepository;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -17,26 +20,18 @@ public class PushCommand implements Command {
         Remote remote = localRepository.getRemotes().get(args.length >= 1 ? args[0] : Repository.DEFAULT_REMOTE);
         try (SshRepository remoteRepository = SshRepository.newRemote(remote.getURI())) {
 
-            String arg;
-            CurrentState current = localRepository.getCurrent();
-            switch (current.getType()) { // TODO: 14.05.16 extract this switch
-                case BRANCH:
-                    arg = current.getBranch();
-                    break;
-
-                case TAG:
-                    arg = current.getTag();
-                    break;
-
-                default:
-                    System.out.println("Only branches and tags can be pushed");
-                    return;
+            String arg = localRepository.getCurrent().getName();
+            if (arg == null) {
+                System.out.println("Only branches and tags can be pushed");
+                return;
             }
 
             Repository.Fetcher fetcher = new Repository.Fetcher(remoteRepository, localRepository);
             System.out.println("Pushing " + arg + " to " + remote.getURI());
             fetcher.fetch(arg);
-            remoteRepository.checkout(arg);
+
+            if (arg.equals(remoteRepository.getCurrent().getName())) // remote has pushed state checked out
+                remoteRepository.checkout(arg);
         }
         catch (URISyntaxException e) {
             throw new RuntimeException(e);
