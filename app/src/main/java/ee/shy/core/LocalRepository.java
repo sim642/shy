@@ -45,7 +45,7 @@ public class LocalRepository extends Repository {
         Path repositoryPath = getRepositoryPath(rootPath);
         Files.createDirectories(repositoryPath);
 
-        String[] subDirectories = {"commit", "branches", "tags", "storage"};
+        String[] subDirectories = {"commit", "branches", "tags", "storage", "remotes"};
         for (String subDirectory : subDirectories) {
             Files.createDirectory(repositoryPath.resolve(subDirectory));
         }
