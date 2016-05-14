@@ -28,6 +28,8 @@ import java.util.regex.Pattern;
  */
 public class Repository implements AutoCloseable {
     public static final String DEFAULT_BRANCH = "master";
+    public static final String DEFAULT_REMOTE = "origin";
+
     /**
      * Repository root directory path.
      */
@@ -36,6 +38,7 @@ public class Repository implements AutoCloseable {
     private final DataStorage storage;
     private final NamedObjectMap<Branch> branches;
     private final NamedObjectMap<Tag> tags;
+    private final NamedObjectMap<Remote> remotes;
 
     /**
      * Repository's current checked out state.
@@ -55,6 +58,7 @@ public class Repository implements AutoCloseable {
                 new PlainFileAccessor());
         branches = new DirectoryJsonMap<>(Branch.class, getRepositoryPath().resolve("branches"));
         tags = new DirectoryJsonMap<>(Tag.class, getRepositoryPath().resolve("tags"));
+        remotes = new DirectoryJsonMap<>(Remote.class, getRepositoryPath().resolve("remotes"));
         current = Json.read(getRepositoryPath().resolve("current"), CurrentState.class);
     }
 
@@ -352,6 +356,10 @@ public class Repository implements AutoCloseable {
 
     public NamedObjectMap<Tag> getTags() {
         return tags;
+    }
+
+    public NamedObjectMap<Remote> getRemotes() {
+        return remotes;
     }
 
     /**

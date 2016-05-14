@@ -37,6 +37,7 @@ public class RootCommand extends SuperCommand {
         add("search", new SearchCommand());
         add("tag", new TagCommand());
         add("clone", new CloneCommand());
+        add("remote", new RemoteCommand());
 
         add("git-import", new GitImportCommand());
     }
