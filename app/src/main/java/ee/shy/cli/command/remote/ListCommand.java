@@ -5,6 +5,7 @@ import ee.shy.cli.HelptextBuilder;
 import ee.shy.core.LocalRepository;
 import ee.shy.core.Remote;
 import ee.shy.map.Named;
+import ee.shy.map.NamedObjectMap;
 
 import java.io.IOException;
 
@@ -14,20 +15,21 @@ import java.io.IOException;
 public class ListCommand implements Command {
     @Override
     public void execute(String[] args) throws IOException {
-        for(Named<Remote> namedRemote : LocalRepository.newExisting().getRemotes().entrySet()) {
-            System.out.println(namedRemote.getName() + " - " + namedRemote.getValue().getURI().toString());
+        NamedObjectMap<Remote> remotes = LocalRepository.newExisting().getRemotes();
+        for (Named<Remote> namedRemote : remotes.entrySet()) {
+            System.out.println(namedRemote.getName() + " - " + namedRemote.getValue().getURI());
         }
     }
 
     @Override
     public String getHelp() {
         return new HelptextBuilder()
-                .addWithoutArgs("List all existing remote URIs")
+                .addWithoutArgs("List all remotes")
                 .create();
     }
 
     @Override
     public String getHelpBrief() {
-        return "List remote URIs";
+        return "List remotes";
     }
 }

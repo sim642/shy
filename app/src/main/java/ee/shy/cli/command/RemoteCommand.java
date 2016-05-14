@@ -5,7 +5,9 @@ import ee.shy.cli.command.remote.AddCommand;
 import ee.shy.cli.command.remote.ListCommand;
 import ee.shy.cli.command.remote.RemoveCommand;
 
-
+/**
+ * Supercommand containing remote related commands.
+ */
 public class RemoteCommand extends SuperCommand {
     public RemoteCommand() {
         add("add", new AddCommand());
@@ -15,7 +17,7 @@ public class RemoteCommand extends SuperCommand {
 
     @Override
     public String getHelp() {
-        return "Commands for remote URI creation and modification";
+        return "Commands for remote creation and modification";
     }
 
     @Override

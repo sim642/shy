@@ -23,13 +23,13 @@ public class RemoveCommand implements Command {
     @Override
     public String getHelp() {
         return new HelptextBuilder()
-                .addWithArgs("<remote>", "Remove the remote URI")
+                .addWithArgs("<name>", "Remove remote with given name")
                 .create();
     }
 
     @Override
     public String getHelpBrief() {
-        return "Remove remote URI";
+        return "Remove remotes";
     }
 
     @Override

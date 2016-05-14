@@ -56,8 +56,8 @@ public class Repository implements AutoCloseable {
                 new PlainFileAccessor());
         branches = new DirectoryJsonMap<>(Branch.class, getRepositoryPath().resolve("branches"));
         tags = new DirectoryJsonMap<>(Tag.class, getRepositoryPath().resolve("tags"));
-        current = Json.read(getRepositoryPath().resolve("current"), CurrentState.class);
         remotes = new DirectoryJsonMap<>(Remote.class, getRepositoryPath().resolve("remotes"));
+        current = Json.read(getRepositoryPath().resolve("current"), CurrentState.class);
     }
 
     /**

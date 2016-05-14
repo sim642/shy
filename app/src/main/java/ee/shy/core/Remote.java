@@ -7,7 +7,7 @@ import java.net.URI;
 import java.util.Objects;
 
 /**
- * Class representing a remote repository's URI.
+ * Class representing a remote repository's.
  */
 public class Remote implements Jsonable, Validated {
     /**
@@ -17,7 +17,7 @@ public class Remote implements Jsonable, Validated {
 
     /**
      * Constructs a remote with given URI.
-     * @param uri remote URI for repository
+     * @param uri URI for remote repository
      */
     public Remote(URI uri) {
         this.uri = uri;
@@ -30,6 +30,6 @@ public class Remote implements Jsonable, Validated {
 
     @Override
     public void assertValid() {
-        Objects.requireNonNull(uri, "repository has no URI");
+        Objects.requireNonNull(uri, "remote has no URI");
     }
 }

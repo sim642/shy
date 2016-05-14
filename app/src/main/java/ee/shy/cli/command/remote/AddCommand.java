@@ -28,12 +28,12 @@ public class AddCommand implements Command {
     @Override
     public String getHelp() {
         return new HelptextBuilder()
-                .addWithArgs("<remote>", "Create a new remote with uri")
+                .addWithArgs("<name> <uri>", "Create a new remote with given name and uri")
                 .create();
     }
 
     @Override
     public String getHelpBrief() {
-        return "Create remote URIs";
+        return "Create remotes";
     }
 }
