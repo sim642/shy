@@ -347,6 +347,10 @@ public class Repository implements AutoCloseable {
         return tags;
     }
 
+    public NamedObjectMap<Remote> getRemotes() {
+        return remotes;
+    }
+
     /**
      * Returns the current checked out state.
      * @return current checked out state
