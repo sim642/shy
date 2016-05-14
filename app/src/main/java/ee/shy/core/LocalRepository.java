@@ -50,7 +50,7 @@ public class LocalRepository extends Repository {
             Files.createDirectory(repositoryPath.resolve(subDirectory));
         }
 
-        CurrentState.newBranch(Hash.ZERO, DEFAULT_BRANCH).write(repositoryPath.resolve("current"));
+        CurrentState.newBranch(Hash.ZERO, Branch.DEFAULT_NAME).write(repositoryPath.resolve("current"));
 
         Repository repository = new LocalRepository(rootPath);
 
@@ -58,7 +58,7 @@ public class LocalRepository extends Repository {
         Author author = new Author(null, null);
         repository.setAuthor(author);
 
-        repository.getBranches().put(DEFAULT_BRANCH, new Branch(Hash.ZERO));
+        repository.getBranches().put(Branch.DEFAULT_NAME, new Branch(Hash.ZERO));
 
         return repository;
     }

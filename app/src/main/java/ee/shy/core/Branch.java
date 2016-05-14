@@ -10,6 +10,8 @@ import java.util.Objects;
  * Class representing a branch.
  */
 public class Branch implements Jsonable, Validated {
+    public static final String DEFAULT_NAME = "master";
+
     /**
      * Branch's commit hash.
      */

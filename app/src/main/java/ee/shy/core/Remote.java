@@ -10,6 +10,8 @@ import java.util.Objects;
  * Class representing a remote repository's.
  */
 public class Remote implements Jsonable, Validated {
+    public static final String DEFAULT_NAME = "origin";
+
     /**
      * Repository's URI.
      */

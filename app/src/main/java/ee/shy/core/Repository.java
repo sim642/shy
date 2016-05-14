@@ -27,9 +27,6 @@ import java.util.regex.Pattern;
  * Class for creating and interacting with a repository.
  */
 public class Repository implements AutoCloseable {
-    public static final String DEFAULT_BRANCH = "master";
-    public static final String DEFAULT_REMOTE = "origin";
-
     /**
      * Repository root directory path.
      */

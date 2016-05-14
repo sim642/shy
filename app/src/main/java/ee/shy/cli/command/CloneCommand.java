@@ -2,10 +2,7 @@ package ee.shy.cli.command;
 
 import ee.shy.cli.Command;
 import ee.shy.cli.HelptextBuilder;
-import ee.shy.core.LocalRepository;
-import ee.shy.core.Remote;
-import ee.shy.core.Repository;
-import ee.shy.core.SshRepository;
+import ee.shy.core.*;
 import ee.shy.io.PathUtils;
 import org.apache.commons.io.FilenameUtils;
 
@@ -32,7 +29,7 @@ public class CloneCommand implements Command {
             try (Repository localRepository = LocalRepository.newEmpty(localPath);
                  Repository remoteRepository = SshRepository.newRemote(remoteUri)) {
 
-                localRepository.getRemotes().put(Repository.DEFAULT_REMOTE, new Remote(remoteUri)); // TODO: 14.05.16 strip fragment from URI
+                localRepository.getRemotes().put(Remote.DEFAULT_NAME, new Remote(remoteUri)); // TODO: 14.05.16 strip fragment from URI
 
                 Repository.Fetcher fetcher = new Repository.Fetcher(localRepository, remoteRepository);
                 System.out.println("Cloning " + remoteUri + " into " + localRepository.getRootPath());
@@ -40,7 +37,7 @@ public class CloneCommand implements Command {
                 if (remoteUri.getFragment() == null) {
                     fetcher.fetchBranches();
                     fetcher.fetchTags();
-                    localRepository.checkout(Repository.DEFAULT_BRANCH);
+                    localRepository.checkout(Branch.DEFAULT_NAME);
                 }
                 else {
                     String currentArg = remoteUri.getFragment(); // TODO: 11.05.16 check if arg exists
