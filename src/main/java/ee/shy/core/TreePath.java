@@ -8,16 +8,12 @@ import java.util.List;
 public class TreePath implements Comparable<TreePath> {
     private final String[] pathStrings;
 
-    public TreePath(String stringPath) {
-        pathStrings = stringPath.split("/");
-    }
-
     public TreePath(String[] treePath) {
         this.pathStrings = treePath;
     }
 
     public TreePath resolve(String str) {
-        return new TreePath(ArrayUtils.addAll(pathStrings, str.split("/")));
+        return new TreePath(ArrayUtils.addAll(pathStrings, ArrayUtils.remove(str.split("/"), 0)));
     }
 
     public String toString() {
