@@ -12,7 +12,9 @@ import java.io.IOException;
 public class ListCommand implements Command {
     @Override
     public void execute(String[] args) throws IOException {
-        LocalRepository.newExisting().getRemotes().keySet().forEach(System.out::println);
+        for(String key : LocalRepository.newExisting().getRemotes().keySet()) {
+            System.out.println(key + " - " + LocalRepository.newExisting().getRemotes().get(key).getURI().toString());
+        }
     }
 
     @Override
