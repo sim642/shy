@@ -250,14 +250,23 @@ public class Repository implements AutoCloseable {
      */
     private List<Hashed<Commit>> log(Hash commitHash) throws IOException {
         List<Hashed<Commit>> loggedCommits = new ArrayList<>();
-        if (!commitHash.equals(Hash.ZERO)) {
-            Commit commit = storage.get(commitHash, Commit.class);
-            loggedCommits.add(new Hashed(commitHash, commit));
-            List<Hash> parents = commit.getParents();
-            for (Hash parent : parents) {
-                loggedCommits.addAll(log(parent));
+
+        Commit commit;
+        while (!commitHash.equals(Hash.ZERO)) {
+            commit = storage.get(commitHash, Commit.class);
+            loggedCommits.add(new Hashed<>(commitHash, commit));
+
+            if (commit.getParents().size() > 1) { // merge
+                for (Hash parent : commit.getParents()) {
+                    loggedCommits.addAll(log(parent)); // continue recursively
+                }
+                break;
+            }
+            else {
+                commitHash = commit.getParents().get(0); // continue iteratively
             }
         }
+
         return loggedCommits;
     }
 
