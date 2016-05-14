@@ -13,23 +13,23 @@ public class Remote implements Jsonable, Validated {
     /**
      * Repository's URI.
      */
-    private final URI remote;
+    private final URI uri;
 
     /**
      * Constructs a remote with given URI.
-     * @param remote remote URI for repository
+     * @param uri remote URI for repository
      */
-    public Remote(URI remote) {
-        this.remote = remote;
+    public Remote(URI uri) {
+        this.uri = uri;
         assertValid();
     }
 
     public URI getURI() {
-        return this.remote;
+        return this.uri;
     }
 
     @Override
     public void assertValid() {
-        Objects.requireNonNull(remote, "repository has no URI");
+        Objects.requireNonNull(uri, "repository has no URI");
     }
 }
