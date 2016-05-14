@@ -15,10 +15,7 @@ public class RemoveCommand implements Command {
     public void execute(String[] args) throws IOException {
         if (args.length >= 1) {
             Repository repository = LocalRepository.newExisting();
-            if (!args[0].equals(repository.getCurrent().getUri().toString()))
-                repository.getRemotes().remove(args[0]);
-            else
-                System.err.println("Remote URI '" + args[0] + "' can't be removed.");
+            repository.getRemotes().remove(args[0]);
         } else
             System.err.println("Not enough parameters. See 'shy help remote'.");
     }

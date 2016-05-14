@@ -7,6 +7,7 @@ import ee.shy.core.Remote;
 import ee.shy.core.Repository;
 
 import java.io.IOException;
+import java.net.URI;
 
 /**
  * Command for adding new remotes.
@@ -14,10 +15,10 @@ import java.io.IOException;
 public class AddCommand implements Command {
     @Override
     public void execute(String[] args) throws IOException {
-        if (args.length >= 1) {
+        if (args.length >= 2) {
             Repository repository = LocalRepository.newExisting();
             if (!repository.getRemotes().containsKey(args[0]))
-                repository.getRemotes().put(args[0], new Remote(repository.getCurrent().getUri()));
+                repository.getRemotes().put(args[0], new Remote(URI.create(args[1])));
             else
                 System.err.println("Remote " + args[0] + " already exists");
         } else
