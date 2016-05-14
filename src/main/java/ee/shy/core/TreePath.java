@@ -2,14 +2,15 @@ package ee.shy.core;
 
 import org.apache.commons.lang3.ArrayUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class TreePath implements Comparable<TreePath> {
     private final String[] pathStrings;
 
     public TreePath(String[] treePath) {
         this.pathStrings = treePath;
+    }
+
+    public TreePath() {
+        this.pathStrings = new String[0];
     }
 
     public TreePath resolve(String str) {
