@@ -14,7 +14,7 @@ public class CommitCommand implements Command {
     public void execute(String[] args) throws IOException {
         Repository repository = Repository.newExisting();
         if (args.length > 0)
-            repository.commit(args[0]);
+            repository.commit(args[0], null, null);
         else
             System.err.println("No commit message specified");
     }

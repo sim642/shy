@@ -213,26 +213,34 @@ public class Repository {
      * @param message commit message
      * @throws IOException if there was a problem storing the tree/commit or modifying ".shy/current"
      */
-    public void commit(String message) throws IOException {
-        if (current.getType() == CurrentState.Type.BRANCH) {
-            Hash tree = createCommitTree();
-
-            Commit commit = new Commit.Builder()
-                    .setTree(tree)
-                    .addParent(current.getCommit())
-                    .setAuthor(getAuthor())
-                    .setTimeCurrent()
-                    .setMessage(message)
-                    .create();
-            Hash hash = storage.put(commit);
-
-            CurrentState newCurrent = CurrentState.newBranch(hash, current.getBranch());
-            setCurrent(newCurrent);
-
-            branches.put(newCurrent.getBranch(), new Branch(newCurrent.getCommit()));
-        }
-        else
+    public void commit(String message, Hash revisedParent, Tree mergedTree) throws IOException {
+        if (current.getType() != CurrentState.Type.BRANCH) {
             throw new CommitException(current);
+        }
+
+        Hash tree;
+        if (mergedTree != null) {
+            tree = storage.put(mergedTree);
+        } else {
+            tree = createCommitTree();
+        }
+
+        Commit.Builder commitBuilder = new Commit.Builder()
+                .setTree(tree)
+                .addParent(current.getCommit())
+                .setAuthor(getAuthor())
+                .setTimeCurrent()
+                .setMessage(message);
+        if (revisedParent != null)
+            commitBuilder.addParent(revisedParent);
+
+        Commit commit = commitBuilder.create();
+        Hash hash = storage.put(commit);
+
+        CurrentState newCurrent = CurrentState.newBranch(hash, current.getBranch());
+        setCurrent(newCurrent);
+
+        branches.put(newCurrent.getBranch(), new Branch(newCurrent.getCommit()));
     }
 
     /**
@@ -477,6 +485,7 @@ public class Repository {
      * @throws IOException
      */
     private Hash findCommonAncestor(Hash first, Hash second) throws IOException {
+        // TODO: 15.05.16 Algorithm incomplete, Simmo pls fix
         Set<Hash> visitedHashes = new HashSet<>();
         while (!first.equals(Hash.ZERO) || !second.equals(Hash.ZERO)) {
             if (!first.equals(Hash.ZERO)) {
@@ -502,27 +511,13 @@ public class Repository {
         Commit originalCommit = storage.get(originalCommitHash, Commit.class);
         Commit revisedCommit = storage.get(revisedCommitHash, Commit.class);
 
-
         Tree mergedTree = treeMerger.merge(
                 storage.get(originalCommit.getTree(), Tree.class),
                 storage.get(revisedCommit.getTree(), Tree.class),
                 storage.get(findCommonAncestor(revisedCommitHash, originalCommitHash), Tree.class)
         );
 
-        Commit mergeCommit = new Commit.Builder()
-                .addParent(originalCommitHash)
-                .addParent(revisedCommitHash)
-                .setTimeCurrent()
-                .setMessage("Merge commit")
-                // TODO: 15.05.16 Message shall output what was merged into what
-                .setAuthor(getAuthor())
-                .setTree(storage.put(mergedTree))
-                .create();
-        Hash commitHash = storage.put(mergeCommit);
-
-        CurrentState newCurrent = CurrentState.newBranch(commitHash, current.getBranch());
-        setCurrent(newCurrent);
-
-        branches.put(newCurrent.getBranch(), new Branch(newCurrent.getCommit()));
+        commit("Merge commit", revisedCommitHash, mergedTree);
+        // TODO: 15.05.16 Merge commit message should be something meaningful
     }
 }
