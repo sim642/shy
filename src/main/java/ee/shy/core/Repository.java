@@ -466,4 +466,27 @@ public class Repository {
                 storage.get(originalCommit.getTree(), Tree.class),
                 storage.get(revisedCommit.getTree(), Tree.class));
     }
+
+    /**
+     * Takes two commit hashes as parameters and returns the hash of the commit
+     * which is the last common ancestor for both given commits.
+     * If no common ancestor, return null instead.
+     * @param first Commit hash
+     * @param second Commit hash
+     * @return hash of common ancestor if exists, null otherwise
+     * @throws IOException
+     */
+    private Hash findCommonAncestor(Hash first, Hash second) throws IOException {
+        Commit originalCommit = storage.get(first, Commit.class);
+        Commit revisedCommit = storage.get(second, Commit.class);
+        List<Hash> intersection = originalCommit.getParents();
+        intersection.retainAll(revisedCommit.getParents());
+        try {
+            return intersection.get(intersection.size() - 1);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            return Hash.ZERO;
+        }
+    }
+
+
 }
