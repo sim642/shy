@@ -2,6 +2,7 @@ package ee.shy.core.diff;
 
 import ee.shy.core.Tree;
 import ee.shy.core.TreeItem;
+import ee.shy.core.TreePath;
 import ee.shy.storage.DataStorage;
 import org.apache.commons.io.input.ClosedInputStream;
 
@@ -27,7 +28,7 @@ public class TreeDiffer implements Differ<Tree> {
         List<String> diffLines = new ArrayList<>();
         TreePairs.visitPairs(storage, original, revised, new TreePairs.Visitor() {
             @Override
-            public void visitFilePair(String path, TreeItem lhs, TreeItem rhs) throws IOException {
+            public void visitFilePair(TreePath path, TreeItem lhs, TreeItem rhs) throws IOException {
                 InputStream leftStream = lhs != null ? storage.get(lhs.getHash()) : ClosedInputStream.CLOSED_INPUT_STREAM;
                 InputStream rightStream = rhs != null ? storage.get(rhs.getHash()) : ClosedInputStream.CLOSED_INPUT_STREAM;
                 List<String> diff = inputStreamDiffer.diff(leftStream, rightStream);
@@ -45,7 +46,7 @@ public class TreeDiffer implements Differ<Tree> {
             }
 
             @Override
-            public void visitTreePair(String path, TreeItem lhs, TreeItem rhs) throws IOException {
+            public void visitTreePair(TreePath path, TreeItem lhs, TreeItem rhs) throws IOException {
                 if (lhs == null) {
                     diffLines.add(NAME_ADD + path + "/");
                     diffLines.add("");
@@ -56,6 +57,9 @@ public class TreeDiffer implements Differ<Tree> {
                 }
             }
         });
+
+        if (!diffLines.isEmpty())
+            diffLines.remove(diffLines.size() - 1);
         return diffLines;
     }
 }

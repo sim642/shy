@@ -2,6 +2,7 @@ package ee.shy.core.diff;
 
 import ee.shy.core.Tree;
 import ee.shy.core.TreeItem;
+import ee.shy.core.TreePath;
 import ee.shy.storage.DataStorage;
 
 import java.io.IOException;
@@ -11,16 +12,16 @@ import java.util.stream.Collectors;
 public class TreePairs {
 
     interface Visitor {
-        void visitFilePair(String path, TreeItem lhs, TreeItem rhs) throws IOException;
-        void visitTreePair(String path, TreeItem lhs, TreeItem rhs) throws IOException;
+        void visitFilePair(TreePath path, TreeItem lhs, TreeItem rhs) throws IOException;
+        void visitTreePair(TreePath path, TreeItem lhs, TreeItem rhs) throws IOException;
     }
 
     private static abstract class Pair implements Comparable<Pair> {
-        protected final String path;
+        protected final TreePath path;
         protected final TreeItem lhs;
         protected final TreeItem rhs;
 
-        public Pair(String path, TreeItem lhs, TreeItem rhs) {
+        public Pair(TreePath path, TreeItem lhs, TreeItem rhs) {
             this.path = path;
             this.lhs = lhs;
             this.rhs = rhs;
@@ -32,12 +33,26 @@ public class TreePairs {
 
         @Override
         public int compareTo(Pair o) {
-            return path.compareTo(o.path); // TODO: 1.05.16 compare by respective path elements and addition/deletion
+            int treePathCompare = path.compareTo(o.path);
+            if (treePathCompare == 0) {
+                if (o.lhs != null && o.rhs == null) {
+                    return 1;
+                }
+                else if (o.lhs == null && o.rhs != null) {
+                    return -1;
+                }
+                else {
+                    return 0;
+                }
+            }
+            else {
+                return treePathCompare;
+            }
         }
     }
 
     private static class FilePair extends Pair {
-        public FilePair(String path, TreeItem lhs, TreeItem rhs) {
+        public FilePair(TreePath path, TreeItem lhs, TreeItem rhs) {
             super(path, lhs, rhs);
         }
 
@@ -53,7 +68,7 @@ public class TreePairs {
     }
 
     private static class TreePair extends Pair {
-        public TreePair(String path, TreeItem lhs, TreeItem rhs) {
+        public TreePair(TreePath path, TreeItem lhs, TreeItem rhs) {
             super(path, lhs, rhs);
         }
 
@@ -70,10 +85,10 @@ public class TreePairs {
 
     public static void visitPairs(DataStorage storage, Tree lhs, Tree rhs, Visitor visitor) throws IOException {
         List<Pair> lhsPairs = new ArrayList<>();
-        walk(storage, lhsPairs, "", lhs, rhs);
+        walk(storage, lhsPairs, new TreePath(), lhs, rhs);
 
         List<Pair> rhsPairs = new ArrayList<>();
-        walk(storage, rhsPairs, "", rhs, lhs);
+        walk(storage, rhsPairs, new TreePath(), rhs, lhs);
         rhsPairs = rhsPairs.stream().map(Pair::flip).collect(Collectors.toList());
 
         // use TreeSet+Comparable for great profit:
@@ -89,12 +104,12 @@ public class TreePairs {
         }
     }
 
-    private static void walk(DataStorage storage, List<Pair> pairs, String path, Tree lhs, Tree rhs) throws IOException {
+    private static void walk(DataStorage storage, List<Pair> pairs, TreePath path, Tree lhs, Tree rhs) throws IOException {
         for (Map.Entry<String, TreeItem> entry : lhs.getItems().entrySet()) {
             String itemPath = entry.getKey();
             TreeItem lhsItem = entry.getValue();
             TreeItem rhsItem = rhs.getItems().get(itemPath);
-            String fullPath = path + "/" + itemPath;
+            TreePath fullPath = path.resolve(itemPath);
             if (lhsItem.getType() == TreeItem.Type.FILE) {
                 if (rhsItem == null || rhsItem.getType() == TreeItem.Type.TREE) {
                     pairs.add(new FilePair(fullPath, lhsItem, null));
