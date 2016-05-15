@@ -73,5 +73,11 @@ The same command can also be used to compare any two branches and commits entire
 Any branch and commit can be checked out using `shy checkout`.
 **NB! Any uncommited files may be overwritten.**
 
+### Pushing and pulling
+Use `shy pull` to get updates from a remote repository and `shy push` to send your updates to a remote repository.
+Remote repositories (remotes) can be managed via `shy remote` commands.
+Unless specified the default remote "origin", which is set up automatically when cloning, is used for pushin and pulling.
+ **NB! Any uncommited files may be overwritten.**
+
 ### Searching content
 The `shy search` command can be used to recursively search content in a specific commit.
