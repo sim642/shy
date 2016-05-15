@@ -19,9 +19,7 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -478,14 +476,23 @@ public class Repository {
      * @return hash of common ancestor if exists, null otherwise
      * @throws IOException
      */
-    private Hash findCommonAncestor(Commit first, Commit second) throws IOException {
-        List<Hash> intersection = first.getParents();
-        intersection.retainAll(second.getParents());
-        try {
-            return intersection.get(intersection.size() - 1);
-        } catch (ArrayIndexOutOfBoundsException e) {
-            return Hash.ZERO;
+    private Hash findCommonAncestor(Hash first, Hash second) throws IOException {
+        Set<Hash> visitedHashes = new HashSet<>();
+        while (!first.equals(Hash.ZERO) || !second.equals(Hash.ZERO)) {
+            if (!first.equals(Hash.ZERO)) {
+                if (!visitedHashes.add(first)) {
+                    return first;
+                }
+                first = storage.get(first, Commit.class).getParents().get(0);
+            }
+            if(!second.equals(Hash.ZERO)) {
+                if (!visitedHashes.add(second)) {
+                    return second;
+                }
+                second = storage.get(second, Commit.class).getParents().get(0);
+            }
         }
+        return null;
     }
 
     public void merge(String originalArg, String revisedArg) throws IOException, PatchFailedException {
@@ -495,10 +502,11 @@ public class Repository {
         Commit originalCommit = storage.get(originalCommitHash, Commit.class);
         Commit revisedCommit = storage.get(revisedCommitHash, Commit.class);
 
+
         Tree mergedTree = treeMerger.merge(
                 storage.get(originalCommit.getTree(), Tree.class),
                 storage.get(revisedCommit.getTree(), Tree.class),
-                storage.get(findCommonAncestor(revisedCommit, originalCommit), Tree.class)
+                storage.get(findCommonAncestor(revisedCommitHash, originalCommitHash), Tree.class)
         );
 
         Commit mergeCommit = new Commit.Builder()
@@ -517,6 +525,4 @@ public class Repository {
 
         branches.put(newCurrent.getBranch(), new Branch(newCurrent.getCommit()));
     }
-
-
 }
