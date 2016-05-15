@@ -18,9 +18,11 @@ public class DiffCommand implements Command {
 
     @Override
     public void execute(String[] args) throws IOException {
-        if (args.length < 2) {
-            System.err.println("Not enough parameters for diff command. See shy help diff.");
-        } else {
+        if (args.length == 0) {
+            Repository repository = LocalRepository.newExisting();
+            DiffUtils.outputDiff(repository.commitDiff());
+        }
+        else if (args.length >= 2) {
             try {
                 Repository repository = LocalRepository.newExisting();
                 DiffUtils.outputDiff(repository.diff(args[0], args[1]));
@@ -32,6 +34,9 @@ public class DiffCommand implements Command {
                 ));
             }
         }
+        else {
+            System.err.println("Not enough parameters for diff command. See shy help diff.");
+        }
     }
 
     @Override
@@ -39,6 +44,7 @@ public class DiffCommand implements Command {
         return new HelptextBuilder()
                 .addWithArgs("<commit1> <commit1>", "Show user-readable diff between two commits")
                 .addWithArgs("<file1> <file2>", "Show user-readable diff between two files")
+                .addWithoutArgs("Show user-readable diff between latest commit and current commit")
                 .addDescription("Shows differences between different items.")
                 .create();
     }

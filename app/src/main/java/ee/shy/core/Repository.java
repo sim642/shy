@@ -5,10 +5,7 @@ import ee.shy.io.Json;
 import ee.shy.io.PathUtils;
 import ee.shy.map.DirectoryJsonMap;
 import ee.shy.map.NamedObjectMap;
-import ee.shy.storage.DataStorage;
-import ee.shy.storage.FileStorage;
-import ee.shy.storage.Hash;
-import ee.shy.storage.Hashed;
+import ee.shy.storage.*;
 import ee.shy.storage.accessor.PlainFileAccessor;
 import ee.shy.storage.locator.FlatFileLocator;
 
@@ -162,7 +159,7 @@ public class Repository implements AutoCloseable {
      * @throws IOException if there was a problem storing the tree
      */
     private Hash createCommitTree() throws IOException {
-        Tree tree = new Tree.Builder(storage).fromDirectory(getRepositoryPath().resolve("commit")).create();
+        Tree tree = new Tree.Builder(storage).fromDirectory(getCommitPath()).create();
         return storage.put(tree);
     }
 
@@ -418,7 +415,7 @@ public class Repository implements AutoCloseable {
      * @throws IOException
      */
     public List<String> diff(String arg1, String arg2) throws IOException {
-        return getCommitDiff(parseState(arg1).getCommit(), parseState(arg2).getCommit());
+        return diff(parseState(arg1).getCommit(), parseState(arg2).getCommit());
     }
 
     /**
@@ -429,13 +426,34 @@ public class Repository implements AutoCloseable {
      * @return Diff strings
      * @throws IOException
      */
-    private List<String> getCommitDiff(Hash original, Hash revised) throws IOException {
+    private List<String> diff(Hash original, Hash revised) throws IOException {
         TreeDiffer treeDiffer = new TreeDiffer(storage);
         Commit originalCommit = storage.get(original, Commit.class);
         Commit revisedCommit = storage.get(revised, Commit.class);
         return treeDiffer.diff(
                 storage.get(originalCommit.getTree(), Tree.class),
                 storage.get(revisedCommit.getTree(), Tree.class));
+    }
+
+    /**
+     * Diffs ".shy/commit" directory against latest commit.
+     * @return lines of diff output
+     * @throws IOException
+     */
+    public List<String> commitDiff() throws IOException {
+        MapStorage temporaryStorage = new MapStorage();
+        Tree temporaryTree = new Tree.Builder(temporaryStorage).fromDirectory(getCommitPath()).create();
+
+        AggregateDataStorage aggregateStorage = new AggregateDataStorage(Arrays.asList(
+                temporaryStorage,
+                storage
+        ));
+        TreeDiffer treeDiffer = new TreeDiffer(aggregateStorage);
+
+        return treeDiffer.diff(
+                storage.get(storage.get(current.getCommit(), Commit.class).getTree(), Tree.class),
+                temporaryTree
+        );
     }
 
     @Override
