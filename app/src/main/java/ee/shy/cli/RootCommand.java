@@ -40,6 +40,7 @@ public class RootCommand extends SuperCommand {
         add("remote", new RemoteCommand());
         add("pull", new PullCommand());
         add("push", new PushCommand());
+        add("status", new StatusCommand());
 
         add("git-import", new GitImportCommand());
     }
