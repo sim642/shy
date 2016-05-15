@@ -48,15 +48,18 @@ public class TreeDiffer implements Differ<Tree> {
             @Override
             public void visitTreePair(TreePath path, TreeItem lhs, TreeItem rhs) throws IOException {
                 if (lhs == null) {
-                    diffLines.add(NAME_ADD + path.toString() + "/");
+                    diffLines.add(NAME_ADD + path + "/");
                     diffLines.add("");
                 }
                 if (rhs == null) {
-                    diffLines.add(NAME_REMOVE + path.toString() + "/");
+                    diffLines.add(NAME_REMOVE + path + "/");
                     diffLines.add("");
                 }
             }
         });
+
+        if (!diffLines.isEmpty())
+            diffLines.remove(diffLines.size() - 1);
         return diffLines;
     }
 }
