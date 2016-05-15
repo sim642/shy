@@ -295,8 +295,8 @@ public class Repository implements AutoCloseable {
         List<String> instances = new ArrayList<>();
         tree.walk(storage, new TreeVisitor() {
             @Override
-            public void visitFile(String prefixPath, String name, InputStream is) throws IOException {
-                instances.addAll(findInstance(prefixPath + name, is, matcher));
+            public void visitFile(TreePath path, InputStream is) throws IOException {
+                instances.addAll(findInstance(path, is, matcher));
             }
         });
 
@@ -313,7 +313,7 @@ public class Repository implements AutoCloseable {
      * @return instances found in a file
      * @throws IOException if establishing streams fails
      */
-    private static List<String> findInstance(String path, InputStream is, Matcher matcher) throws IOException {
+    private static List<String> findInstance(TreePath path, InputStream is, Matcher matcher) throws IOException {
         List<String> foundInstances = new ArrayList<>();
         try (Reader reader = new InputStreamReader(is);
              LineNumberReader lineReader = new LineNumberReader(reader)) {
@@ -472,12 +472,12 @@ public class Repository implements AutoCloseable {
             Tree tree = remoteRepository.storage.get(hash, Tree.class);
             tree.walk(remoteRepository.storage, new TreeVisitor() {
                 @Override
-                public void preVisitTree(String prefixPath, String name, Tree tree) throws IOException {
+                public void preVisitTree(TreePath path, Tree tree) throws IOException {
                     localRepository.storage.put(tree);
                 }
 
                 @Override
-                public void visitFile(String prefixPath, String name, InputStream is) throws IOException {
+                public void visitFile(TreePath path, InputStream is) throws IOException {
                     localRepository.storage.put(is);
                 }
             });

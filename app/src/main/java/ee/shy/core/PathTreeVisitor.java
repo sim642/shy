@@ -31,8 +31,8 @@ public abstract class PathTreeVisitor implements TreeVisitor {
     }
 
     @Override
-    public void preVisitTree(String prefixPath, String name, Tree tree) throws IOException {
-        preVisitTree(toPath(prefixPath, name));
+    public void preVisitTree(TreePath path, Tree tree) throws IOException {
+        preVisitTree(toPath(path));
     }
 
     /**
@@ -45,8 +45,8 @@ public abstract class PathTreeVisitor implements TreeVisitor {
     }
 
     @Override
-    public void visitFile(String prefixPath, String name, InputStream is) throws IOException {
-        visitFile(toPath(prefixPath, name), is);
+    public void visitFile(TreePath path, InputStream is) throws IOException {
+        visitFile(toPath(path), is);
     }
 
     /**
@@ -59,20 +59,16 @@ public abstract class PathTreeVisitor implements TreeVisitor {
     }
 
     @Override
-    public void postVisitTree(String prefixPath, String name, Tree tree) throws IOException {
-        postVisitTree(toPath(prefixPath, name));
+    public void postVisitTree(TreePath path, Tree tree) throws IOException {
+        postVisitTree(toPath(path));
     }
 
     /**
      * Resolves prefix path and name against root path.
-     * @param prefixPath prefix path from {@link TreeVisitor}
-     * @param name name from {@link TreeVisitor}
+     * @param path prefix path from {@link TreeVisitor}
      * @return path of given prefix path and name
      */
-    private Path toPath(String prefixPath, String name) {
-        if (prefixPath == null)
-            return rootPath;
-        else
-            return rootPath.resolve(prefixPath.substring(1)).resolve(name);
+    private Path toPath(TreePath path) {
+        return rootPath.resolve(path.toString().substring(1));
     }
 }
