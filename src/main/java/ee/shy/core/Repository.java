@@ -504,9 +504,9 @@ public class Repository {
         return null;
     }
 
-    public void merge(String originalArg, String revisedArg) throws IOException, PatchFailedException {
+    public void merge(String revisedArg) throws IOException, PatchFailedException {
         TreeMerger treeMerger = new TreeMerger(storage);
-        Hash originalCommitHash = parseState(originalArg).getCommit();
+        Hash originalCommitHash = current.getCommit();
         Hash revisedCommitHash = parseState(revisedArg).getCommit();
         Commit originalCommit = storage.get(originalCommitHash, Commit.class);
         Commit revisedCommit = storage.get(revisedCommitHash, Commit.class);

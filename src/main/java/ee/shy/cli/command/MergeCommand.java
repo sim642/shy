@@ -11,12 +11,12 @@ public class MergeCommand implements Command{
 
     @Override
     public void execute(String[] args) throws IOException {
-        if (args.length < 2) {
+        if (args.length < 1) {
             System.err.println("Not enough parameters for merge. See 'shy help merge'");
         }
         Repository repository = Repository.newExisting();
         try {
-            repository.merge(args[0], args[1]);
+            repository.merge(args[0]);
         } catch (PatchFailedException e) {
             System.err.println("Merge conflict occurred!");
         }
