@@ -26,7 +26,7 @@ public class LogCommand implements Command {
         }
     }
 
-    private void printLog(Hashed<Commit> hashedCommit) {
+    public static void printLog(Hashed<Commit> hashedCommit) {
         Commit commit = hashedCommit.getValue();
 
         System.out.println("Commit: " + hashedCommit.getHash());

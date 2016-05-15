@@ -6,6 +6,7 @@ import ee.shy.core.Commit;
 import ee.shy.core.LocalRepository;
 import ee.shy.core.Repository;
 import ee.shy.core.diff.DiffUtils;
+import ee.shy.storage.Hash;
 import ee.shy.storage.Hashed;
 
 import java.io.IOException;
@@ -19,27 +20,26 @@ public class ShowCommand implements Command {
     @Override
     public void execute(String[] args) throws IOException {
         Repository repository = LocalRepository.newExisting();
-        List<Hashed<Commit>> commits = repository.log(args.length >= 1 ? args[0] : null);
-        String msg = commits.get(0).getValue().getMessage();
-        printLog(commits.get(0));
 
-        if (commits.size() > 1) {
-            System.out.println("Difference(s) with parent: \n");
+        Hash commitHash;
 
-            DiffUtils.outputDiff(repository.diff(commits.get(1).getHash().toString(), commits.get(0).getHash().toString()));
+        if (args.length > 0) {
+            commitHash = repository.parseState(args[0]).getCommit();
         } else {
-            System.out.println("Given commit has no parent to show difference with.");
+            commitHash = repository.getCurrent().getCommit();
         }
-    }
 
-    private void printLog(Hashed<Commit> hashedCommit) {
-        Commit commit = hashedCommit.getValue();
+        LogCommand.printLog(repository.getCommit(commitHash));
 
-        System.out.println("Commit: " + hashedCommit.getHash());
-        System.out.println("Author: " + commit.getAuthor());
-        System.out.println("Time: " + commit.getTime());
+        List<String> diff = repository.showDiff(commitHash);
 
-        System.out.println("\n \t" + commit.getMessage() + "\n");
+        if (diff != null) {
+            System.out.println("Difference(s) with parent: \n");
+            DiffUtils.outputDiff(repository.showDiff(commitHash));
+        } else {
+            System.out.println("No parents.");
+        }
+
     }
 
     @Override
