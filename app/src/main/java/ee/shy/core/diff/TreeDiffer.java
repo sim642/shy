@@ -62,4 +62,36 @@ public class TreeDiffer implements Differ<Tree> {
             diffLines.remove(diffLines.size() - 1);
         return diffLines;
     }
+
+    @Override
+    public List<String> shortDiff(Tree original, Tree revised) throws IOException {
+        List<String> lines = new ArrayList<>();
+
+        TreePairs.visitPairs(storage, original, revised, new TreePairs.Visitor() {
+            @Override
+            public void visitFilePair(TreePath path, TreeItem lhs, TreeItem rhs) throws IOException {
+                InputStream leftStream = lhs != null ? storage.get(lhs.getHash()) : ClosedInputStream.CLOSED_INPUT_STREAM;
+                InputStream rightStream = rhs != null ? storage.get(rhs.getHash()) : ClosedInputStream.CLOSED_INPUT_STREAM;
+                List<String> diff = inputStreamDiffer.diff(leftStream, rightStream);
+                if (lhs == null) {
+                    lines.add(NAME_ADD + path);
+                } else if (rhs == null) {
+                    lines.add(NAME_REMOVE + path);
+                } else if (!diff.isEmpty()) {
+                    lines.add(NAME_REMOVE + path);
+                    lines.add(NAME_ADD + path);
+                }
+            }
+
+            @Override
+            public void visitTreePair(TreePath path, TreeItem lhs, TreeItem rhs) throws IOException {
+                if (lhs == null)
+                    lines.add(NAME_ADD + path + "/");
+                if (rhs == null)
+                    lines.add(NAME_REMOVE + path + "/");
+            }
+        });
+
+        return lines;
+    }
 }

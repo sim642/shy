@@ -456,6 +456,22 @@ public class Repository implements AutoCloseable {
         );
     }
 
+    public List<String> commitShortDiff() throws IOException {
+        MapStorage temporaryStorage = new MapStorage();
+        Tree temporaryTree = new Tree.Builder(temporaryStorage).fromDirectory(getCommitPath()).create();
+
+        AggregateDataStorage aggregateStorage = new AggregateDataStorage(Arrays.asList(
+                temporaryStorage,
+                storage
+        ));
+        TreeDiffer treeDiffer = new TreeDiffer(aggregateStorage);
+
+        return treeDiffer.shortDiff(
+                storage.get(storage.get(current.getCommit(), Commit.class).getTree(), Tree.class),
+                temporaryTree
+        );
+    }
+
     @Override
     public void close() throws IOException {
 

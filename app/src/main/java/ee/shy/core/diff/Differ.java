@@ -19,4 +19,16 @@ public interface Differ<T> {
      * @throws IOException
      */
     List<String> diff(T original, T revised) throws IOException;
+
+    /**
+     * Get short differences of two given objects with type T as a String List.
+     * List elements starting with character '+' indicate additions to the original object.
+     * List elements starting with character '-' indicate deletions from the original object.
+     *
+     * @param original original object
+     * @param revised  revised object
+     * @return String list containing short differences.
+     * @throws IOException
+     */
+    List<String> shortDiff(T original, T revised) throws IOException;
 }

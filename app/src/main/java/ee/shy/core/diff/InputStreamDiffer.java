@@ -31,4 +31,9 @@ public class InputStreamDiffer implements Differ<InputStream> {
         } else
             return Collections.emptyList();
     }
+
+    @Override
+    public List<String> shortDiff(InputStream original, InputStream revised) throws IOException {
+        return Collections.emptyList();
+    }
 }
