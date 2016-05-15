@@ -7,6 +7,7 @@ import ee.shy.core.Repository;
 import ee.shy.core.diff.DiffUtils;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Shows information of current state (branch and commit hash)
@@ -16,7 +17,12 @@ public class StatusCommand implements Command{
     public void execute(String[] args) throws IOException {
         Repository repository = LocalRepository.newExisting();
         System.out.println(repository.getCurrent());
-        DiffUtils.outputDiff(repository.commitShortDiff());
+
+        List<String> diffLines = repository.commitDiff().shortDiff();
+        if (!diffLines.isEmpty()) {
+            System.out.println();
+            DiffUtils.outputDiff(diffLines);
+        }
     }
 
     @Override

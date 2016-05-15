@@ -1,5 +1,6 @@
 package ee.shy.core;
 
+import ee.shy.core.diff.DifferClosure;
 import ee.shy.core.diff.TreeDiffer;
 import ee.shy.io.Json;
 import ee.shy.io.PathUtils;
@@ -411,10 +412,10 @@ public class Repository implements AutoCloseable {
      * Differences two commits specified by arguments.
      * @param arg1 string referencing original commit
      * @param arg2 string referencing revised commit
-     * @return lines of diff output
+     * @return diff closure
      * @throws IOException
      */
-    public List<String> diff(String arg1, String arg2) throws IOException {
+    public DifferClosure<Tree> diff(String arg1, String arg2) throws IOException {
         return diff(parseState(arg1).getCommit(), parseState(arg2).getCommit());
     }
 
@@ -423,24 +424,26 @@ public class Repository implements AutoCloseable {
      * the differences between given commits.
      * @param original Hash of the original commit
      * @param revised Hash of the revised commit
-     * @return Diff strings
+     * @return diff closure
      * @throws IOException
      */
-    private List<String> diff(Hash original, Hash revised) throws IOException {
+    private DifferClosure<Tree> diff(Hash original, Hash revised) throws IOException {
         TreeDiffer treeDiffer = new TreeDiffer(storage);
         Commit originalCommit = storage.get(original, Commit.class);
         Commit revisedCommit = storage.get(revised, Commit.class);
-        return treeDiffer.diff(
+        return new DifferClosure<>(
+                treeDiffer,
                 storage.get(originalCommit.getTree(), Tree.class),
-                storage.get(revisedCommit.getTree(), Tree.class));
+                storage.get(revisedCommit.getTree(), Tree.class)
+        );
     }
 
     /**
      * Diffs ".shy/commit" directory against latest commit.
-     * @return lines of diff output
+     * @return diff closure
      * @throws IOException
      */
-    public List<String> commitDiff() throws IOException {
+    public DifferClosure<Tree> commitDiff() throws IOException {
         MapStorage temporaryStorage = new MapStorage();
         Tree temporaryTree = new Tree.Builder(temporaryStorage).fromDirectory(getCommitPath()).create();
 
@@ -450,23 +453,8 @@ public class Repository implements AutoCloseable {
         ));
         TreeDiffer treeDiffer = new TreeDiffer(aggregateStorage);
 
-        return treeDiffer.diff(
-                storage.get(storage.get(current.getCommit(), Commit.class).getTree(), Tree.class),
-                temporaryTree
-        );
-    }
-
-    public List<String> commitShortDiff() throws IOException {
-        MapStorage temporaryStorage = new MapStorage();
-        Tree temporaryTree = new Tree.Builder(temporaryStorage).fromDirectory(getCommitPath()).create();
-
-        AggregateDataStorage aggregateStorage = new AggregateDataStorage(Arrays.asList(
-                temporaryStorage,
-                storage
-        ));
-        TreeDiffer treeDiffer = new TreeDiffer(aggregateStorage);
-
-        return treeDiffer.shortDiff(
+        return new DifferClosure<>(
+                treeDiffer,
                 storage.get(storage.get(current.getCommit(), Commit.class).getTree(), Tree.class),
                 temporaryTree
         );
