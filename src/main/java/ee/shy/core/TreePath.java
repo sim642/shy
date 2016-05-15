@@ -28,13 +28,13 @@ public class TreePath implements Comparable<TreePath> {
         int iterCount = Math.min(pathStrings.length, oStringList.length);
         
         for (int i = 0; i < iterCount; i++) {
-            int strCompareResult = oStringList[i].compareTo(pathStrings[i]);
+            int strCompareResult = pathStrings[i].compareTo(oStringList[i]);
             if(strCompareResult != 0) {
                 return strCompareResult;
             }
         }
 
-        return oStringList.length - pathStrings.length;
+        return pathStrings.length - oStringList.length;
     }
 
 

@@ -12,8 +12,8 @@ import java.util.stream.Collectors;
 public class TreePairs {
 
     interface Visitor {
-        void visitFilePair(String path, TreeItem lhs, TreeItem rhs) throws IOException;
-        void visitTreePair(String path, TreeItem lhs, TreeItem rhs) throws IOException;
+        void visitFilePair(TreePath path, TreeItem lhs, TreeItem rhs) throws IOException;
+        void visitTreePair(TreePath path, TreeItem lhs, TreeItem rhs) throws IOException;
     }
 
     private static abstract class Pair implements Comparable<Pair> {
@@ -33,7 +33,6 @@ public class TreePairs {
 
         @Override
         public int compareTo(Pair o) {
-            //return path.compareTo(o.path); // TODO: 1.05.16 compare by respective path elements and addition/deletion
             int treePathCompare = path.compareTo(o.path);
             if (treePathCompare == 0) {
                 if (o.lhs != null && o.rhs == null) {
@@ -64,7 +63,7 @@ public class TreePairs {
 
         @Override
         public void visit(Visitor visitor) throws IOException {
-            visitor.visitFilePair(path.toString(), lhs, rhs);
+            visitor.visitFilePair(path, lhs, rhs);
         }
     }
 
@@ -80,7 +79,7 @@ public class TreePairs {
 
         @Override
         public void visit(Visitor visitor) throws IOException {
-            visitor.visitTreePair(path.toString(), lhs, rhs);
+            visitor.visitTreePair(path, lhs, rhs);
         }
     }
 
