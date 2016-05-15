@@ -5,7 +5,7 @@ import org.apache.commons.lang3.ArrayUtils;
 public class TreePath implements Comparable<TreePath> {
     private final String[] pathStrings;
 
-    public TreePath(String[] treePath) {
+    private TreePath(String[] treePath) {
         this.pathStrings = treePath;
     }
 
@@ -14,11 +14,11 @@ public class TreePath implements Comparable<TreePath> {
     }
 
     public TreePath resolve(String str) {
-        return new TreePath(ArrayUtils.addAll(pathStrings, ArrayUtils.remove(str.split("/"), 0)));
+        return new TreePath(ArrayUtils.addAll(pathStrings, str.split("/")));
     }
 
     public String toString() {
-        return String.join("/", pathStrings);
+        return pathStrings.length > 0 ? String.join("/", pathStrings) : "/";
     }
 
     @Override
@@ -36,4 +36,6 @@ public class TreePath implements Comparable<TreePath> {
 
         return oStringList.length - pathStrings.length;
     }
+
+
 }
