@@ -18,7 +18,7 @@ public class TreePath implements Comparable<TreePath> {
     }
 
     public String toString() {
-        return pathStrings.length > 0 ? String.join("/", pathStrings) : "/";
+        return "/" + String.join("/", pathStrings);
     }
 
     @Override
