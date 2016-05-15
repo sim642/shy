@@ -5,28 +5,38 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class TreePathTest {
+    private static final TreePath EMPTY = new TreePath();
+    private static final TreePath FOO = EMPTY.resolve("foo");
+    private static final TreePath FOO_BAR = FOO.resolve("bar");
+
     @Test
     public void testResolve() throws Exception {
-        TreePath path1 = new TreePath().resolve("foo");
-        TreePath path2 = new TreePath().resolve("foo").resolve("bar");
-
-        assertEquals(path1.resolve("bar").toString(), path2.toString());
+        assertEquals(FOO.resolve("bar").toString(), FOO_BAR.toString());
     }
 
     @Test
     public void testToString() throws Exception {
-        assertEquals("/", new TreePath().toString());
-        assertEquals("/foo", new TreePath().resolve("foo").toString());
-        assertEquals("/foo/bar/baz.txt", new TreePath().resolve("foo/bar").resolve("baz.txt").toString());
+        assertEquals("/", EMPTY.toString());
+        assertEquals("/foo", FOO.toString());
+        assertEquals("/foo/bar", FOO_BAR.toString());
+    }
+
+    @Test
+    public void startsWith() throws Exception {
+        assertTrue(FOO.startsWith(EMPTY));
+        assertTrue(FOO_BAR.startsWith(EMPTY));
+
+        assertTrue(FOO_BAR.startsWith(FOO));
+        assertFalse(FOO.startsWith(FOO_BAR));
     }
 
     @Test
     public void testCompareTo() throws Exception {
-        assertEquals(0, new TreePath().compareTo(new TreePath()));
-        assertEquals(0, new TreePath().resolve("foo").compareTo(new TreePath().resolve("foo")));
+        assertEquals(0, EMPTY.compareTo(EMPTY));
+        assertEquals(0, FOO.compareTo(FOO));
 
-        assertTrue(new TreePath().compareTo(new TreePath().resolve("foo")) < 0);
-        assertTrue(new TreePath().resolve("foo").resolve("bar").compareTo(new TreePath().resolve("foo").resolve("baz").resolve("shz")) < 0);
-        assertTrue(new TreePath().resolve("foo").resolve("bar").compareTo(new TreePath().resolve("foo")) > 0);
+        assertTrue(EMPTY.compareTo(FOO) < 0);
+        assertTrue(FOO_BAR.compareTo(FOO.resolve("baz").resolve("shz")) < 0);
+        assertTrue(FOO_BAR.compareTo(FOO) > 0);
     }
 }
