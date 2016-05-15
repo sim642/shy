@@ -461,7 +461,7 @@ public class Repository implements AutoCloseable {
     }
 
     public Hashed<Commit> getCommit(Hash hash) throws IOException {
-        return new Hashed<Commit> (hash, storage.get(hash, Commit.class));
+        return new Hashed<>(hash, storage.get(hash, Commit.class));
     }
 
     /**
@@ -470,13 +470,12 @@ public class Repository implements AutoCloseable {
      * @return difference of the commit and its parent
      * @throws IOException if getting parent fails
      */
-    public List<String> showDiff(Hash commitHash) throws IOException {
+    public DifferClosure<Tree> showDiff(Hash commitHash) throws IOException {
         Hash parentHash = storage.get(commitHash, Commit.class).getParents().get(0);
-        if(!parentHash.equals(Hash.ZERO)) {
-            return getCommitDiff(parentHash, commitHash);
-        } else {
+        if (!parentHash.equals(Hash.ZERO))
+            return diff(parentHash, commitHash);
+        else
             return null;
-        }
     }
 
     @Override
