@@ -8,6 +8,9 @@ import ee.shy.core.Repository;
 
 import java.io.IOException;
 
+/**
+ * Shows information of current state (branch and commit hash)
+ */
 public class StatusCommand implements Command{
     @Override
     public void execute(String[] args) throws IOException {
