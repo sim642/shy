@@ -17,14 +17,16 @@ public class TreePathTest {
     public void testToString() throws Exception {
         assertEquals("/", new TreePath().toString());
         assertEquals("/foo", new TreePath().resolve("foo").toString());
+        assertEquals("/foo/bar/baz.txt", new TreePath().resolve("foo/bar").resolve("baz.txt").toString());
     }
 
     @Test
     public void testCompareTo() throws Exception {
         assertEquals(0, new TreePath().compareTo(new TreePath()));
         assertEquals(0, new TreePath().resolve("foo").compareTo(new TreePath().resolve("foo")));
-        assertTrue(new TreePath().compareTo(new TreePath().resolve("foo")) > 0);
-        assertTrue(new TreePath().resolve("foo").resolve("bar").compareTo(new TreePath().resolve("foo")) < 0);
-    }
 
+        assertTrue(new TreePath().compareTo(new TreePath().resolve("foo")) < 0);
+        assertTrue(new TreePath().resolve("foo").resolve("bar").compareTo(new TreePath().resolve("foo").resolve("baz").resolve("shz")) < 0);
+        assertTrue(new TreePath().resolve("foo").resolve("bar").compareTo(new TreePath().resolve("foo")) > 0);
+    }
 }
