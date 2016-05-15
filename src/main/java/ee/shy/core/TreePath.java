@@ -2,6 +2,8 @@ package ee.shy.core;
 
 import org.apache.commons.lang3.ArrayUtils;
 
+import java.util.Arrays;
+
 /**
  * A class that handles trees' paths.
  */
@@ -41,6 +43,16 @@ public class TreePath implements Comparable<TreePath> {
     }
 
     /**
+     * Returns whether given path is prefix of this one.
+     * @param path path to check
+     * @return true if this starts with given path, false otherwise
+     */
+    public boolean startsWith(TreePath path) {
+        return pathStrings.length >= path.pathStrings.length
+                && Arrays.equals(ArrayUtils.subarray(pathStrings, 0, path.pathStrings.length), path.pathStrings);
+    }
+
+    /**
      * Compares two TreePath objects.
      * @param o TreePath object to compare to.
      * @return a value of 0 if the objects are equal, a value greater than 0 if _ is bigger than _, a value less than
@@ -52,7 +64,7 @@ public class TreePath implements Comparable<TreePath> {
         String[] oStringList = o.pathStrings;
 
         int iterCount = Math.min(pathStrings.length, oStringList.length);
-        
+
         for (int i = 0; i < iterCount; i++) {
             int strCompareResult = pathStrings[i].compareTo(oStringList[i]);
             if(strCompareResult != 0) {
@@ -62,6 +74,4 @@ public class TreePath implements Comparable<TreePath> {
 
         return pathStrings.length - oStringList.length;
     }
-
-
 }

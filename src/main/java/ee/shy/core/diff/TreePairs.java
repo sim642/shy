@@ -31,23 +31,32 @@ public class TreePairs {
 
         public abstract Pair flip();
 
+        protected boolean isAddition() {
+            return lhs == null && rhs != null;
+        }
+
+        protected boolean isRemoval() {
+            return lhs != null && rhs == null;
+        }
+
         @Override
-        public int compareTo(Pair o) {
-            int treePathCompare = path.compareTo(o.path);
-            if (treePathCompare == 0) {
-                if (o.lhs != null && o.rhs == null) {
+        public int compareTo(Pair other) {
+            int compare = path.compareTo(other.path);
+
+            if (isAddition() && other.isRemoval()) {
+                if (compare == 0)
                     return 1;
-                }
-                else if (o.lhs == null && o.rhs != null) {
+                else if (other.path.startsWith(path)) // other is prefix of this
+                    return 1;
+            }
+            else if (isRemoval() && other.isAddition()) {
+                if (compare == 0)
                     return -1;
-                }
-                else {
-                    return 0;
-                }
+                else if (other.path.startsWith(path)) // other is prefix of this
+                    return -1;
             }
-            else {
-                return treePathCompare;
-            }
+
+            return compare;
         }
     }
 
