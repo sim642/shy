@@ -96,6 +96,23 @@ public class CurrentState implements Jsonable, Validated {
         return tag;
     }
 
+    /**
+     * Returns name of current branch or tag.
+     * @return name of branch or tag, or <code>null</code> if state is of neither type
+     */
+    public String getName() {
+        switch (getType()) {
+            case BRANCH:
+                return getBranch();
+
+            case TAG:
+                return getTag();
+
+            default:
+                return null;
+        }
+    }
+
     @Override
     public String toString() {
         switch (getType()) {
