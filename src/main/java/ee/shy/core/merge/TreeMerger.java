@@ -6,10 +6,10 @@ import ee.shy.core.TreeItem;
 import ee.shy.core.TreePath;
 import ee.shy.core.TreeVisitor;
 import ee.shy.storage.DataStorage;
+import org.apache.commons.io.input.ClosedInputStream;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Map;
 
 public class TreeMerger implements Merger<Tree>{
 
@@ -44,14 +44,13 @@ public class TreeMerger implements Merger<Tree>{
     }
 
     private InputStream findItemFromTree(Tree tree, TreePath searchable) throws IOException {
-        for (Map.Entry<String, TreeItem> k : tree.getItems().entrySet()) {
-            if (new TreePath().resolve(k.getKey()).compareTo(searchable) == 0) {
-                return storage.get(k.getValue().getHash());
-            }
-            if (k.getValue().getType() == TreeItem.Type.TREE) {
-                return findItemFromTree(storage.get(k.getValue().getHash(), Tree.class), searchable);
-            }
+        Tree iterableTree = tree;
+        TreeItem treeItem = null;
+        for (String pathPart : searchable.getPathStrings()) {
+            treeItem = iterableTree.getItems().get(pathPart);
+            if (treeItem == null) return ClosedInputStream.CLOSED_INPUT_STREAM;
+            iterableTree = storage.get(treeItem.getHash(), Tree.class);
         }
-        return null;
+        return storage.get(treeItem.getHash());
     }
 }

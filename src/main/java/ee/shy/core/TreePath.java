@@ -61,4 +61,8 @@ public class TreePath implements Comparable<TreePath> {
     public int compareTo(TreePath other) {
         return CollectionUtils.compare(pathStrings, other.pathStrings);
     }
+
+    public String[] getPathStrings() {
+        return pathStrings;
+    }
 }
