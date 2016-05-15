@@ -1,5 +1,6 @@
 package ee.shy.core;
 
+import ee.shy.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 
 /**
@@ -41,27 +42,23 @@ public class TreePath implements Comparable<TreePath> {
     }
 
     /**
+     * Returns whether given path is prefix of this one.
+     * @param prefix path to check
+     * @return true if this starts with given path, false otherwise
+     */
+    public boolean startsWith(TreePath prefix) {
+        return CollectionUtils.startsWith(pathStrings, prefix.pathStrings);
+    }
+
+    /**
      * Compares two TreePath objects.
-     * @param o TreePath object to compare to.
+     * @param other TreePath object to compare to.
      * @return a value of 0 if the objects are equal, a value greater than 0 if _ is bigger than _, a value less than
      * 0 if _ is smaller than _ and difference of the objects' string lists length if the objects' strings' values are
      * equal up to object's with shortest string list.
      */
     @Override
-    public int compareTo(TreePath o) {
-        String[] oStringList = o.pathStrings;
-
-        int iterCount = Math.min(pathStrings.length, oStringList.length);
-        
-        for (int i = 0; i < iterCount; i++) {
-            int strCompareResult = pathStrings[i].compareTo(oStringList[i]);
-            if(strCompareResult != 0) {
-                return strCompareResult;
-            }
-        }
-
-        return pathStrings.length - oStringList.length;
+    public int compareTo(TreePath other) {
+        return CollectionUtils.compare(pathStrings, other.pathStrings);
     }
-
-
 }

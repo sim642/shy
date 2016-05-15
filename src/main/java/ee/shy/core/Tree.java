@@ -70,31 +70,30 @@ public class Tree implements Jsonable {
     }
 
     public void walk(DataStorage storage, TreeVisitor visitor) throws IOException {
-        walk(storage, visitor, null, "");
+        walk(storage, visitor, new TreePath());
     }
 
-    private void walk(DataStorage storage, TreeVisitor visitor, String prefixPath, String name) throws IOException {
-        visitor.preVisitTree(prefixPath, name);
-
-        String newPrefixPath = prefixPath != null ? prefixPath : "";
-        newPrefixPath += name + "/";
+    private void walk(DataStorage storage, TreeVisitor visitor, TreePath path) throws IOException {
+        visitor.preVisitTree(path);
 
         for (Map.Entry<String, TreeItem> entry : items.entrySet()) {
+            TreePath subPath = path.resolve(entry.getKey());
+
             switch (entry.getValue().getType()) {
                 case FILE:
                     try (InputStream is = storage.get(entry.getValue().getHash())) {
-                        visitor.visitFile(newPrefixPath, entry.getKey(), is);
+                        visitor.visitFile(subPath, is);
                     }
                     break;
 
                 case TREE:
                     Tree tree = storage.get(entry.getValue().getHash(), Tree.class);
-                    tree.walk(storage, visitor, newPrefixPath, entry.getKey());
+                    tree.walk(storage, visitor, subPath);
                     break;
             }
         }
 
-        visitor.postVisitTree(prefixPath, name);
+        visitor.postVisitTree(path);
     }
 
     /*
