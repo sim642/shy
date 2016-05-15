@@ -1,6 +1,8 @@
 package ee.shy.core;
 
+import difflib.PatchFailedException;
 import ee.shy.core.diff.TreeDiffer;
+import ee.shy.core.merge.TreeMerger;
 import ee.shy.io.Json;
 import ee.shy.io.PathUtils;
 import ee.shy.map.DirectoryJsonMap;
@@ -476,16 +478,44 @@ public class Repository {
      * @return hash of common ancestor if exists, null otherwise
      * @throws IOException
      */
-    private Hash findCommonAncestor(Hash first, Hash second) throws IOException {
-        Commit originalCommit = storage.get(first, Commit.class);
-        Commit revisedCommit = storage.get(second, Commit.class);
-        List<Hash> intersection = originalCommit.getParents();
-        intersection.retainAll(revisedCommit.getParents());
+    private Hash findCommonAncestor(Commit first, Commit second) throws IOException {
+        List<Hash> intersection = first.getParents();
+        intersection.retainAll(second.getParents());
         try {
             return intersection.get(intersection.size() - 1);
         } catch (ArrayIndexOutOfBoundsException e) {
             return Hash.ZERO;
         }
+    }
+
+    public void merge(String originalArg, String revisedArg) throws IOException, PatchFailedException {
+        TreeMerger treeMerger = new TreeMerger(storage);
+        Hash originalCommitHash = parseState(originalArg).getCommit();
+        Hash revisedCommitHash = parseState(revisedArg).getCommit();
+        Commit originalCommit = storage.get(originalCommitHash, Commit.class);
+        Commit revisedCommit = storage.get(revisedCommitHash, Commit.class);
+
+        Tree mergedTree = treeMerger.merge(
+                storage.get(originalCommit.getTree(), Tree.class),
+                storage.get(revisedCommit.getTree(), Tree.class),
+                storage.get(findCommonAncestor(revisedCommit, originalCommit), Tree.class)
+        );
+
+        Commit mergeCommit = new Commit.Builder()
+                .addParent(originalCommitHash)
+                .addParent(revisedCommitHash)
+                .setTimeCurrent()
+                .setMessage("Merge commit")
+                // TODO: 15.05.16 Message shall output what was merged into what
+                .setAuthor(getAuthor())
+                .setTree(storage.put(mergedTree))
+                .create();
+        Hash commitHash = storage.put(mergeCommit);
+
+        CurrentState newCurrent = CurrentState.newBranch(commitHash, current.getBranch());
+        setCurrent(newCurrent);
+
+        branches.put(newCurrent.getBranch(), new Branch(newCurrent.getCommit()));
     }
 
 
