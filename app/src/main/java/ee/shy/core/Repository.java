@@ -7,8 +7,11 @@ import ee.shy.io.PathUtils;
 import ee.shy.map.DirectoryJsonMap;
 import ee.shy.map.NamedObjectMap;
 import ee.shy.storage.*;
+import ee.shy.storage.accessor.AggregateFileAccessor;
+import ee.shy.storage.accessor.GzipFileAccessor;
 import ee.shy.storage.accessor.PlainFileAccessor;
 import ee.shy.storage.locator.FlatFileLocator;
+import ee.shy.storage.locator.GitFileLocator;
 
 import java.io.*;
 import java.nio.file.DirectoryStream;
@@ -46,11 +49,18 @@ public class Repository implements AutoCloseable {
      */
     protected Repository(Path rootPath) throws IOException {
         this.rootPath = rootPath;
+
+        Path storagePath = getRepositoryPath().resolve("storage");
         this.storage = new FileStorage(
                 Arrays.asList(
-                        new FlatFileLocator(getRepositoryPath().resolve("storage"))
+                        new GitFileLocator(storagePath),
+                        new FlatFileLocator(storagePath)
                 ),
-                new PlainFileAccessor());
+                new AggregateFileAccessor(Arrays.asList(
+                        new GzipFileAccessor(),
+                        new PlainFileAccessor()
+                )));
+
         branches = new DirectoryJsonMap<>(Branch.class, getRepositoryPath().resolve("branches"));
         tags = new DirectoryJsonMap<>(Tag.class, getRepositoryPath().resolve("tags"));
         remotes = new DirectoryJsonMap<>(Remote.class, getRepositoryPath().resolve("remotes"));
