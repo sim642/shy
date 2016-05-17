@@ -29,6 +29,7 @@ public class Repository implements AutoCloseable {
      * Repository root directory path.
      */
     private final Path rootPath;
+    private final IgnoreChecker ignorer;
 
     private final DataStorage storage;
     private final NamedObjectMap<Branch> branches;
@@ -46,6 +47,7 @@ public class Repository implements AutoCloseable {
      */
     protected Repository(Path rootPath) throws IOException {
         this.rootPath = rootPath;
+        this.ignorer = new IgnoreChecker(rootPath);
         this.storage = new FileStorage(
                 Arrays.asList(
                         new FlatFileLocator(getRepositoryPath().resolve("storage"))
@@ -105,7 +107,7 @@ public class Repository implements AutoCloseable {
      * @throws IOException if file can't be found, copying fails or path is of unknown type
      */
     public void add(Path path, boolean force) throws IOException {
-        if (force || !Files.isHidden(path) && !ShyIgnore.isIgnored(path)) {
+        if (force || !ignorer.isIgnored(path)) {
             if (Files.isRegularFile(path)) {
                 Path commitPath = getCommitPath(path);
                 /*
