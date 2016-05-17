@@ -24,7 +24,7 @@ public final class ShyIgnore {
 
     public static boolean isIgnored(Path path) {
         for (String glob : globs) {
-            PathMatcher pathMatcher = FileSystems.getDefault().getPathMatcher("glob:*" + glob);
+            PathMatcher pathMatcher = FileSystems.getDefault().getPathMatcher("glob:**" + glob);
             if (pathMatcher.matches(path)) return true;
         }
         return false;
