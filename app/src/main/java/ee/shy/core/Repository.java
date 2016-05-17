@@ -105,7 +105,7 @@ public class Repository implements AutoCloseable {
      * @throws IOException if file can't be found, copying fails or path is of unknown type
      */
     public void add(Path path, boolean force) throws IOException {
-        if (force || !Files.isHidden(path)) {
+        if (force || !Files.isHidden(path) && !ShyIgnore.isIgnored(path)) {
             if (Files.isRegularFile(path)) {
                 Path commitPath = getCommitPath(path);
                 /*
