@@ -42,6 +42,7 @@ public class RootCommand extends SuperCommand {
         add("push", new PushCommand());
         add("status", new StatusCommand());
         add("show", new ShowCommand());
+        add("merge", new MergeCommand());
 
         add("git-import", new GitImportCommand());
     }

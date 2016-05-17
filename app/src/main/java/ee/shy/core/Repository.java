@@ -2,6 +2,7 @@ package ee.shy.core;
 
 import ee.shy.core.diff.DifferClosure;
 import ee.shy.core.diff.TreeDiffer;
+import ee.shy.core.merge.TreeMerger;
 import ee.shy.io.Json;
 import ee.shy.io.PathUtils;
 import ee.shy.map.DirectoryJsonMap;
@@ -18,8 +19,10 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * Class for creating and interacting with a repository.
@@ -476,6 +479,48 @@ public class Repository implements AutoCloseable {
             return diff(parentHash, commitHash);
         else
             return null;
+    }
+
+    public void merge(String arg) throws IOException {
+        CurrentState revisedState = parseState(arg);
+
+        Commit revisedCommit = storage.get(revisedState.getCommit(), Commit.class);
+        Commit originalCommit = storage.get(findCommonAncestor(current.getCommit(), revisedState.getCommit()), Commit.class);
+
+        Tree originalTree = storage.get(originalCommit.getTree(), Tree.class);
+        Tree revisedTree = storage.get(revisedCommit.getTree(), Tree.class);
+
+        TreeMerger treeMerger = new TreeMerger(storage);
+        treeMerger.merge(rootPath, originalTree, revisedTree);
+    }
+
+    private Hash findCommonAncestor(Hash main, Hash branch) throws IOException {
+        Set<Hash> mainCommits = log(main).stream()
+                .map(Hashed::getHash)
+                .collect(Collectors.toSet());
+
+        return findCommonAncestor(mainCommits, branch);
+    }
+
+    private Hash findCommonAncestor(Set<Hash> mainCommits, Hash branch) throws IOException {
+        Commit commit;
+        while (!branch.equals(Hash.ZERO) && !mainCommits.contains(branch)) {
+            commit = storage.get(branch, Commit.class);
+
+            if (commit.getParents().size() > 1) { // merge
+                for (Hash parent : commit.getParents()) {
+                    Hash parentAncestor = findCommonAncestor(mainCommits, parent);
+                    if (!parentAncestor.equals(Hash.ZERO))
+                        return parentAncestor;
+                }
+                return Hash.ZERO;
+            }
+            else {
+                branch = commit.getParents().get(0);
+            }
+        }
+
+        return branch;
     }
 
     @Override
