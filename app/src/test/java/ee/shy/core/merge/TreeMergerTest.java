@@ -29,7 +29,8 @@ public class TreeMergerTest extends MergerTest<Tree> {
     @Parameters(name = "{0}")
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
-                {"numbers2"}
+                {"numbers-tree"},
+                //{"alternate"} DMP is weird and broken: patching works differently in reverse direction
         });
     }
 
@@ -65,14 +66,14 @@ public class TreeMergerTest extends MergerTest<Tree> {
         patched.walk(storage, new PathTreeVisitor(path) {
             @Override
             protected void preVisitTree(Path directory) throws IOException {
-                assertTrue(Files.isDirectory(directory));
+                assertTrue(directory.toString(), Files.isDirectory(directory));
             }
 
             @Override
             protected void visitFile(Path file, InputStream is) throws IOException {
-                assertTrue(Files.isRegularFile(file));
+                assertTrue(file.toString(), Files.isRegularFile(file));
                 try (InputStream fileIs = Files.newInputStream(file)) {
-                    assertTrue(IOUtils.contentEquals(is, fileIs));
+                    assertTrue(file.toString(), IOUtils.contentEquals(is, fileIs));
                 }
             }
         });
