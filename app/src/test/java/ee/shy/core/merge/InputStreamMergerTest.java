@@ -9,6 +9,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -52,7 +53,26 @@ public class InputStreamMergerTest {
     }
 
     @Test
-    public void testForwardMerge() throws Exception {
+    public void testForwardMainMerge() throws Exception {
+        testMerge(patchable, original, revised, patched);
+    }
+
+    @Test
+    public void testForwardSideMerge() throws Exception {
+        testMerge(revised, original, patchable, patched);
+    }
+
+    @Test
+    public void testBackwardMainMerge() throws Exception {
+        testMerge(patched, revised, original, patchable);
+    }
+
+    @Test
+    public void testBackwardSideMerge() throws Exception {
+        testMerge(original, revised, patched, patchable);
+    }
+
+    private void testMerge(InputStream patchable, InputStream original, InputStream revised, InputStream patched) throws IOException {
         Path path = temporaryDirectory.newFile();
         Files.delete(path);
         Files.copy(patchable, path);
@@ -61,19 +81,6 @@ public class InputStreamMergerTest {
 
         List<String> actualLines = Files.readAllLines(path);
         List<String> expectedLines = IOUtils.readLines(patched);
-        assertEquals(expectedLines, actualLines);
-    }
-
-    @Test
-    public void testBackwardMerge() throws Exception {
-        Path path = temporaryDirectory.newFile();
-        Files.delete(path);
-        Files.copy(patched, path);
-
-        merger.merge(path, revised, original);
-
-        List<String> actualLines = Files.readAllLines(path);
-        List<String> expectedLines = IOUtils.readLines(patchable);
         assertEquals(expectedLines, actualLines);
     }
 }
