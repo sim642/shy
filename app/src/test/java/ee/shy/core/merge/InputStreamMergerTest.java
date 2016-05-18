@@ -7,6 +7,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -19,20 +20,17 @@ import static org.junit.Assert.*;
 
 @RunWith(Parameterized.class)
 public class InputStreamMergerTest {
-    @Parameterized.Parameters
+    @Parameters(name = "{0}")
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
-                {"foo/patchable", "foo/original", "foo/revised", "foo/patched"}
+                {"numbers"}
         });
     }
 
     @Rule
     public TemporaryDirectory temporaryDirectory = new TemporaryDirectory();
 
-    private final String patchableResource;
-    private final String originalResource;
-    private final String revisedResource;
-    private final String patchedResource;
+    private final String subpackage;
 
     private InputStream patchable;
     private InputStream original;
@@ -40,19 +38,16 @@ public class InputStreamMergerTest {
     private InputStream patched;
     private InputStreamMerger merger;
 
-    public InputStreamMergerTest(String patchableResource, String originalResource, String revisedResource, String patchedResource) {
-        this.patchableResource = patchableResource;
-        this.originalResource = originalResource;
-        this.revisedResource = revisedResource;
-        this.patchedResource = patchedResource;
+    public InputStreamMergerTest(String subpackage) {
+        this.subpackage = subpackage;
     }
 
     @Before
     public void setUp() throws Exception {
-        patchable = getClass().getResourceAsStream(patchableResource);
-        original = getClass().getResourceAsStream(originalResource);
-        revised = getClass().getResourceAsStream(revisedResource);
-        patched = getClass().getResourceAsStream(patchedResource);
+        patchable = getClass().getResourceAsStream(subpackage + "/patchable");
+        original = getClass().getResourceAsStream(subpackage + "/original");
+        revised = getClass().getResourceAsStream(subpackage + "/revised");
+        patched = getClass().getResourceAsStream(subpackage + "/patched");
         merger = new InputStreamMerger();
     }
 
