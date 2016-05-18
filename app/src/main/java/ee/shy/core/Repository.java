@@ -103,7 +103,7 @@ public class Repository implements AutoCloseable {
     /**
      * Copies given file to its respective directory in ".shy/commit/" directory.
      * @param path file that user wants to add to repository
-     * @param force whether addition should be forced, e.g. creation of hidden item
+     * @param force whether addition should be forced, e.g. creation of hidden or ignored item
      * @throws IOException if file can't be found, copying fails or path is of unknown type
      */
     public void add(Path path, boolean force) throws IOException {
