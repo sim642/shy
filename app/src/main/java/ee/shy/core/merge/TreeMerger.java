@@ -6,7 +6,6 @@ import ee.shy.core.TreePath;
 import ee.shy.core.diff.TreePairs;
 import ee.shy.io.PathUtils;
 import ee.shy.storage.DataStorage;
-import org.apache.commons.io.input.ClosedInputStream;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.IOException;
@@ -31,8 +30,8 @@ public class TreeMerger implements Merger<Tree> {
             public void visitFilePair(TreePath treePath, TreeItem lhs, TreeItem rhs) throws IOException {
                 Path resolvedPath = resolveTreePath(path, treePath);
 
-                InputStream leftStream = lhs != null ? storage.get(lhs.getHash()) : ClosedInputStream.CLOSED_INPUT_STREAM;
-                InputStream rightStream = rhs != null ? storage.get(rhs.getHash()) : ClosedInputStream.CLOSED_INPUT_STREAM;
+                InputStream leftStream = lhs != null ? storage.get(lhs.getHash()) : null;
+                InputStream rightStream = rhs != null ? storage.get(rhs.getHash()) : null;
 
                 INPUT_STREAM_MERGER.merge(resolvedPath, leftStream, rightStream);
             }
