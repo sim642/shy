@@ -1,7 +1,6 @@
 package ee.shy.core.merge;
 
 import ee.shy.ResourcePaths;
-import ee.shy.TemporaryDirectory;
 import ee.shy.core.PathTreeVisitor;
 import ee.shy.core.Tree;
 import ee.shy.storage.DataStorage;
@@ -9,8 +8,6 @@ import ee.shy.storage.MapStorage;
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
@@ -25,7 +22,7 @@ import java.util.Collection;
 import static org.junit.Assert.*;
 
 @RunWith(Parameterized.class)
-public class TreeMergerTest {
+public class TreeMergerTest extends MergerTest<Tree> {
     @ClassRule
     public static ResourcePaths resourcePaths = new ResourcePaths(TreeMergerTest.class);
 
@@ -36,17 +33,10 @@ public class TreeMergerTest {
         });
     }
 
-    @Rule
-    public TemporaryDirectory temporaryDirectory = new TemporaryDirectory();
-
     private final Path subpackage;
 
     private DataStorage storage;
     private TreeMerger merger;
-    private Tree patchable;
-    private Tree original;
-    private Tree revised;
-    private Tree patched;
 
     public TreeMergerTest(String subpackage) {
         this.subpackage = resourcePaths.get(subpackage);
@@ -64,27 +54,8 @@ public class TreeMergerTest {
         merger = new TreeMerger(storage);
     }
 
-    @Test
-    public void testForwardMainMerge() throws Exception {
-        testMerge(patchable, original, revised, patched);
-    }
-
-    @Test
-    public void testForwardSideMerge() throws Exception {
-        testMerge(revised, original, patchable, patched);
-    }
-
-    @Test
-    public void testBackwardMainMerge() throws Exception {
-        testMerge(patched, revised, original, patchable);
-    }
-
-    @Test
-    public void testBackwardSideMerge() throws Exception {
-        testMerge(original, revised, patched, patchable);
-    }
-
-    private void testMerge(Tree patchable, Tree original, Tree revised, Tree patched) throws IOException {
+    @Override
+    protected void testMerge(Tree patchable, Tree original, Tree revised, Tree patched) throws IOException {
         Path path = temporaryDirectory.newDirectory();
         patchable.toDirectory(path, storage);
 

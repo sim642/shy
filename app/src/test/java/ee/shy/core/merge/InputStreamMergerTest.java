@@ -1,10 +1,7 @@
 package ee.shy.core.merge;
 
-import ee.shy.TemporaryDirectory;
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
@@ -18,10 +15,10 @@ import java.util.Collection;
 import java.util.List;
 
 import static org.junit.Assert.*;
-import static org.junit.Assume.assumeNotNull;
+import static org.junit.Assume.*;
 
 @RunWith(Parameterized.class)
-public class InputStreamMergerTest {
+public class InputStreamMergerTest extends MergerTest<InputStream> {
     @Parameters(name = "{0}")
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
@@ -29,15 +26,8 @@ public class InputStreamMergerTest {
         });
     }
 
-    @Rule
-    public TemporaryDirectory temporaryDirectory = new TemporaryDirectory();
-
     private final String subpackage;
 
-    private InputStream patchable;
-    private InputStream original;
-    private InputStream revised;
-    private InputStream patched;
     private InputStreamMerger merger;
 
     public InputStreamMergerTest(String subpackage) {
@@ -55,27 +45,8 @@ public class InputStreamMergerTest {
         merger = new InputStreamMerger();
     }
 
-    @Test
-    public void testForwardMainMerge() throws Exception {
-        testMerge(patchable, original, revised, patched);
-    }
-
-    @Test
-    public void testForwardSideMerge() throws Exception {
-        testMerge(revised, original, patchable, patched);
-    }
-
-    @Test
-    public void testBackwardMainMerge() throws Exception {
-        testMerge(patched, revised, original, patchable);
-    }
-
-    @Test
-    public void testBackwardSideMerge() throws Exception {
-        testMerge(original, revised, patched, patchable);
-    }
-
-    private void testMerge(InputStream patchable, InputStream original, InputStream revised, InputStream patched) throws IOException {
+    @Override
+    protected void testMerge(InputStream patchable, InputStream original, InputStream revised, InputStream patched) throws IOException {
         Path path = temporaryDirectory.newFile();
         Files.delete(path);
         Files.copy(patchable, path);
