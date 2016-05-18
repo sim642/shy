@@ -13,7 +13,7 @@ public class GlobalAuthor {
 
     public GlobalAuthor() throws IOException {
         if (!Files.exists(configPath)) {
-            configPath.toFile().createNewFile();
+            Files.createFile(configPath);
             Json.write(configPath, new Author(null, null));
         }
     }
@@ -37,9 +37,4 @@ public class GlobalAuthor {
     public void setGlobalName(String name) throws IOException {
         Json.write(configPath, new Author(name, getGlobalEmail()));
     }
-
-    public static boolean isConfigPresent() {
-        return Files.exists(configPath);
-    }
-
 }

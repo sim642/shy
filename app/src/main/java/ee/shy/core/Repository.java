@@ -9,6 +9,7 @@ import ee.shy.map.NamedObjectMap;
 import ee.shy.storage.*;
 import ee.shy.storage.accessor.PlainFileAccessor;
 import ee.shy.storage.locator.FlatFileLocator;
+import org.apache.commons.lang3.ObjectUtils;
 
 import java.io.*;
 import java.nio.file.*;
@@ -173,7 +174,7 @@ public class Repository implements AutoCloseable {
             Commit commit = new Commit.Builder()
                     .setTree(tree)
                     .addParent(current.getCommit())
-                    .setAuthor(GlobalAuthor.isConfigPresent() ? new GlobalAuthor().getAuthor() : getAuthor())
+                    .setAuthor(ObjectUtils.firstNonNull(new GlobalAuthor().getAuthor(), getAuthor()))
                     .setTimeCurrent()
                     .setMessage(message)
                     .create();
