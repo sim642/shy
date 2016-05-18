@@ -173,7 +173,7 @@ public class Repository implements AutoCloseable {
             Commit commit = new Commit.Builder()
                     .setTree(tree)
                     .addParent(current.getCommit())
-                    .setAuthor(getAuthor())
+                    .setAuthor(GlobalAuthor.isConfigPresent() ? new GlobalAuthor().getAuthor() : getAuthor())
                     .setTimeCurrent()
                     .setMessage(message)
                     .create();
@@ -402,8 +402,6 @@ public class Repository implements AutoCloseable {
      * @return author file path
      */
     private Path getAuthorPath() {
-        Path configPath = PathUtils.getUserHomePath().resolve(".shyconfig");
-        if (Files.exists(configPath)) return configPath;
         return getRepositoryPath().resolve("author");
     }
 

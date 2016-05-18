@@ -18,12 +18,16 @@ public class GlobalAuthor {
         }
     }
 
+    public Author getAuthor() throws IOException {
+        return Json.read(configPath, Author.class);
+    }
+
     public String getGlobalEmail() throws IOException {
-        return Json.read(configPath, Author.class).getEmail();
+        return getAuthor().getEmail();
     }
 
     public String getGlobalName() throws IOException {
-        return Json.read(configPath, Author.class).getName();
+        return getAuthor().getName();
     }
 
     public void setGlobalEmail(String email) throws IOException {
@@ -34,5 +38,8 @@ public class GlobalAuthor {
         Json.write(configPath, new Author(name, getGlobalEmail()));
     }
 
+    public static boolean isConfigPresent() {
+        return Files.exists(configPath);
+    }
 
 }
