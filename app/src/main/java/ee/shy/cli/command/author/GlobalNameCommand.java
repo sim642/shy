@@ -15,9 +15,10 @@ public class GlobalNameCommand implements Command {
         Path configPath = Paths.get(System.getProperty("user.home")).resolve(".shyconfig");
         if (!Files.exists(configPath)) {
             configPath.toFile().createNewFile();
+            Json.write(configPath, new Author(null, null));
         }
         Author author = Json.read(configPath, Author.class);
-        Author newAuthor = new Author(author.getName(), args[0]);
+        Author newAuthor = new Author(args[0], author.getEmail());
         Json.write(configPath, newAuthor);
     }
 

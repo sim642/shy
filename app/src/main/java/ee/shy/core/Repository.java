@@ -11,10 +11,7 @@ import ee.shy.storage.accessor.PlainFileAccessor;
 import ee.shy.storage.locator.FlatFileLocator;
 
 import java.io.*;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
+import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -405,6 +402,8 @@ public class Repository implements AutoCloseable {
      * @return author file path
      */
     private Path getAuthorPath() {
+        Path configPath = Paths.get(System.getProperty("user.home")).resolve(".shyconfig");
+        if (Files.exists(configPath)) return configPath;
         return getRepositoryPath().resolve("author");
     }
 

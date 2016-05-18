@@ -3,7 +3,6 @@ package ee.shy.cli.command.author;
 import ee.shy.cli.Command;
 import ee.shy.core.Author;
 import ee.shy.io.Json;
-import jdk.nashorn.internal.objects.Global;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -16,6 +15,7 @@ public class GlobalEmailCommand implements Command {
         Path configPath = Paths.get(System.getProperty("user.home")).resolve(".shyconfig");
         if (!Files.exists(configPath)) {
             configPath.toFile().createNewFile();
+            Json.write(configPath, new Author(null, null));
         }
         Author author = Json.read(configPath, Author.class);
         Author newAuthor = new Author(author.getName(), args[0]);
