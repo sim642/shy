@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.List;
 
 import static org.junit.Assert.*;
+import static org.junit.Assume.assumeNotNull;
 
 @RunWith(Parameterized.class)
 public class InputStreamMergerTest {
@@ -49,6 +50,8 @@ public class InputStreamMergerTest {
         original = getClass().getResourceAsStream(subpackage + "/original");
         revised = getClass().getResourceAsStream(subpackage + "/revised");
         patched = getClass().getResourceAsStream(subpackage + "/patched");
+        assumeNotNull(patchable, original, revised, patchable);
+
         merger = new InputStreamMerger();
     }
 
