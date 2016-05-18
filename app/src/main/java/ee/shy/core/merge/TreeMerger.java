@@ -4,6 +4,7 @@ import ee.shy.core.Tree;
 import ee.shy.core.TreeItem;
 import ee.shy.core.TreePath;
 import ee.shy.core.diff.TreePairs;
+import ee.shy.io.PathUtils;
 import ee.shy.storage.DataStorage;
 import org.apache.commons.io.input.ClosedInputStream;
 import org.apache.commons.lang3.ArrayUtils;
@@ -46,7 +47,7 @@ public class TreeMerger implements Merger<Tree> {
                 }
                 else if (rhs == null) {
                     if (Files.exists(resolvedPath))
-                        Files.delete(resolvedPath);
+                        PathUtils.deleteRecursive(path);
                 }
             }
         });
