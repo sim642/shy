@@ -41,12 +41,12 @@ public abstract class MergerTest<T> {
 
     @Test
     public void testBackwardMainMerge() throws Exception {
-        testMerge(patched, revised, original, patchable);
+        testMerge(patchable, patched, revised, original);
     }
 
     @Test
     public void testBackwardSideMerge() throws Exception {
-        testMerge(original, revised, patched, patchable);
+        testMerge(revised, patched, patchable, original);
     }
 
     protected abstract void testMerge(T patchable, T original, T revised, T patched) throws IOException;
