@@ -15,7 +15,6 @@ import java.util.Collection;
 import java.util.List;
 
 import static org.junit.Assert.*;
-import static org.junit.Assume.*;
 
 @RunWith(Parameterized.class)
 public class InputStreamMergerTest extends MergerTest<InputStream> {
@@ -34,19 +33,16 @@ public class InputStreamMergerTest extends MergerTest<InputStream> {
         this.subpackage = subpackage;
     }
 
-    @Before
-    public void setUp() throws Exception {
-        patchable = getSubpackageStream("patchable");
-        original = getSubpackageStream("original");
-        revised = getSubpackageStream("revised");
-        patched = getSubpackageStream("patched");
-        assumeNotNull(patchable, original, revised, patchable);
-
-        merger = new InputStreamMerger();
+    @Override
+    protected InputStream getState(String name) {
+        return getClass().getResourceAsStream(subpackage + "/" + name);
     }
 
-    private InputStream getSubpackageStream(String name) {
-        return getClass().getResourceAsStream(subpackage + "/" + name);
+    @Before
+    public void setUp() throws Exception {
+        merger = new InputStreamMerger();
+
+        super.setUp();
     }
 
     @Override
