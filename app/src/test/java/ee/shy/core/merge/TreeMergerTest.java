@@ -46,12 +46,16 @@ public class TreeMergerTest extends MergerTest<Tree> {
     public void setUp() throws Exception {
         storage = new MapStorage();
 
-        patchable = new Tree.Builder(storage).fromDirectory(subpackage.resolve("patchable")).create();
-        original = new Tree.Builder(storage).fromDirectory(subpackage.resolve("original")).create();
-        revised = new Tree.Builder(storage).fromDirectory(subpackage.resolve("revised")).create();
-        patched = new Tree.Builder(storage).fromDirectory(subpackage.resolve("patched")).create();
+        patchable = getSubpackageTree("patchable");
+        original = getSubpackageTree("original");
+        revised = getSubpackageTree("revised");
+        patched = getSubpackageTree("patched");
 
         merger = new TreeMerger(storage);
+    }
+
+    private Tree getSubpackageTree(String name) throws IOException {
+        return new Tree.Builder(storage).fromDirectory(subpackage.resolve(name)).create();
     }
 
     @Override

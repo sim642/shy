@@ -36,13 +36,17 @@ public class InputStreamMergerTest extends MergerTest<InputStream> {
 
     @Before
     public void setUp() throws Exception {
-        patchable = getClass().getResourceAsStream(subpackage + "/patchable");
-        original = getClass().getResourceAsStream(subpackage + "/original");
-        revised = getClass().getResourceAsStream(subpackage + "/revised");
-        patched = getClass().getResourceAsStream(subpackage + "/patched");
+        patchable = getSubpackageStream("patchable");
+        original = getSubpackageStream("original");
+        revised = getSubpackageStream("revised");
+        patched = getSubpackageStream("patched");
         assumeNotNull(patchable, original, revised, patchable);
 
         merger = new InputStreamMerger();
+    }
+
+    private InputStream getSubpackageStream(String name) {
+        return getClass().getResourceAsStream(subpackage + "/" + name);
     }
 
     @Override
