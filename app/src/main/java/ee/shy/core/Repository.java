@@ -402,7 +402,7 @@ public class Repository implements AutoCloseable {
      * @return author file path
      */
     private Path getAuthorPath() {
-        Path configPath = Paths.get(System.getProperty("user.home")).resolve(".shyconfig");
+        Path configPath = PathUtils.getUserHomePath().resolve(".shyconfig");
         if (Files.exists(configPath)) return configPath;
         return getRepositoryPath().resolve("author");
     }

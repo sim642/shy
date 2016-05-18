@@ -1,25 +1,24 @@
 package ee.shy.cli.command.author;
 
 import ee.shy.cli.Command;
-import ee.shy.core.Author;
-import ee.shy.io.Json;
+import ee.shy.core.GlobalAuthor;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 public class GlobalEmailCommand implements Command {
     @Override
     public void execute(String[] args) throws IOException {
-        Path configPath = Paths.get(System.getProperty("user.home")).resolve(".shyconfig");
-        if (!Files.exists(configPath)) {
-            configPath.toFile().createNewFile();
-            Json.write(configPath, new Author(null, null));
+        GlobalAuthor globalAuthor = new GlobalAuthor();
+        if (args.length == 0) {
+            String email = globalAuthor.getGlobalEmail();
+            if (email == null) {
+                System.out.println("Email not set in .shyconfig file. See 'shy help gauthor email'");
+            } else {
+                System.out.println(email);
+            }
+        } else {
+            globalAuthor.setGlobalEmail(args[0]);
         }
-        Author author = Json.read(configPath, Author.class);
-        Author newAuthor = new Author(author.getName(), args[0]);
-        Json.write(configPath, newAuthor);
     }
 
     @Override
