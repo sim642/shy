@@ -29,7 +29,8 @@ public class RootCommand extends SuperCommand {
         add("add", new AddCommand());
         add("remove", new RemoveCommand());
         add("commit", new CommitCommand());
-        add("author", new AuthorCommand());
+        add("author", new AuthorCommand(false));
+        add("gauthor", new AuthorCommand(true));
         add("diff", new DiffCommand());
         add("branch", new BranchCommand());
         add("checkout", new CheckoutCommand());
