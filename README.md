@@ -77,11 +77,19 @@ The same command can also be used to compare any two branches and commits entire
 Any branch and commit can be checked out using `shy checkout`.
 **NB! Any uncommited files may be overwritten.**
 
+### Merging
+Use `shy merge` with a branch name as argument to merge that branch into the currently checked out one.
+Conflicting changes will be renamed to respectively `.OLD` and `.REV` files to indicate the old file from
+current branch and the file from the merged branch.
+Merged changes will be automatically added but not commited to allow for pre-commit testing and changes, thus
+`shy commit` has to be executed separately.
+**NB! Merging may completely fail and make unexpected changes.**
+
 ### Pushing and pulling
 Use `shy pull` to get updates from a remote repository and `shy push` to send your updates to a remote repository.
 Remote repositories (remotes) can be managed via `shy remote` commands.
 Unless specified the default remote "origin", which is set up automatically when cloning, is used for pushin and pulling.
- **NB! Any uncommited files may be overwritten.**
+**NB! Any uncommited files may be overwritten.**
 
 ### Searching content
 The `shy search` command can be used to recursively search content in a specific commit.
