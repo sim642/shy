@@ -32,6 +32,7 @@ public class Repository implements AutoCloseable {
      * Repository root directory path.
      */
     private final Path rootPath;
+    private final IgnoreChecker ignorer;
 
     private final DataStorage storage;
     private final NamedObjectMap<Branch> branches;
@@ -49,6 +50,7 @@ public class Repository implements AutoCloseable {
      */
     protected Repository(Path rootPath) throws IOException {
         this.rootPath = rootPath;
+        this.ignorer = new IgnoreChecker(rootPath);
 
         Path storagePath = getRepositoryPath().resolve("storage");
         this.storage = new FileStorage(
@@ -111,11 +113,11 @@ public class Repository implements AutoCloseable {
     /**
      * Copies given file to its respective directory in ".shy/commit/" directory.
      * @param path file that user wants to add to repository
-     * @param force whether addition should be forced, e.g. creation of hidden item
+     * @param force whether addition should be forced, e.g. creation of hidden or ignored item
      * @throws IOException if file can't be found, copying fails or path is of unknown type
      */
     public void add(Path path, boolean force) throws IOException {
-        if (force || !Files.isHidden(path)) {
+        if (force || !ignorer.isIgnored(path)) {
             if (Files.isRegularFile(path)) {
                 Path commitPath = getCommitPath(path);
                 /*
