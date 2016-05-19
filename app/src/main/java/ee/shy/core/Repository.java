@@ -16,7 +16,10 @@ import ee.shy.storage.locator.GitFileLocator;
 import org.apache.commons.lang3.ObjectUtils;
 
 import java.io.*;
-import java.nio.file.*;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -466,9 +469,12 @@ public class Repository implements AutoCloseable {
         ));
         TreeDiffer treeDiffer = new TreeDiffer(aggregateStorage);
 
+        Commit latestCommit = storage.get(current.getCommit(), Commit.class);
+        Tree latestTree = latestCommit != null ? storage.get(latestCommit.getTree(), Tree.class) : Tree.EMPTY;
+
         return new DifferClosure<>(
                 treeDiffer,
-                storage.get(storage.get(current.getCommit(), Commit.class).getTree(), Tree.class),
+                latestTree,
                 temporaryTree
         );
     }
