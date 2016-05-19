@@ -59,7 +59,7 @@ public class DirectoryJsonMap<T extends Jsonable> implements NamedObjectMap<T> {
             return Files.list(directory)
                     .map(path -> {
                         try {
-                            return new Named<T>(path.getFileName().toString(), Json.read(path, classofT));
+                            return new Named<>(path.getFileName().toString(), Json.read(path, classofT));
                         }
                         catch (IOException e) {
                             throw new RuntimeException(e);

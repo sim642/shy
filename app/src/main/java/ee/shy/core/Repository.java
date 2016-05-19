@@ -314,9 +314,7 @@ public class Repository implements AutoCloseable {
             }
         });
 
-        for (String instance : instances) {
-            System.out.println(instance);
-        }
+        instances.forEach(System.out::println);
     }
 
     /**

@@ -14,10 +14,10 @@ import java.util.LinkedList;
 public class InputStreamMerger implements Merger<InputStream> {
     private static final DiffMatchPatch DMP = new DiffMatchPatch();
 
-    {
-        /*DMP.matchThreshold = 0.4f;
-        DMP.patchDeleteThreshold = 0.4f;*/
-    }
+    /*static {
+        DMP.matchThreshold = 0.4f;
+        DMP.patchDeleteThreshold = 0.4f;
+    }*/
 
     @Override
     public void merge(Path path, InputStream original, InputStream revised) throws IOException {

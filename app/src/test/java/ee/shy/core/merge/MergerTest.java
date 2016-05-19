@@ -49,5 +49,5 @@ public abstract class MergerTest<T> {
         testMerge(revised, patched, patchable, original);
     }
 
-    protected abstract void testMerge(T patchable, T original, T revised, T patched) throws IOException;
+    protected abstract void testMerge(T patchable, T original, T revised, T patched) throws Exception;
 }

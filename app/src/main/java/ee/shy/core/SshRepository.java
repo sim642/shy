@@ -57,7 +57,7 @@ public class SshRepository extends Repository {
     }
 
     private static class ConsoleUserInfo implements UserInfo, UIKeyboardInteractive {
-        private Console console = System.console();
+        private final Console console = System.console();
 
         private String passphrase;
         private String password;

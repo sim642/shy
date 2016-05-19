@@ -42,7 +42,7 @@ public class TreePath implements Comparable<TreePath> {
      * @return path as String.
      */
     public String toString() {
-        return "/" + String.join("/", pathStrings);
+        return "/" + String.join("/", (CharSequence[]) pathStrings);
     }
 
     /**
