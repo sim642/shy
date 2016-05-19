@@ -1,7 +1,10 @@
 package ee.shy.core;
 
 import java.io.IOException;
-import java.nio.file.*;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.PathMatcher;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,7 +32,7 @@ public final class IgnoreChecker {
                     string -> FileSystems.getDefault().getPathMatcher("glob:" + string)).collect(Collectors.toList()
             );
         } else {
-            pathMatchers = Collections.EMPTY_LIST;
+            pathMatchers = Collections.emptyList();
         }
     }
 
