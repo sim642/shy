@@ -10,8 +10,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class TreePairs {
-
-    interface Visitor {
+    public interface Visitor {
         void visitFilePair(TreePath path, TreeItem lhs, TreeItem rhs) throws IOException;
         void visitTreePair(TreePath path, TreeItem lhs, TreeItem rhs) throws IOException;
     }

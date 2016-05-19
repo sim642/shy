@@ -33,6 +33,10 @@ public class TreePath implements Comparable<TreePath> {
         return new TreePath(ArrayUtils.addAll(pathStrings, str.split("/")));
     }
 
+    public String[] getPathStrings() {
+        return pathStrings;
+    }
+
     /**
      * Joins all the separate path strings together with "/" separator and returns the path string.
      * @return path as String.
