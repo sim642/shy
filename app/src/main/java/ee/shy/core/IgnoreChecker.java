@@ -41,7 +41,7 @@ public final class IgnoreChecker {
      * @throws IOException
      */
     public boolean isIgnored(Path path) throws IOException {
-        if (Files.isHidden(path)) return true;
+        if (Files.isHidden(path) || path.getFileName().startsWith(".")) return true;
         Path matchablePath = rootPath.relativize(path.normalize().toAbsolutePath());
         for (PathMatcher pathMatcher : pathMatchers) {
             if (pathMatcher.matches(matchablePath)) {
