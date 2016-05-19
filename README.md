@@ -34,6 +34,10 @@ shy has extensive help available directly from the command line. Simply run `shy
 for which the help should be shown, e.g. `shy help add`. If a command has subcommands, they will be listed in the help
 and their help can also be viewed, e.g. `shy help author name`.
 
+### Author information setup
+`shy gauthor` command can be used to set author's details globally which will be stored in a config file under home directory.
+`shy author` sets repository's author details for a specific repository.
+
 ### Initialization
 #### New repository
 Run `shy init` in any directory to initialize a shy repository in that directory.
@@ -81,3 +85,6 @@ Unless specified the default remote "origin", which is set up automatically when
 
 ### Searching content
 The `shy search` command can be used to recursively search content in a specific commit.
+
+### Ignoring files
+A `.shyignore` file can be created to ignore files which match the glob patterns specified in the ignore file.
