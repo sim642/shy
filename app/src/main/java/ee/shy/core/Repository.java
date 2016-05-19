@@ -290,7 +290,7 @@ public class Repository implements AutoCloseable {
      * @param arg string referencing a commit
      * @param expression regular expression string to search for
      */
-    public List<String> search(String arg, String expression) throws IOException {
+    public List<SearchInstance> search(String arg, String expression) throws IOException {
         return commitSearch(parseState(arg).getCommit(), expression);
     }
 
@@ -300,21 +300,21 @@ public class Repository implements AutoCloseable {
      * @param expression string of the expression
      * @throws IOException if there was a problem walking the tree or getting input stream from storage
      */
-    private List<String> commitSearch(Hash commitHash, String expression) throws IOException {
+    private List<SearchInstance> commitSearch(Hash commitHash, String expression) throws IOException {
         Commit commit = storage.get(commitHash, Commit.class);
         Tree tree = storage.get(commit.getTree(), Tree.class);
         Pattern pattern = Pattern.compile(expression);
         Matcher matcher = pattern.matcher("");
 
-        List<String> lines = new ArrayList<>();
+        List<SearchInstance> instances = new ArrayList<>();
         tree.walk(storage, new TreeVisitor() {
             @Override
             public void visitFile(TreePath path, InputStream is) throws IOException {
-                lines.addAll(findInstance(path, is, matcher));
+                instances.addAll(findInstance(path, is, matcher));
             }
         });
 
-        return lines;
+        return instances;
     }
 
     /**
@@ -325,20 +325,43 @@ public class Repository implements AutoCloseable {
      * @return instances found in a file
      * @throws IOException if establishing streams fails
      */
-    private static List<String> findInstance(TreePath path, InputStream is, Matcher matcher) throws IOException {
-        List<String> foundInstances = new ArrayList<>();
+    private static List<SearchInstance> findInstance(TreePath path, InputStream is, Matcher matcher) throws IOException {
+        List<SearchInstance> instances = new ArrayList<>();
         try (Reader reader = new InputStreamReader(is);
              LineNumberReader lineReader = new LineNumberReader(reader)) {
             String line;
             while ((line = lineReader.readLine()) != null) {
                 matcher.reset(line);
-                if (matcher.find()) {
-                    foundInstances.add(String.format("%s:%d[%d,%d]:%s",
-                            path, lineReader.getLineNumber(), matcher.start(), matcher.end(), line));
-                }
+                if (matcher.find())
+                    instances.add(new SearchInstance(path, line, lineReader.getLineNumber(), matcher.start(), matcher.end()));
             }
         }
-        return foundInstances;
+        return instances;
+    }
+
+    /**
+     * Class representing a search match in a tree.
+     */
+    public static class SearchInstance {
+        private final TreePath path;
+        private final String line;
+        private final int lineNumber;
+        private final int startColumn;
+        private final int endColumn;
+
+        public SearchInstance(TreePath path, String line, int lineNumber, int startColumn, int endColumn) {
+            this.path = path;
+            this.line = line;
+            this.lineNumber = lineNumber;
+            this.startColumn = startColumn;
+            this.endColumn = endColumn;
+        }
+
+        @Override
+        public String toString() {
+            return String.format("%s:%d[%d,%d]:%s",
+                    path, lineNumber, startColumn, endColumn, line);
+        }
     }
 
     /**

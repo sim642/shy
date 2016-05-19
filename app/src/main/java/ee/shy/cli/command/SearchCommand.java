@@ -15,7 +15,7 @@ public class SearchCommand implements Command {
     @Override
     public void execute(String[] args) throws IOException {
         Repository repository = LocalRepository.newExisting();
-        List<String> lines = repository.search(args[0], args[1]);
+        List<Repository.SearchInstance> lines = repository.search(args[0], args[1]);
         lines.forEach(System.out::println);
     }
 
