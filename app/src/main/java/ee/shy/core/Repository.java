@@ -290,8 +290,8 @@ public class Repository implements AutoCloseable {
      * @param arg string referencing a commit
      * @param expression regular expression string to search for
      */
-    public void search(String arg, String expression) throws IOException {
-        commitSearch(parseState(arg).getCommit(), expression);
+    public List<String> search(String arg, String expression) throws IOException {
+        return commitSearch(parseState(arg).getCommit(), expression);
     }
 
     /**
@@ -300,21 +300,21 @@ public class Repository implements AutoCloseable {
      * @param expression string of the expression
      * @throws IOException if there was a problem walking the tree or getting input stream from storage
      */
-    private void commitSearch(Hash commitHash, String expression) throws IOException {
+    private List<String> commitSearch(Hash commitHash, String expression) throws IOException {
         Commit commit = storage.get(commitHash, Commit.class);
         Tree tree = storage.get(commit.getTree(), Tree.class);
         Pattern pattern = Pattern.compile(expression);
         Matcher matcher = pattern.matcher("");
 
-        List<String> instances = new ArrayList<>();
+        List<String> lines = new ArrayList<>();
         tree.walk(storage, new TreeVisitor() {
             @Override
             public void visitFile(TreePath path, InputStream is) throws IOException {
-                instances.addAll(findInstance(path, is, matcher));
+                lines.addAll(findInstance(path, is, matcher));
             }
         });
 
-        instances.forEach(System.out::println);
+        return lines;
     }
 
     /**
