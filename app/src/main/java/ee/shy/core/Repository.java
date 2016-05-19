@@ -12,12 +12,10 @@ import ee.shy.storage.accessor.GzipFileAccessor;
 import ee.shy.storage.accessor.PlainFileAccessor;
 import ee.shy.storage.locator.FlatFileLocator;
 import ee.shy.storage.locator.GitFileLocator;
+import org.apache.commons.lang3.ObjectUtils;
 
 import java.io.*;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
+import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -188,7 +186,7 @@ public class Repository implements AutoCloseable {
             Commit commit = new Commit.Builder()
                     .setTree(tree)
                     .addParent(current.getCommit())
-                    .setAuthor(getAuthor())
+                    .setAuthor(ObjectUtils.firstNonNull(new GlobalAuthor().getAuthor(), getAuthor()))
                     .setTimeCurrent()
                     .setMessage(message)
                     .create();

@@ -2,6 +2,8 @@ package ee.shy.cli.command;
 
 import ee.shy.cli.SuperCommand;
 import ee.shy.cli.command.author.EmailCommand;
+import ee.shy.cli.command.author.GlobalEmailCommand;
+import ee.shy.cli.command.author.GlobalNameCommand;
 import ee.shy.cli.command.author.NameCommand;
 
 /**
@@ -9,9 +11,14 @@ import ee.shy.cli.command.author.NameCommand;
  */
 public class AuthorCommand extends SuperCommand {
 
-    public AuthorCommand() {
-        add("name", new NameCommand());
-        add("email", new EmailCommand());
+    public AuthorCommand(boolean global) {
+        if (global) {
+            add("name", new GlobalNameCommand());
+            add("email", new GlobalEmailCommand());
+        } else {
+            add("name", new NameCommand());
+            add("email", new EmailCommand());
+        }
     }
 
     @Override
