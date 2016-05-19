@@ -482,16 +482,18 @@ public class Repository implements AutoCloseable {
     }
 
     public void merge(String arg) throws IOException {
-        CurrentState revisedState = parseState(arg);
+        merge(parseState(arg).getCommit());
+    }
 
-        Commit revisedCommit = storage.get(revisedState.getCommit(), Commit.class);
-        Commit originalCommit = storage.get(findCommonAncestor(current.getCommit(), revisedState.getCommit()), Commit.class);
+    public void merge(Hash hash) throws IOException {Commit revisedCommit = storage.get(hash, Commit.class);
+        Commit originalCommit = storage.get(findCommonAncestor(current.getCommit(), hash), Commit.class);
 
         Tree originalTree = storage.get(originalCommit.getTree(), Tree.class);
         Tree revisedTree = storage.get(revisedCommit.getTree(), Tree.class);
 
         TreeMerger treeMerger = new TreeMerger(storage);
-        treeMerger.merge(rootPath, originalTree, revisedTree);
+        treeMerger.merge(getCommitPath(), originalTree, revisedTree);
+        PathUtils.copyRecursive(getCommitPath(), rootPath, StandardCopyOption.REPLACE_EXISTING);
     }
 
     private Hash findCommonAncestor(Hash main, Hash branch) throws IOException {
