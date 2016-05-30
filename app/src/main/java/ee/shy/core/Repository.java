@@ -522,7 +522,8 @@ public class Repository implements AutoCloseable {
         merge(parseState(arg).getCommit());
     }
 
-    public void merge(Hash hash) throws IOException {Commit revisedCommit = storage.get(hash, Commit.class);
+    public void merge(Hash hash) throws IOException {
+        Commit revisedCommit = storage.get(hash, Commit.class);
         Commit originalCommit = storage.get(findCommonAncestor(current.getCommit(), hash), Commit.class);
 
         Tree originalTree = storage.get(originalCommit.getTree(), Tree.class);
