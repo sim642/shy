@@ -10,6 +10,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.LinkedList;
+import java.util.function.Supplier;
 
 public class InputStreamMerger implements Merger<InputStream> {
     private static final DiffMatchPatch DMP = new DiffMatchPatch();
@@ -21,7 +22,7 @@ public class InputStreamMerger implements Merger<InputStream> {
 
     @Override
     public void merge(Path path, InputStream original, InputStream revised) throws IOException {
-        InputStreamFactory revisedFactory = new InputStreamFactory(revised);
+        Supplier<InputStream> revisedFactory = new InputStreamFactory(revised);
 
         if (original == null) {
             if (Files.isRegularFile(path)) {

@@ -5,11 +5,12 @@ import org.apache.commons.io.IOUtils;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.function.Supplier;
 
 /**
  * Factory class for duplicating {@link InputStream}s with ease.
  */
-public class InputStreamFactory {
+public class InputStreamFactory implements Supplier<InputStream> {
     /**
      * Buffer of data in the stream
      */
